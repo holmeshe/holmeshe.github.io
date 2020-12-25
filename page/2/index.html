@@ -176,7 +176,7 @@ Experiment setting:OS: Unbutu 16.04gcc: 5.4.0
 
 
   
-    <article id="post-understanding-react-js-source-code-virtual-dom-diff-IX"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-cpp-pointers"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -184,7 +184,7 @@ Experiment setting:OS: Unbutu 16.04gcc: 5.4.0
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-virtual-dom-diff-IX/">Understanding The React Source Code - UI Updating (DOM Tree) IX</a>
+      <a class="article-title" href="/cpp-pointers/">Smart Pointer, shared_ptr, Automatic pointer, and unique_ptr</a>
     </h1>
   
 
@@ -192,13 +192,13 @@ Experiment setting:OS: Unbutu 16.04gcc: 5.4.0
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-virtual-dom-diff-IX/" class="article-date">
-	  <time datetime="2018-02-18T11:00:00.000Z" itemprop="datePublished">February 19, 2018</time>
+	<a href="/cpp-pointers/" class="article-date">
+	  <time datetime="2017-10-05T11:00:00.000Z" itemprop="datePublished">October 6, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/Rvisit-C/">Rvisit C++</a>
  
       
     </div>
@@ -210,14 +210,14 @@ Experiment setting:OS: Unbutu 16.04gcc: 5.4.0
           
           <div class="entry-summary">
           
-            Last time we went through the process from setState() to the updating of a single DOM. We also analyzed the diffing algorithm, which is far from complete as the algorithm is designed for tasks that are much more complex than updating a single DOM node.
-This time we are going to use two examples to examine the diffing algorithm more in depth. More specific, we look at how the algorithm deals with a mutating DOM tree.
-N.b., the examples used in this article are derived from the official document which also provides a high level description of the diffing algorithm. You might want to read it first if the topic does not seem very familiar.
+            Objects life-cycle is crucial. A mistake in determining an object’s lifecycle can lead to resource (e.g., memory, fd) leaks as the resource owned cannot be properly released and recycled for future use. When the leak accumulates to a certain level, it crashes the whole system.
+Objects life-cycle is also complicated since the ownership of one object might be relinquished by, transferred to, or shared with different entities which include but are not limited to variables, function arguments, modules, data structures, containers, and threads. Again, the resource has to be released and recycled by one of the owners at some undetermined point.
+There is no de-facto standard to determine objects life-cycle. Utilities like GC (garbage collection) that is used in Java, ARC used in Objective-C and all those pointers (ptrs) in C++, all have their pros and cons. However, this article is not about pros and cons but is focused on C++ resource management helper classes, Smart Pointer, shared_ptr, auto_ptr and unique_ptr.
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-virtual-dom-diff-IX/#more">Continue Reading →</a>
+            <a href="/cpp-pointers/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -227,11 +227,11 @@ N.b., the examples used in this article are derived from the official document w
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/Rvisit-C/">Rvisit C++</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/diffing/">diffing</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/setstate/">setstate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/virtual-dom/">virtual dom</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Smart-Pointer/">Smart Pointer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/automatic-ptr/">automatic ptr</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shared-ptr/">shared ptr</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unique-ptr/">unique ptr</a></li></ul>
 
       
     </footer>
@@ -244,7 +244,7 @@ N.b., the examples used in this article are derived from the official document w
 
 
   
-    <article id="post-understanding-react-js-source-code-virtual-dom-diff-VIII"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-cpp-rvalue-and-move"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -252,7 +252,7 @@ N.b., the examples used in this article are derived from the official document w
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-virtual-dom-diff-VIII/">Understanding The React Source Code - UI Updating (Individual DOM) VIII</a>
+      <a class="article-title" href="/cpp-rvalue-and-move/">C++ rvalue, &amp;&amp; and Move</a>
     </h1>
   
 
@@ -260,13 +260,13 @@ N.b., the examples used in this article are derived from the official document w
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-virtual-dom-diff-VIII/" class="article-date">
-	  <time datetime="2018-02-05T11:00:00.000Z" itemprop="datePublished">February 6, 2018</time>
+	<a href="/cpp-rvalue-and-move/" class="article-date">
+	  <time datetime="2017-09-19T12:00:00.000Z" itemprop="datePublished">September 20, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/Rvisit-C/">Rvisit C++</a>
  
       
     </div>
@@ -278,14 +278,14 @@ N.b., the examples used in this article are derived from the official document w
           
           <div class="entry-summary">
           
-            UI updating, in its essential, is data change. React offers a straightforward and intuitive way to program front-end Apps as most moving parts are converged in the form of states, and most UI tasks can be done with a single
+            
+C++ is hard, the newer versions become even harder. This article will deal with some of the hard parts in C++, rvalue, rvalue reference (&amp;&amp;) and move semantics. And I am going to reverse engineer (not a metaphor) these complex and correlated topics, so you can understand them completely in one shot.
 
-…, I mean, a single method, setState(). In this article, we are going unfold the setState() implementation, and peek inside the diffing algorithm by mutating an individual DOM element.
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-virtual-dom-diff-VIII/#more">Continue Reading →</a>
+            <a href="/cpp-rvalue-and-move/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -295,11 +295,11 @@ N.b., the examples used in this article are derived from the official document w
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/Rvisit-C/">Rvisit C++</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/diffing/">diffing</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/setstate/">setstate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/virtual-dom/">virtual dom</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/move/">move</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rvalue/">rvalue</a></li></ul>
 
       
     </footer>
@@ -312,7 +312,7 @@ N.b., the examples used in this article are derived from the official document w
 
 
   
-    <article id="post-understanding-react-js-source-code-initial-rendering-VII"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-javascript-tutorial-for-experienced-programmer-async"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -320,7 +320,7 @@ N.b., the examples used in this article are derived from the official document w
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-initial-rendering-VII/">Understanding The React Source Code - UI Updating (Transactions) VII</a>
+      <a class="article-title" href="/javascript-tutorial-for-experienced-programmer-async/">JavaScript Tutorial for Programmers - Async</a>
     </h1>
   
 
@@ -328,13 +328,13 @@ N.b., the examples used in this article are derived from the official document w
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-initial-rendering-VII/" class="article-date">
-	  <time datetime="2018-01-28T11:00:00.000Z" itemprop="datePublished">January 29, 2018</time>
+	<a href="/javascript-tutorial-for-experienced-programmer-async/" class="article-date">
+	  <time datetime="2017-09-11T10:00:00.000Z" itemprop="datePublished">September 11, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
  
       
     </div>
@@ -346,13 +346,14 @@ N.b., the examples used in this article are derived from the official document w
           
           <div class="entry-summary">
           
-            Last time we discussed the core Transaction class and ReactDefaultBatchingStrategyTransaction. The instantiation is not the sole Transaction involved in UI updating but merely the one that leads.
-In this post, we are going to examine the other Transactions which, together with ReactDefaultBatchingStrategyTransaction, outline the UI updating processing logic.
+            
+I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on differences so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.
+
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-initial-rendering-VII/#more">Continue Reading →</a>
+            <a href="/javascript-tutorial-for-experienced-programmer-async/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -362,11 +363,11 @@ In this post, we are going to examine the other Transactions which, together wit
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/component/">component</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/setstate/">setstate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/transaction/">transaction</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/async/">async</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/callback/">callback</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/promise/">promise</a></li></ul>
 
       
     </footer>
@@ -379,7 +380,7 @@ In this post, we are going to examine the other Transactions which, together wit
 
 
   
-    <article id="post-understanding-react-js-source-code-initial-rendering-VI"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-javascript-tutorial-for-experienced-programmer-prototype-2"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -387,7 +388,7 @@ In this post, we are going to examine the other Transactions which, together wit
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-initial-rendering-VI/">Understanding The React Source Code - UI Updating (Transaction) VI</a>
+      <a class="article-title" href="/javascript-tutorial-for-experienced-programmer-prototype-2/">JavaScript Tutorial for Programmers - Prototype(2)</a>
     </h1>
   
 
@@ -395,13 +396,13 @@ In this post, we are going to examine the other Transactions which, together wit
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-initial-rendering-VI/" class="article-date">
-	  <time datetime="2018-01-25T11:00:00.000Z" itemprop="datePublished">January 26, 2018</time>
+	<a href="/javascript-tutorial-for-experienced-programmer-prototype-2/" class="article-date">
+	  <time datetime="2017-08-25T10:00:00.000Z" itemprop="datePublished">August 25, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
  
       
     </div>
@@ -413,12 +414,14 @@ In this post, we are going to examine the other Transactions which, together wit
           
           <div class="entry-summary">
           
-            To some extent, the sophisticated and efficient UI updating is what makes React React. But before we dive into the well-known mechanisms (virtual DOM and  diffing algorithm) that empower the UI updating, we need to understand Transaction which transfers the control from the high-level API setState() to those underlying processing logic.
+            
+I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on differences so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.
+
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-initial-rendering-VI/#more">Continue Reading →</a>
+            <a href="/javascript-tutorial-for-experienced-programmer-prototype-2/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -428,11 +431,11 @@ In this post, we are going to examine the other Transactions which, together wit
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/component/">component</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/setstate/">setstate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/transaction/">transaction</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/inheritance/">inheritance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/prototype/">prototype</a></li></ul>
 
       
     </footer>
@@ -445,7 +448,7 @@ In this post, we are going to examine the other Transactions which, together wit
 
 
   
-    <article id="post-understanding-react-js-source-code-initial-rendering-V"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-javascript-tutorial-for-experienced-programmer-prototype-1"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -453,7 +456,7 @@ In this post, we are going to examine the other Transactions which, together wit
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-initial-rendering-V/">Understanding The React Source Code - Initial Rendering (Class Component) V</a>
+      <a class="article-title" href="/javascript-tutorial-for-experienced-programmer-prototype-1/">JavaScript Tutorial for Programmers - Prototype(1)</a>
     </h1>
   
 
@@ -461,13 +464,13 @@ In this post, we are going to examine the other Transactions which, together wit
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-initial-rendering-V/" class="article-date">
-	  <time datetime="2018-01-12T11:00:00.000Z" itemprop="datePublished">January 13, 2018</time>
+	<a href="/javascript-tutorial-for-experienced-programmer-prototype-1/" class="article-date">
+	  <time datetime="2017-08-21T09:30:00.000Z" itemprop="datePublished">August 21, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
  
       
     </div>
@@ -479,13 +482,14 @@ In this post, we are going to examine the other Transactions which, together wit
           
           <div class="entry-summary">
           
-            Last time we completed the upper half of the class component rendering logic which is similar to albeit different from simple component rendering in the following respects: 1) it instantiates one additional ReactCompositeComponent to represent the class component (App); and 2) it calls App.render() that triggers cascading React.createElement()s to establish a ReactElement tree.
-This time we are going to explore more branches in lower half by examining how the ReactElements in the tree is transformed to their respective ReactDOMComponents, and eventually, to real DOM objects.
+            
+I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on differences so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.
+
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-initial-rendering-V/#more">Continue Reading →</a>
+            <a href="/javascript-tutorial-for-experienced-programmer-prototype-1/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -495,11 +499,11 @@ This time we are going to explore more branches in lower half by examining how t
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/code/">code</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/js/">js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/prototype/">prototype</a></li></ul>
 
       
     </footer>
@@ -512,7 +516,7 @@ This time we are going to explore more branches in lower half by examining how t
 
 
   
-    <article id="post-understanding-react-js-source-code-initial-rendering-IV"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-network-essentials-byte-order"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -520,7 +524,7 @@ This time we are going to explore more branches in lower half by examining how t
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-initial-rendering-IV/">Understanding The React Source Code - Initial Rendering (Class Component) IV</a>
+      <a class="article-title" href="/network-essentials-byte-order/">Don&#39;t Worry if You Overslept this class - Byte Order</a>
     </h1>
   
 
@@ -528,13 +532,13 @@ This time we are going to explore more branches in lower half by examining how t
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-initial-rendering-IV/" class="article-date">
-	  <time datetime="2018-01-06T11:00:00.000Z" itemprop="datePublished">January 7, 2018</time>
+	<a href="/network-essentials-byte-order/" class="article-date">
+	  <time datetime="2017-08-18T18:00:00.000Z" itemprop="datePublished">August 19, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/Network-Essentials/">Network Essentials</a>
  
       
     </div>
@@ -546,12 +550,14 @@ This time we are going to explore more branches in lower half by examining how t
           
           <div class="entry-summary">
           
-            We have completed the rendering process of a simple component. This time we are going to explore more ramifications of this process by discussing how a class component (a typical one we might use in everyday development) is rendered.
+            
+When I was reading the source code of a network system, htons() and ntohs() are the very first two functions that confused me. To understand them, I decided to refresh the fading knowledge learned from college in order to squeeze out the last bit of conceptual doubt in byte order.
+
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-initial-rendering-IV/#more">Continue Reading →</a>
+            <a href="/network-essentials-byte-order/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -561,11 +567,11 @@ This time we are going to explore more branches in lower half by examining how t
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/Network-Essentials/">Network Essentials</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/code/">code</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/big-endian/">big endian</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/byte-order/">byte order</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/endianness/">endianness</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/host-byte-order/">host byte order</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/little-endian/">little endian</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/network/">network</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/network-byte-order/">network byte order</a></li></ul>
 
       
     </footer>
@@ -578,7 +584,7 @@ This time we are going to explore more branches in lower half by examining how t
 
 
   
-    <article id="post-understanding-react-js-source-code-initial-rendering-III"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-javascript-tutorial-for-experienced-programmer-object-dictionary"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -586,7 +592,7 @@ This time we are going to explore more branches in lower half by examining how t
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-initial-rendering-III/">Understanding The React Source Code - Initial Rendering (Simple Component) III</a>
+      <a class="article-title" href="/javascript-tutorial-for-experienced-programmer-object-dictionary/">JavaScript Tutorial for Programmers - Object (Dictionary)</a>
     </h1>
   
 
@@ -594,13 +600,13 @@ This time we are going to explore more branches in lower half by examining how t
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-initial-rendering-III/" class="article-date">
-	  <time datetime="2018-01-01T11:00:00.000Z" itemprop="datePublished">January 2, 2018</time>
+	<a href="/javascript-tutorial-for-experienced-programmer-object-dictionary/" class="article-date">
+	  <time datetime="2017-08-18T09:09:00.000Z" itemprop="datePublished">August 18, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
  
       
     </div>
@@ -612,13 +618,15 @@ This time we are going to explore more branches in lower half by examining how t
           
           <div class="entry-summary">
           
-            Last time we completed the platform agnostic logic (a.k.a., upper half) that embeds ReactElement[1] into ReactCompositeComponent[T] and then uses it to derive ReactDOMComponent[ins].
-This time I will discuss how a renderable HTML DOM element is created with ReactDOMComponent[ins], and complete the JSX-to-UI process.
+            
+I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on differences so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.
+
+In JavaScript, it is hard to differentiate an object and a dictionary (a.k.a., map in some other languages):
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-initial-rendering-III/#more">Continue Reading →</a>
+            <a href="/javascript-tutorial-for-experienced-programmer-object-dictionary/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -628,11 +636,11 @@ This time I will discuss how a renderable HTML DOM element is created with React
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/source-code/">source code</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/class/">class</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/constructor/">constructor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dictionary/">dictionary</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/js/">js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/new/">new</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/object/">object</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/this/">this</a></li></ul>
 
       
     </footer>
@@ -645,7 +653,7 @@ This time I will discuss how a renderable HTML DOM element is created with React
 
 
   
-    <article id="post-understanding-react-js-source-code-initial-rendering-II"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-javascript-tutorial-for-experienced-programmer-this"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -653,7 +661,7 @@ This time I will discuss how a renderable HTML DOM element is created with React
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-initial-rendering-II/">Understanding The React Source Code - Initial Rendering (Simple Component) II</a>
+      <a class="article-title" href="/javascript-tutorial-for-experienced-programmer-this/">JavaScript Tutorial for Programmers - This</a>
     </h1>
   
 
@@ -661,13 +669,13 @@ This time I will discuss how a renderable HTML DOM element is created with React
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-initial-rendering-II/" class="article-date">
-	  <time datetime="2017-12-30T11:00:00.000Z" itemprop="datePublished">December 31, 2017</time>
+	<a href="/javascript-tutorial-for-experienced-programmer-this/" class="article-date">
+	  <time datetime="2017-08-16T20:30:00.000Z" itemprop="datePublished">August 17, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
  
       
     </div>
@@ -679,12 +687,15 @@ This time I will discuss how a renderable HTML DOM element is created with React
           
           <div class="entry-summary">
           
-            In the last article we went through the process that creates a ReactCompositeComponent instance from JSX expression. This one will continue the walk-through of simple component rendering, from the point of batchedMountComponentIntoNode().
+            
+I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on differences so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.
+
+In this post, I will discuss this, the legendary JavaScript pitfall countless programmers trod upon.
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-initial-rendering-II/#more">Continue Reading →</a>
+            <a href="/javascript-tutorial-for-experienced-programmer-this/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -694,11 +705,11 @@ This time I will discuss how a renderable HTML DOM element is created with React
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/source-code/">source code</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/">=></a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/arrow-method/">arrow method</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/js/">js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/this/">this</a></li></ul>
 
       
     </footer>
@@ -711,7 +722,7 @@ This time I will discuss how a renderable HTML DOM element is created with React
 
 
   
-    <article id="post-understanding-react-js-source-code-initial-rendering-I"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-javascript-tutorial-for-experienced-programmer-string-and-array"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -719,7 +730,7 @@ This time I will discuss how a renderable HTML DOM element is created with React
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/understanding-react-js-source-code-initial-rendering-I/">Understanding The React Source Code - Initial Rendering (Simple Component) I</a>
+      <a class="article-title" href="/javascript-tutorial-for-experienced-programmer-string-and-array/">JavaScript Tutorial for Programmers - String and Array</a>
     </h1>
   
 
@@ -727,13 +738,13 @@ This time I will discuss how a renderable HTML DOM element is created with React
     
     <div class="article-meta">
       
-	<a href="/understanding-react-js-source-code-initial-rendering-I/" class="article-date">
-	  <time datetime="2017-12-29T11:00:00.000Z" itemprop="datePublished">December 30, 2017</time>
+	<a href="/javascript-tutorial-for-experienced-programmer-string-and-array/" class="article-date">
+	  <time datetime="2017-08-15T20:00:00.000Z" itemprop="datePublished">August 16, 2017</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
  
       
     </div>
@@ -745,15 +756,15 @@ This time I will discuss how a renderable HTML DOM element is created with React
           
           <div class="entry-summary">
           
-            UI updating, in its essential, is data change. React offers a straightforward and intuitive approach to front-end program with all the moving parts converged in the form of states. Code review is also made easier to me as I like to start with data structures for a rough expectation of the functionalities and processing logic. From time to time, I was curious about how React works internally, hence this article. 
+            
+I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I took it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on differences so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.
 
-It never hurts to have a deeper understanding down the stack, as it gives me more freedom when I need a new feature, more confidence when I want to contribute and more comfort when I upgrade.
-
+First thing first, in JavaScript, strings are constant while arrays are mutable.
           
 
         
           <p class="article-more-link">
-            <a href="/understanding-react-js-source-code-initial-rendering-I/#more">Continue Reading →</a>
+            <a href="/javascript-tutorial-for-experienced-programmer-string-and-array/#more">Continue Reading →</a>
           </p>
         </div>
       
@@ -763,11 +774,11 @@ It never hurts to have a deeper understanding down the stack, as it gives me mor
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/render/">render</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/simple-component/">simple component</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/source-code/">source code</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/array/">array</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concatenation/">concatenation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/escape/">escape</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/js/">js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/slice/">slice</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/special-character/">special character</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/string/">string</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/substring/">substring</a></li></ul>
 
       
     </footer>
@@ -981,7 +992,7 @@ It never hurts to have a deeper understanding down the stack, as it gives me mor
   <div class="widget-wrap">
     <h3 class="widget-title">Series</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Memcached-源码分析/">Memcached 源码分析</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network-Essentials/">Network Essentials</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Rvisit-C/">Rvisit C++</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a><span class="category-list-count">9</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Memcached-源码分析/">Memcached 源码分析</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network-Essentials/">Network Essentials</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Rvisit-C/">Rvisit C++</a><span class="category-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -991,7 +1002,7 @@ It never hurts to have a deeper understanding down the stack, as it gives me mor
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/">==</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/">===</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/">=></a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LRU/">LRU</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOL-SOCKET/">SOL_SOCKET</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOL-TCP/">SOL_TCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SO-KEEPALIVE/">SO_KEEPALIVE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Smart-Pointer/">Smart Pointer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP-NODELAY/">TCP_NODELAY</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/array/">array</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/arrow-method/">arrow method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/async/">async</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/automatic-ptr/">automatic ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/big-endian/">big endian</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/byte-order/">byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cache/">cache</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/callback/">callback</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/class/">class</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/code/">code</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/comparison/">comparison</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/component/">component</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concatenation/">concatenation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/constructor/">constructor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dictionary/">dictionary</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/diffing/">diffing</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/endianness/">endianness</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/equal/">equal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/escape/">escape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/event-driven/">event driven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash-map/">hash map</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/heartbeat/">heartbeat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/host-byte-order/">host byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/inheritance/">inheritance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/little-endian/">little endian</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memecached/">memecached</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/move/">move</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/multithreading/">multithreading</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nagle-algorithm/">nagle algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/">network</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-byte-order/">network byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/new/">new</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/object/">object</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/packet-aggregation/">packet aggregation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming/">programming</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/promise/">promise</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prototype/">prototype</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/react/">react</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/react-js/">react.js</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/render/">render</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rvalue/">rvalue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/setsockopt/">setsockopt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/setstate/">setstate</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shared-ptr/">shared ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/simple-component/">simple component</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slab-allocator/">slab allocator</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/source-code/">source code</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/source-code-analysis/">source code analysis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/special-character/">special character</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/state-machine/">state machine</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/string/">string</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/substring/">substring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/this/">this</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/transaction/">transaction</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/undefined/">undefined</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-ptr/">unique ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/virtual-dom/">virtual dom</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码分析/">源码分析</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/">==</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/">===</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/">=></a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LRU/">LRU</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOL-SOCKET/">SOL_SOCKET</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOL-TCP/">SOL_TCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SO-KEEPALIVE/">SO_KEEPALIVE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Smart-Pointer/">Smart Pointer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP-NODELAY/">TCP_NODELAY</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/array/">array</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/arrow-method/">arrow method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/async/">async</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/automatic-ptr/">automatic ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/big-endian/">big endian</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/byte-order/">byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cache/">cache</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/callback/">callback</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/class/">class</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/comparison/">comparison</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concatenation/">concatenation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/constructor/">constructor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dictionary/">dictionary</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/endianness/">endianness</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/equal/">equal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/escape/">escape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/event-driven/">event driven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash-map/">hash map</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/heartbeat/">heartbeat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/host-byte-order/">host byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/inheritance/">inheritance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/little-endian/">little endian</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memecached/">memecached</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/move/">move</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/multithreading/">multithreading</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nagle-algorithm/">nagle algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/">network</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-byte-order/">network byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/new/">new</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/object/">object</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/packet-aggregation/">packet aggregation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/promise/">promise</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prototype/">prototype</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rvalue/">rvalue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/setsockopt/">setsockopt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shared-ptr/">shared ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slab-allocator/">slab allocator</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/source-code-analysis/">source code analysis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/special-character/">special character</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/state-machine/">state machine</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/string/">string</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/substring/">substring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/this/">this</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/undefined/">undefined</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-ptr/">unique ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码分析/">源码分析</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1001,7 +1012,7 @@ It never hurts to have a deeper understanding down the stack, as it gives me mor
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/" style="font-size: 10px;">==</a> <a href="/tags/" style="font-size: 10px;">===</a> <a href="/tags/" style="font-size: 10px;">=></a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/LRU/" style="font-size: 13.75px;">LRU</a> <a href="/tags/SOL-SOCKET/" style="font-size: 10px;">SOL_SOCKET</a> <a href="/tags/SOL-TCP/" style="font-size: 10px;">SOL_TCP</a> <a href="/tags/SO-KEEPALIVE/" style="font-size: 10px;">SO_KEEPALIVE</a> <a href="/tags/Smart-Pointer/" style="font-size: 10px;">Smart Pointer</a> <a href="/tags/TCP-NODELAY/" style="font-size: 10px;">TCP_NODELAY</a> <a href="/tags/array/" style="font-size: 10px;">array</a> <a href="/tags/arrow-method/" style="font-size: 10px;">arrow method</a> <a href="/tags/async/" style="font-size: 10px;">async</a> <a href="/tags/automatic-ptr/" style="font-size: 10px;">automatic ptr</a> <a href="/tags/big-endian/" style="font-size: 10px;">big endian</a> <a href="/tags/byte-order/" style="font-size: 10px;">byte order</a> <a href="/tags/cache/" style="font-size: 17.5px;">cache</a> <a href="/tags/callback/" style="font-size: 10px;">callback</a> <a href="/tags/class/" style="font-size: 10px;">class</a> <a href="/tags/code/" style="font-size: 11.25px;">code</a> <a href="/tags/comparison/" style="font-size: 10px;">comparison</a> <a href="/tags/component/" style="font-size: 11.25px;">component</a> <a href="/tags/concatenation/" style="font-size: 10px;">concatenation</a> <a href="/tags/constructor/" style="font-size: 10px;">constructor</a> <a href="/tags/dictionary/" style="font-size: 10px;">dictionary</a> <a href="/tags/diffing/" style="font-size: 11.25px;">diffing</a> <a href="/tags/endianness/" style="font-size: 10px;">endianness</a> <a href="/tags/equal/" style="font-size: 10px;">equal</a> <a href="/tags/escape/" style="font-size: 10px;">escape</a> <a href="/tags/event-driven/" style="font-size: 12.5px;">event driven</a> <a href="/tags/hash-map/" style="font-size: 10px;">hash map</a> <a href="/tags/heartbeat/" style="font-size: 10px;">heartbeat</a> <a href="/tags/host-byte-order/" style="font-size: 10px;">host byte order</a> <a href="/tags/inheritance/" style="font-size: 10px;">inheritance</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/little-endian/" style="font-size: 10px;">little endian</a> <a href="/tags/memcached/" style="font-size: 18.75px;">memcached</a> <a href="/tags/memecached/" style="font-size: 10px;">memecached</a> <a href="/tags/move/" style="font-size: 10px;">move</a> <a href="/tags/multithreading/" style="font-size: 11.25px;">multithreading</a> <a href="/tags/nagle-algorithm/" style="font-size: 10px;">nagle algorithm</a> <a href="/tags/network/" style="font-size: 12.5px;">network</a> <a href="/tags/network-byte-order/" style="font-size: 10px;">network byte order</a> <a href="/tags/new/" style="font-size: 10px;">new</a> <a href="/tags/object/" style="font-size: 10px;">object</a> <a href="/tags/packet-aggregation/" style="font-size: 10px;">packet aggregation</a> <a href="/tags/programming/" style="font-size: 13.75px;">programming</a> <a href="/tags/promise/" style="font-size: 10px;">promise</a> <a href="/tags/prototype/" style="font-size: 11.25px;">prototype</a> <a href="/tags/react/" style="font-size: 15px;">react</a> <a href="/tags/react-js/" style="font-size: 17.5px;">react.js</a> <a href="/tags/render/" style="font-size: 10px;">render</a> <a href="/tags/rvalue/" style="font-size: 10px;">rvalue</a> <a href="/tags/setsockopt/" style="font-size: 11.25px;">setsockopt</a> <a href="/tags/setstate/" style="font-size: 13.75px;">setstate</a> <a href="/tags/shared-ptr/" style="font-size: 10px;">shared ptr</a> <a href="/tags/simple-component/" style="font-size: 10px;">simple component</a> <a href="/tags/slab-allocator/" style="font-size: 16.25px;">slab allocator</a> <a href="/tags/slice/" style="font-size: 10px;">slice</a> <a href="/tags/socket/" style="font-size: 15px;">socket</a> <a href="/tags/source-code/" style="font-size: 12.5px;">source code</a> <a href="/tags/source-code-analysis/" style="font-size: 11.25px;">source code analysis</a> <a href="/tags/special-character/" style="font-size: 10px;">special character</a> <a href="/tags/state-machine/" style="font-size: 12.5px;">state machine</a> <a href="/tags/string/" style="font-size: 10px;">string</a> <a href="/tags/substring/" style="font-size: 10px;">substring</a> <a href="/tags/this/" style="font-size: 11.25px;">this</a> <a href="/tags/transaction/" style="font-size: 11.25px;">transaction</a> <a href="/tags/undefined/" style="font-size: 10px;">undefined</a> <a href="/tags/unique-ptr/" style="font-size: 10px;">unique ptr</a> <a href="/tags/virtual-dom/" style="font-size: 11.25px;">virtual dom</a> <a href="/tags/源码/" style="font-size: 13.75px;">源码</a> <a href="/tags/源码分析/" style="font-size: 13.75px;">源码分析</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/" style="font-size: 10px;">==</a> <a href="/tags/" style="font-size: 10px;">===</a> <a href="/tags/" style="font-size: 10px;">=></a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/JavaScript/" style="font-size: 17.5px;">JavaScript</a> <a href="/tags/LRU/" style="font-size: 13.75px;">LRU</a> <a href="/tags/SOL-SOCKET/" style="font-size: 10px;">SOL_SOCKET</a> <a href="/tags/SOL-TCP/" style="font-size: 10px;">SOL_TCP</a> <a href="/tags/SO-KEEPALIVE/" style="font-size: 10px;">SO_KEEPALIVE</a> <a href="/tags/Smart-Pointer/" style="font-size: 10px;">Smart Pointer</a> <a href="/tags/TCP-NODELAY/" style="font-size: 10px;">TCP_NODELAY</a> <a href="/tags/array/" style="font-size: 10px;">array</a> <a href="/tags/arrow-method/" style="font-size: 10px;">arrow method</a> <a href="/tags/async/" style="font-size: 10px;">async</a> <a href="/tags/automatic-ptr/" style="font-size: 10px;">automatic ptr</a> <a href="/tags/big-endian/" style="font-size: 10px;">big endian</a> <a href="/tags/byte-order/" style="font-size: 10px;">byte order</a> <a href="/tags/cache/" style="font-size: 18.75px;">cache</a> <a href="/tags/callback/" style="font-size: 10px;">callback</a> <a href="/tags/class/" style="font-size: 10px;">class</a> <a href="/tags/comparison/" style="font-size: 10px;">comparison</a> <a href="/tags/concatenation/" style="font-size: 10px;">concatenation</a> <a href="/tags/constructor/" style="font-size: 10px;">constructor</a> <a href="/tags/dictionary/" style="font-size: 10px;">dictionary</a> <a href="/tags/endianness/" style="font-size: 10px;">endianness</a> <a href="/tags/equal/" style="font-size: 10px;">equal</a> <a href="/tags/escape/" style="font-size: 10px;">escape</a> <a href="/tags/event-driven/" style="font-size: 12.5px;">event driven</a> <a href="/tags/hash-map/" style="font-size: 10px;">hash map</a> <a href="/tags/heartbeat/" style="font-size: 10px;">heartbeat</a> <a href="/tags/host-byte-order/" style="font-size: 10px;">host byte order</a> <a href="/tags/inheritance/" style="font-size: 10px;">inheritance</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/little-endian/" style="font-size: 10px;">little endian</a> <a href="/tags/memcached/" style="font-size: 20px;">memcached</a> <a href="/tags/memecached/" style="font-size: 10px;">memecached</a> <a href="/tags/move/" style="font-size: 10px;">move</a> <a href="/tags/multithreading/" style="font-size: 11.25px;">multithreading</a> <a href="/tags/nagle-algorithm/" style="font-size: 10px;">nagle algorithm</a> <a href="/tags/network/" style="font-size: 12.5px;">network</a> <a href="/tags/network-byte-order/" style="font-size: 10px;">network byte order</a> <a href="/tags/new/" style="font-size: 10px;">new</a> <a href="/tags/object/" style="font-size: 10px;">object</a> <a href="/tags/packet-aggregation/" style="font-size: 10px;">packet aggregation</a> <a href="/tags/promise/" style="font-size: 10px;">promise</a> <a href="/tags/prototype/" style="font-size: 11.25px;">prototype</a> <a href="/tags/rvalue/" style="font-size: 10px;">rvalue</a> <a href="/tags/setsockopt/" style="font-size: 11.25px;">setsockopt</a> <a href="/tags/shared-ptr/" style="font-size: 10px;">shared ptr</a> <a href="/tags/slab-allocator/" style="font-size: 16.25px;">slab allocator</a> <a href="/tags/slice/" style="font-size: 10px;">slice</a> <a href="/tags/socket/" style="font-size: 15px;">socket</a> <a href="/tags/source-code-analysis/" style="font-size: 11.25px;">source code analysis</a> <a href="/tags/special-character/" style="font-size: 10px;">special character</a> <a href="/tags/state-machine/" style="font-size: 12.5px;">state machine</a> <a href="/tags/string/" style="font-size: 10px;">string</a> <a href="/tags/substring/" style="font-size: 10px;">substring</a> <a href="/tags/this/" style="font-size: 11.25px;">this</a> <a href="/tags/undefined/" style="font-size: 10px;">undefined</a> <a href="/tags/unique-ptr/" style="font-size: 10px;">unique ptr</a> <a href="/tags/源码/" style="font-size: 13.75px;">源码</a> <a href="/tags/源码分析/" style="font-size: 13.75px;">源码分析</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -1011,7 +1022,7 @@ It never hurts to have a deeper understanding down the stack, as it gives me mor
     <h3 class="widget-title">Archives</h3>
 
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">7</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">7</span></li></ul>
     </div>
   </div>
 

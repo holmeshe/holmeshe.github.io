@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="memcachedLRU源码源码分析缓存">
+  
+  
+  
+  
+  <meta name="description" content="多半情况下，LRU 会和 哈希表一起使用，然后我们把这个组合称为 LRU 缓存在 LRU缓存 中，哈希表提供了快速随机访问对象的能力；而LRU（算法）则用于淘汰很久没用 (least recently used) 的对象，来避免缓存无限增加。我们先大致看下 LRU 组成。">
+<meta name="keywords" content="memcached,LRU,源码,源码分析,缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解 Memcached 源码 - LRU I">
+<meta property="og:url" content="https://holmeshe.me/cn/understanding-memcached-source-code-IV/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="多半情况下，LRU 会和 哈希表一起使用，然后我们把这个组合称为 LRU 缓存在 LRU缓存 中，哈希表提供了快速随机访问对象的能力；而LRU（算法）则用于淘汰很久没用 (least recently used) 的对象，来避免缓存无限增加。我们先大致看下 LRU 组成。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://holmeshe.me/gallery/lru.png">
+<meta property="og:image" content="https://holmeshe.me/gallery/lru-linked-list.png">
+<meta property="og:image" content="https://holmeshe.me/gallery/item-chunk.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解 Memcached 源码 - LRU I">
+<meta name="twitter:description" content="多半情况下，LRU 会和 哈希表一起使用，然后我们把这个组合称为 LRU 缓存在 LRU缓存 中，哈希表提供了快速随机访问对象的能力；而LRU（算法）则用于淘汰很久没用 (least recently used) 的对象，来避免缓存无限增加。我们先大致看下 LRU 组成。">
+<meta name="twitter:image" content="https://holmeshe.me/gallery/lru.png">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-cn/understanding-memcached-source-code-IV" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      理解 Memcached 源码 - LRU I
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/cn/understanding-memcached-source-code-IV/" class="article-date">
+	  <time datetime="2019-05-17T22:28:00.000Z" itemprop="datePublished">May 18, 2019</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-源码分析/">Memcached 源码分析</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>多半情况下，<strong>LRU</strong> 会和 哈希表一起使用，然后我们把这个组合称为</p>
+<h1 id="LRU-缓存"><a href="#LRU-缓存" class="headerlink" title="LRU 缓存"></a>LRU 缓存</h1><p>在 <strong>LRU缓存</strong> 中，哈希表提供了快速随机访问对象的能力；而<strong>LRU</strong>（算法）则用于淘汰<strong>很久没用</strong> (<strong>least recently used</strong>) 的对象，来避免缓存无限增加。我们先大致看下 <strong>LRU</strong> 组成。</p>
+<a id="more"></a>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>从技术上来说，<strong>LRU</strong> 算法是在链表上完成的 - 当一个表项被使用（访问或更新），<strong>LRU</strong> 会先做移除，然后把它重新插入到表头。这样，越接近表尾的对象就是 <strong>越久没使用</strong> (<strong>least recently used</strong>)，淘汰起来比较简单。</p>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><p>链表是不支持快速的随机访问的，所以需要和 <strong>哈希表</strong> 一起使用。之前我们之前已经读过，<strong>板</strong> 子系统的空闲列表是通过链表把 <strong>板</strong> 里的 <strong>块</strong> (chuck) 串起来形成的。在 <strong>LRU缓存</strong> 里也差不多，而这次用链表串起来的是表项。大致看起来是这样：</p>
+<p><img src="/gallery/lru.png" alt="hash map perspective"></p>
+<p>从另外一个维度看起来可能会更直观一点：</p>
+<p><img src="/gallery/lru-linked-list.png" alt="linked list perspective"></p>
+<h1 id="核心数据结构-item"><a href="#核心数据结构-item" class="headerlink" title="核心数据结构 - item"></a>核心数据结构 - item</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">stritem</span> &#123;</span></span><br><span class="line">    <span class="comment">/* Protected by LRU locks */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">stritem</span> *<span class="title">next</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">stritem</span> *<span class="title">prev</span>;</span></span><br><span class="line">    <span class="comment">/* Rest are protected by an item lock */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">stritem</span> *<span class="title">h_next</span>;</span>    <span class="comment">/* hash chain next */</span></span><br><span class="line">    <span class="keyword">rel_time_t</span>      time;       <span class="comment">/* least recent access */</span></span><br><span class="line">    <span class="keyword">rel_time_t</span>      exptime;    <span class="comment">/* expire time */</span></span><br><span class="line">    <span class="keyword">int</span>             nbytes;     <span class="comment">/* size of data */</span></span><br><span class="line">    <span class="keyword">unsigned</span> short  refcount;</span><br><span class="line">    <span class="keyword">uint8_t</span>         nsuffix;    <span class="comment">/* length of flags-and-length string */</span></span><br><span class="line">    <span class="keyword">uint8_t</span>         it_flags;   <span class="comment">/* ITEM_* above */</span></span><br><span class="line">    <span class="keyword">uint8_t</span>         slabs_clsid;<span class="comment">/* which slab class we're in */</span></span><br><span class="line">    <span class="keyword">uint8_t</span>         nkey;       <span class="comment">/* key length, w/terminating null and padding */</span></span><br><span class="line">    <span class="comment">/* this odd type prevents type-punning issues when we do</span></span><br><span class="line"><span class="comment">     * the little shuffle to save space when not using CAS. */</span></span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">... <span class="comment">// scr: cas</span></span><br><span class="line">        <span class="keyword">char</span> end; <span class="comment">// scr: flexible array member indicating the item header "end"</span></span><br><span class="line">    &#125; data[];</span><br><span class="line">    <span class="comment">/* if it_flags &amp; ITEM_CAS we have 8 bytes CAS */</span></span><br><span class="line">    <span class="comment">/* then null-terminated key */</span></span><br><span class="line">    <span class="comment">/* then " flags length\r\n" (no terminating null) */</span></span><br><span class="line">    <span class="comment">/* then data with terminating \r\n (no terminating null; it's binary!) */</span></span><br><span class="line">&#125; item;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_unlink@item.c</text></center>
+<h2 id="使用到的字段"><a href="#使用到的字段" class="headerlink" title="使用到的字段"></a>使用到的字段</h2><p><code>next</code>, <code>prev</code> - <strong>LRU 链表</strong> 指针, 在 <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a> 初始化, 被 <a href="#item-link-q-add-to-linked-list">item_link_q</a>, <a href="#item-unlink-q-remove-from-linked-list">item_unlink_q</a> 使用。</p>
+<p><code>h_next</code> - <em>hash 冲突链表</em> 的指针, 在 <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a> 初始化, 被 <a href="#assoc-insert-add-to-hash-map">assoc_insert</a>, <a href="#assoc-delete-remove-from-hash-map">assoc_delete</a>, <a href="/understanding-memcached-source-code-II">多个模块 (LRU II)</a> 使用。</p>
+<p><code>time</code> - 最后访问时间, 在 <a href="#do-item-link">do_item_link</a> 中设置, 被 <a href="/understanding-memcached-source-code-VI/#lru-pull-tail">lru_pull_tail (LRU III)</a> 使用。</p>
+<p><code>exptime</code> - 超时时间（由请求参数指定）, 在 <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a> 初始化, 被 <a href="/understanding-memcached-source-code-VI/#lru-pull-tail">lru_pull_tail (LRU III)</a> 使用。</p>
+<p><code>nbytes</code> - 数据大小（由请求参数指定），在 <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a>  初始化。</p>
+<p><code>refcount</code> - 引用计数, 在 <a href="/understanding-memcached-source-code-III/#do-slabs-alloc">do_slabs_alloc (Slab III)</a> 初始化, 被 <a href="#do-item-link">do_item_link</a> 使用。</p>
+<p><code>nsuffix</code> - 在 <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a> 用 <code>item_make_header</code> 初始化。</p>
+<p><code>it_flags</code> - 在 <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a> 初始化, 被 <a href="#do-item-link">do_item_link</a>, <a href="#do-item-unlink">do_item_unlink</a> 使用。</p>
+<p><code>slabs_clsid</code> - 当前对象存在的具体的 <strong>LRU 链表</strong> , 被 <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a> 初始化, 在 <a href="#item-link-q-add-to-linked-list">item_link_q</a>, <a href="#item-unlink-q-remove-from-linked-list">item_unlink_q</a> 使用。</p>
+<p><code>nkey</code> - 键大小, 在 <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a> 中计算, 被 <a href="#assoc-delete-remove-from-hash-map">assoc_delete</a> 使用。</p>
+<h2 id="块的内存布局"><a href="#块的内存布局" class="headerlink" title="块的内存布局"></a>块的内存布局</h2><p>我们在 <a href="/understanding-memcached-source-code-II/#do-slabs-free">do_slabs_free</a> 提到过 <strong>块</strong>。这次我们直接通过数据结构来看下它的构造。</p>
+<p><img src="/gallery/item-chunk.png" alt="item chunk"></p>
+<p>下面我们来读直接操作 <strong>LRU</strong> 的相关代码。</p>
+<h1 id="do-item-link"><a href="#do-item-link" class="headerlink" title="do_item_link"></a>do_item_link</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_item_link</span><span class="params">(item *it, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123; <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">...</span><br><span class="line">    it-&gt;it_flags |= ITEM_LINKED;                <span class="comment">// scr: -------------------&gt; 2)</span></span><br><span class="line">    it-&gt;time = current_time;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: stat</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Allocate a new CAS ID on link. */</span></span><br><span class="line">... <span class="comment">// scr: cas</span></span><br><span class="line">    assoc_insert(it, hv);                       <span class="comment">// scr: -------------------&gt; 3)</span></span><br><span class="line">    item_link_q(it);                            <span class="comment">// scr: -------------------&gt; 4)</span></span><br><span class="line">    refcount_incr(&amp;it-&gt;refcount);               <span class="comment">// scr: -------------------&gt; 5)</span></span><br><span class="line">... <span class="comment">// scr: stat</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_link@item.c</text></center>
+<p>1) 正常理解， <code>hv</code> 应该就是哈希值 “hashed value” 的缩写。</p>
+<p>2) 设置 <code>it-&gt;it_flags</code> 的 <code>ITEM_LINKED</code> 标志, 然后将当前时间赋值给 <code>it-&gt;time</code>。</p>
+<p class="back"><br>The field <code>it_flags</code> is used in <a href="/understanding-memcached-source-code-II/#do-slabs-free">do_slabs_free</a> and <a href="/understanding-memcached-source-code-III/#do-slabs-alloc">do_slabs_alloc</a><br></p>
+
+<p>3) 将 <strong>对象</strong> 添加到哈系表。</p>
+<p>4) 将 <strong>对象</strong> 添加到链表。</p>
+<p>5) 递增 <em>reference count</em>。</p>
+<p class="back"><br>这个字段的初始值是 <code>1</code>，<a href="/understanding-memcached-source-code-III/#do-slabs-alloc">do_slabs_alloc</a><br></p>
+
+<p>要注意 <em>引用计数</em> 代表了有几个子模块同时在使用该资源。这个字段是决定是否回收该资源的关键参考 （在这里，<strong>对象</strong> 同时被 <strong>板</strong> 和 <strong>LRU</strong> 在使用）。我在 <a href="/cpp-pointers/">另一篇文章</a> 里详细讨论了C++里相似的机制。</p>
+<h2 id="item-link-q-添加至链表"><a href="#item-link-q-添加至链表" class="headerlink" title="item_link_q - 添加至链表"></a>item_link_q - 添加至链表</h2><a href="#" onclick="return false;" data-toggle="collapse" data-target="#item_link_q">item_link_q</a> 是主力函数 <code>do_item_link_q</code> 的线程安全的简单包装。<br><br><div id="item_link_q" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">item_link_q</span><span class="params">(item *it)</span> </span>&#123;</span><br><span class="line">    pthread_mutex_lock(&amp;lru_locks[it-&gt;slabs_clsid]);</span><br><span class="line">    do_item_link_q(it);</span><br><span class="line">    pthread_mutex_unlock(&amp;lru_locks[it-&gt;slabs_clsid]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item_link_q@item.c</text></center>
+<p></p></div><p></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_item_link_q</span><span class="params">(item *it)</span> </span>&#123; <span class="comment">/* item is the new head */</span></span><br><span class="line">    item **head, **tail;</span><br><span class="line">    assert((it-&gt;it_flags &amp; ITEM_SLABBED) == <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    head = &amp;heads[it-&gt;slabs_clsid];           <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">    tail = &amp;tails[it-&gt;slabs_clsid];</span><br><span class="line">    assert(it != *head);</span><br><span class="line">    assert((*head &amp;&amp; *tail) || (*head == <span class="number">0</span> &amp;&amp; *tail == <span class="number">0</span>));</span><br><span class="line">    it-&gt;prev = <span class="number">0</span>;                             <span class="comment">// scr: -------------------&gt; 2)</span></span><br><span class="line">    it-&gt;next = *head;</span><br><span class="line">    <span class="keyword">if</span> (it-&gt;next) it-&gt;next-&gt;prev = it;</span><br><span class="line">    *head = it;</span><br><span class="line">    <span class="keyword">if</span> (*tail == <span class="number">0</span>) *tail = it;</span><br><span class="line">    sizes[it-&gt;slabs_clsid]++;                 <span class="comment">// scr: -------------------&gt; 3)</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_link_q@item.c</text></center>
+<p>1) 从对应的 <strong>LRU 链表</strong> （由<code>slabs_clsid</code>指定）获取 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals">head</a> 和 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals">tail</a>。注意 <code>slabs_clsid</code> 是用队列类型加过盐的，所以每个 <strong>板组</strong> 可能会包含复数个列表。</p>
+<p>2) 标准动作，”添加表头项”。</p>
+<p>3) 增加全局的数组 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals">大小</a>。</p>
+<div id="globals" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> item *heads[LARGEST_ID];</span><br><span class="line"><span class="keyword">static</span> item *tails[LARGEST_ID];</span><br><span class="line">...</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> sizes[LARGEST_ID];</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item.c:59</text></center><br></div>
+
+<h2 id="assoc-insert-添加至哈希表"><a href="#assoc-insert-添加至哈希表" class="headerlink" title="assoc_insert - 添加至哈希表"></a>assoc_insert - 添加至哈希表</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">assoc_insert</span><span class="params">(item *it, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123; <span class="comment">// scr: again, hv -&gt; hash value</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> oldbucket;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: expanding related operations</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        it-&gt;h_next = primary_hashtable[hv &amp; hashmask(hashpower)]; <span class="comment">// scr:  1)</span></span><br><span class="line">        primary_hashtable[hv &amp; hashmask(hashpower)] = it;         // scr:  2)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: expanding related operations</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_insert@assoc.c</text></center>
+<p>1) 冲突处理。没冲突？将 <code>h_next</code> 直接设置为 <code>null</code>。</p>
+<p>2) 将 <strong>对象</strong> 添加到 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#primary_hashtable">primary_hashtable</a> 的桶。</p>
+<div id="primary_hashtable" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">static</span> item** primary_hashtable = <span class="number">0</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc.c:42</text></center><br></div>
+
+<p>扩容的逻辑先留个坑，<a href="/understanding-memcached-source-code-V/#Scale-up-amp-entry-migration">下篇</a> 再来讲。</p>
+<h1 id="do-item-unlink"><a href="#do-item-unlink" class="headerlink" title="do_item_unlink"></a>do_item_unlink</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">do_item_unlink</span><span class="params">(item *it, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123;</span><br><span class="line">    MEMCACHED_ITEM_UNLINK(ITEM_key(it), it-&gt;nkey, it-&gt;nbytes);</span><br><span class="line">    <span class="keyword">if</span> ((it-&gt;it_flags &amp; ITEM_LINKED) != <span class="number">0</span>) &#123;</span><br><span class="line">        it-&gt;it_flags &amp;= ~ITEM_LINKED;         <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">... <span class="comment">// scr: stat</span></span><br><span class="line">        assoc_delete(ITEM_key(it), it-&gt;nkey, hv); <span class="comment">// scr: ---------------&gt; 2)</span></span><br><span class="line">        item_unlink_q(it);                    <span class="comment">// scr: -------------------&gt; 3)</span></span><br><span class="line">        do_item_remove(it);                   <span class="comment">// scr: -------------------&gt; *)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_unlink@item.c</text></center>
+<p>1) 清除 <code>it-&gt;it_flags</code> 的 <code>ITEM_LINKED</code> 位。</p>
+<p>2) 从哈希表移除 <strong>对象</strong>。</p>
+<p>3) 从链表移除 <strong>对象</strong>。</p>
+<p>*) 实际释放 <strong>对象</strong> 的逻辑后面会讲。</p>
+<h2 id="item-unlink-q-从链表移除"><a href="#item-unlink-q-从链表移除" class="headerlink" title="item_unlink_q - 从链表移除"></a>item_unlink_q - 从链表移除</h2><p>同上，<a href="#" onclick="return false;" data-toggle="collapse" data-target="#item_unlink_q">item_unlink_q</a> 只是一个对于实调函数 <code>do_item_unlink_q</code> 线程安全的简单封装。</p>
+<div id="item_unlink_q" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">item_link_q</span><span class="params">(item *it)</span> </span>&#123;</span><br><span class="line">    pthread_mutex_lock(&amp;lru_locks[it-&gt;slabs_clsid]);</span><br><span class="line">    do_item_link_q(it);</span><br><span class="line">    pthread_mutex_unlock(&amp;lru_locks[it-&gt;slabs_clsid]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item_unlink_q@item.c</text></center><br></div>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_item_unlink_q</span><span class="params">(item *it)</span> </span>&#123;</span><br><span class="line">    item **head, **tail;</span><br><span class="line">    head = &amp;heads[it-&gt;slabs_clsid];           <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">    tail = &amp;tails[it-&gt;slabs_clsid];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (*head == it) &#123;                        <span class="comment">// scr: -------------------&gt; 2)</span></span><br><span class="line">        assert(it-&gt;prev == <span class="number">0</span>);</span><br><span class="line">        *head = it-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (*tail == it) &#123;</span><br><span class="line">        assert(it-&gt;next == <span class="number">0</span>);</span><br><span class="line">        *tail = it-&gt;prev;</span><br><span class="line">    &#125;</span><br><span class="line">    assert(it-&gt;next != it);</span><br><span class="line">    assert(it-&gt;prev != it);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (it-&gt;next) it-&gt;next-&gt;prev = it-&gt;prev;</span><br><span class="line">    <span class="keyword">if</span> (it-&gt;prev) it-&gt;prev-&gt;next = it-&gt;next;</span><br><span class="line">    sizes[it-&gt;slabs_clsid]--;                 <span class="comment">// scr: -------------------&gt; 3)</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_unlink_q@item.c</text></center>
+<p>1) 同样, 获取 由 <code>slabs_clsid</code> 指定的 <strong>LUR 链表</strong> 的 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals1">head</a> 和 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals1">tail</a>。 </p>
+<p>2) 标准的 “移除链表项” 操作。</p>
+<p>3) 减少全局的数组 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals1">大小</a>。</p>
+<div id="globals1" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> item *heads[LARGEST_ID];</span><br><span class="line"><span class="keyword">static</span> item *tails[LARGEST_ID];</span><br><span class="line">...</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> sizes[LARGEST_ID];</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item.c:59</text></center><br></div>
+
+<h2 id="assoc-delete-从哈希表移除"><a href="#assoc-delete-从哈希表移除" class="headerlink" title="assoc_delete - 从哈希表移除"></a>assoc_delete - 从哈希表移除</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> item** _hashitem_before (<span class="keyword">const</span> <span class="keyword">char</span> *key, <span class="keyword">const</span> <span class="keyword">size_t</span> nkey, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv) &#123;</span><br><span class="line">    item **pos;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> oldbucket;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: expanding related operations</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        pos = &amp;primary_hashtable[hv &amp; hashmask(hashpower)]; <span class="comment">// scr: -----&gt; 1)</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (*pos &amp;&amp; ((nkey != (*pos)-&gt;nkey) || <span class="built_in">memcmp</span>(key, ITEM_key(*pos), nkey))) &#123;</span><br><span class="line">        pos = &amp;(*pos)-&gt;h_next; <span class="comment">// scr: ----------------------------------&gt; 2)</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assoc_delete</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *key, <span class="keyword">const</span> <span class="keyword">size_t</span> nkey, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123;</span><br><span class="line">    item **before = _hashitem_before(key, nkey, hv);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (*before) &#123;</span><br><span class="line">        item *nxt;</span><br><span class="line">...</span><br><span class="line">        nxt = (*before)-&gt;h_next; <span class="comment">// scr: --------------------------------&gt; 3)</span></span><br><span class="line">        (*before)-&gt;h_next = <span class="number">0</span>;   <span class="comment">/* probably pointless, but whatever. */</span></span><br><span class="line">        *before = nxt; <span class="comment">// scr: ------------------------------------------&gt; 4)</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* Note:  we never actually get here.  the callers don't delete things</span></span><br><span class="line"><span class="comment">       they can't find. */</span></span><br><span class="line">    assert(*before != <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_delete@assoc.c</text></center>
+<p>1) 通过 <code>hv</code> 获取桶。</p>
+<p>2) 遍历冲突链表并比较 <code>key</code>。注意这里的返回值是 <strong>指定元素上一个元素的 <code>next</code> 字段的地址</strong>。而当没有冲突时，这个地址就是桶本身。</p>
+<p>3) 将找到的下一个元素赋值给 <code>nxt</code>。</p>
+<p>4) 更新 <strong>指定元素上一个元素的 <code>next</code> 字段</strong>。</p>
+<h1 id="打包带走"><a href="#打包带走" class="headerlink" title="打包带走"></a>打包带走</h1><p>试下<a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noopener">这个</a></p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://medium.com/source-code/understanding-the-memcached-source-code-lru-i-8b383c561638'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-源码分析/">Memcached 源码分析</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LRU/">LRU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码/">源码</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码分析/">源码分析</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/understanding-memcached-source-code-IX/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The Memcached Source Code-Event Driven III
+        
+      </div>
+    </a>
+  
+  
+    <a href="/cn/understanding-memcached-source-code-III/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">理解 Memcached 源码 - Slab III</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LRU-缓存"><span class="nav-number">1.</span> <span class="nav-text">LRU 缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#链表"><span class="nav-number">1.1.</span> <span class="nav-text">链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希表"><span class="nav-number">1.2.</span> <span class="nav-text">哈希表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心数据结构-item"><span class="nav-number">2.</span> <span class="nav-text">核心数据结构 - item</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用到的字段"><span class="nav-number">2.1.</span> <span class="nav-text">使用到的字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#块的内存布局"><span class="nav-number">2.2.</span> <span class="nav-text">块的内存布局</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#do-item-link"><span class="nav-number">3.</span> <span class="nav-text">do_item_link</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#item-link-q-添加至链表"><span class="nav-number">3.1.</span> <span class="nav-text">item_link_q - 添加至链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#assoc-insert-添加至哈希表"><span class="nav-number">3.2.</span> <span class="nav-text">assoc_insert - 添加至哈希表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#do-item-unlink"><span class="nav-number">4.</span> <span class="nav-text">do_item_unlink</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#item-unlink-q-从链表移除"><span class="nav-number">4.1.</span> <span class="nav-text">item_unlink_q - 从链表移除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#assoc-delete-从哈希表移除"><span class="nav-number">4.2.</span> <span class="nav-text">assoc_delete - 从哈希表移除</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#打包带走"><span class="nav-number">5.</span> <span class="nav-text">打包带走</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

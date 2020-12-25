@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="memcachedslab allocatorcache源码源码分析">
+  
+  
+  
+  
+  <meta name="description" content="Slab分配器是这个缓存系统的核心，并在很大程度上决定了核心资源 - 内存 - 的利用效率。其它的三个部分，用来淘汰（超时）对象的LRU算法；和基于libevent的事件驱动；以及用于分布数据的一致性哈希，可以看作是围绕Slab来开发的。 在其他系统，比如内核，都能看到 Slab 分配器 的身影。无论它出现在哪里，都是为了对抗同一个性能问题，内存碎片。而本文就主要讨论 Slab 分配器 在memc">
+<meta name="keywords" content="memcached,slab allocator,cache,源码,源码分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解 Memcached 源码- Slab I">
+<meta property="og:url" content="https://holmeshe.me/cn/understanding-memcached-source-code-I/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="Slab分配器是这个缓存系统的核心，并在很大程度上决定了核心资源 - 内存 - 的利用效率。其它的三个部分，用来淘汰（超时）对象的LRU算法；和基于libevent的事件驱动；以及用于分布数据的一致性哈希，可以看作是围绕Slab来开发的。 在其他系统，比如内核，都能看到 Slab 分配器 的身影。无论它出现在哪里，都是为了对抗同一个性能问题，内存碎片。而本文就主要讨论 Slab 分配器 在memc">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解 Memcached 源码- Slab I">
+<meta name="twitter:description" content="Slab分配器是这个缓存系统的核心，并在很大程度上决定了核心资源 - 内存 - 的利用效率。其它的三个部分，用来淘汰（超时）对象的LRU算法；和基于libevent的事件驱动；以及用于分布数据的一致性哈希，可以看作是围绕Slab来开发的。 在其他系统，比如内核，都能看到 Slab 分配器 的身影。无论它出现在哪里，都是为了对抗同一个性能问题，内存碎片。而本文就主要讨论 Slab 分配器 在memc">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-cn/understanding-memcached-source-code-I" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      理解 Memcached 源码- Slab I
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/cn/understanding-memcached-source-code-I/" class="article-date">
+	  <time datetime="2019-03-22T23:30:00.000Z" itemprop="datePublished">March 23, 2019</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-源码分析/">Memcached 源码分析</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Slab分配器是这个缓存系统的核心，并在很大程度上决定了核心资源 - 内存 - 的利用效率。其它的三个部分，用来淘汰（超时）对象的LRU算法；和基于libevent的事件驱动；以及用于分布数据的一致性哈希，可以看作是围绕Slab来开发的。</p>
+<p>在其他系统，比如内核，都能看到 Slab 分配器 的身影。无论它出现在哪里，都是为了对抗同一个性能问题，内存碎片。而本文就主要讨论 Slab 分配器 在memcached 中的实现（废话）。</p>
+<p><strong>memcached version: 1.4.28</strong></p>
+<p>首先我们来回答一些问题。</p>
+<a id="more"></a>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="啥是Slab"><a href="#啥是Slab" class="headerlink" title="啥是Slab"></a>啥是Slab</h2><p><strong>Slab</strong>翻译过来就是（一块）<strong>板</strong>，具体来说，它是是被预先分配好的，大小为1M的内存块。这些 <strong>板</strong> 可以被进一步分割成一些相同大小的 <strong>块</strong> (<strong>chunk</strong>)，对象就存写在每一个 <strong>块</strong> 上面。所有的 <strong>板</strong> 会根据所存储对象的大小分成 <strong>板组</strong>（<strong>slab class</strong>）。</p>
+<h2 id="刚刚提到的内存碎片是啥"><a href="#刚刚提到的内存碎片是啥" class="headerlink" title="刚刚提到的内存碎片是啥"></a>刚刚提到的内存碎片是啥</h2><p>具体来说，<strong>板分配器</strong> 解决的其实是 内在碎片 （internal memory fragmentation）。这种碎片存在于分配的内存单元的内部。拿内核来说，内存的分配单元叫页（page），所有的内存分配的请求本质上都是在页里面拿走一块，同时产生的碎片也就自然产生于每页的内部了。</p>
+<blockquote>
+<p>和内在碎片不一样，外在碎片（external memory fragmentation）则存在于分配的内存单元之间。解决外在碎片的一般做法则是用buddy，就不在本文范围内了。</p>
+</blockquote>
+<p>我们再看下制造内存碎片过程，</p>
+<p>1）malloc一堆小对象，</p>
+<p>2）随机free一些上述小对象。</p>
+<p>于是本来是整片的内存就会出现很多空洞，这些空洞，或者说碎片，因为太小而且分散，大概率永远无法被后续的malloc利用。</p>
+<h2 id="内存碎片引起的问题"><a href="#内存碎片引起的问题" class="headerlink" title="内存碎片引起的问题"></a>内存碎片引起的问题</h2><p>继续往后说。这些碎片由于不能被 malloc 使用，基本也就和 内存泄漏 差不多了。引发的具体问题也差不多 - 定期重启。</p>
+<h2 id="怎么办"><a href="#怎么办" class="headerlink" title="怎么办"></a>怎么办</h2><p><strong>板分配器</strong> 并不消除内存碎片，而是将它们收敛起来，并锁定在某个固定的内存区域。具体来说，1）将大小相近的对象分<strong>组</strong>；2）同一<strong>组</strong>的的对象只会用对应的<strong>板组</strong>（<strong>slab class</strong>）来分配内存。</p>
+<p>接下来看代码。</p>
+<p><strong>reminder: memcached version is 1.4.28</strong></p>
+<p>核心数据结构：</p>
+<a href="#" id="core_ds" style="visibility: hidden"></a>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> size;      <span class="comment">/* sizes of items */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> perslab;   <span class="comment">/* how many items per slab */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> *slots;           <span class="comment">/* list of item ptrs */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> sl_curr;   <span class="comment">/* total free items in list */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> slabs;     <span class="comment">/* how many slabs were allocated for this class */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> **slab_list;       <span class="comment">/* array of slab pointers */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> list_size; <span class="comment">/* size of prev array */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">size_t</span> requested; <span class="comment">/* The number of requested bytes */</span></span><br><span class="line">&#125; <span class="keyword">slabclass_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">slabclass_t</span> slabclass[MAX_NUMBER_OF_SLAB_CLASSES];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">slabclass_t@slabs.c</text></center>
+<h1 id="模块初始化"><a href="#模块初始化" class="headerlink" title="模块初始化"></a>模块初始化</h1><p>本节我们来看<code>slabs_init</code>，和 <code>slabclass[MAX_NUMBER_OF_SLAB_CLASSES]</code> 的初始化。 这个函数主要给 <code>slabclass_t.size ，和 slabclass_t.perslab</code> 赋值。第一个域表示 <code>Slab</code> 组 所对应的对象大小，第二个域则表示一个 <code>Slab</code> 上可以放多少个该类的对象。最后，<code>slabs_init</code> 是在系统初始化的过程被调用（如以下代码），</p>
+<div id="snippet1" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    assoc_init(settings.hashpower_init);</span><br><span class="line">    conn_init();</span><br><span class="line">    slabs_init(settings.maxbytes, settings.factor, preallocate,</span><br><span class="line">               use_slab_sizes ? slab_sizes : <span class="literal">NULL</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5977</text></center><br></div>
+
+<p>在这个阶段，<a href="#" onclick="return false;" data-toggle="collapse" data-target="#slab_sizes">slab_sizes</a> 和 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#settings_factor">settings.factor</a> 共同决定了后续逻辑的走向，并且确定各个 <strong>板组</strong> 所存储的对象大小，</p>
+<div id="slab_sizes" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">uint32_t</span> slab_sizes[MAX_NUMBER_OF_SLAB_CLASSES];</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5372</text></center><br></div>
+
+<div id="settings_factor" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">settings.factor = <span class="number">1.25</span>;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">settings_init@memcached.c:217</text></center><br></div>
+
+<p>如果 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#slab_sizes">slab_sizes</a> 不是 <code>NULL</code>, 用此数组的里面的值直接初始化各 <strong>板组</strong> 所对应的对象大小（支线a）；</p>
+<p>反之，则用base size×n×settings.factor 来初始化上述的目标。这里 n 是 slabclass 的下标（支线b）。</p>
+<p>除了写死的默认值，上述两个变量也能用 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#snippet2">命令行参数赋值</a> 。</p>
+<div id="snippet2" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'f'</span>:</span><br><span class="line">            settings.factor = atof(optarg);</span><br><span class="line">            <span class="keyword">if</span> (settings.factor &lt;= <span class="number">1.0</span>) &#123;</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Factor must be greater than 1\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">...</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'o'</span>: <span class="comment">/* It's sub-opts time! */</span></span><br><span class="line">...</span><br><span class="line">            <span class="keyword">case</span> SLAB_SIZES:</span><br><span class="line">                <span class="keyword">if</span> (_parse_slab_sizes(subopts_value, slab_sizes)) &#123;</span><br><span class="line">                    use_slab_sizes = <span class="literal">true</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5558, 5810</text></center><br></div>
+
+<p>本函数的另外两个参数 <code>settings.maxbytes</code> 和 <code>preallocate</code> ，会在 <a href="../understanding-memcached-source-code-II">后续</a> 讨论。这里我们假设 <code>preallocate</code> 为 <code>false</code>，并忽略其对应的逻辑。</p>
+<p>下面我们来看 <code>slabs_init</code> 本身。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">slabs_init</span><span class="params">(<span class="keyword">const</span> <span class="keyword">size_t</span> limit, <span class="keyword">const</span> <span class="keyword">double</span> factor, <span class="keyword">const</span> <span class="keyword">bool</span> prealloc, <span class="keyword">const</span> <span class="keyword">uint32_t</span> *slab_sizes)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = POWER_SMALLEST <span class="comment">/* scr: 1 */</span> - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> size = <span class="keyword">sizeof</span>(item) + settings.chunk_size; <span class="comment">// scr: ---------&gt; b 1)</span></span><br><span class="line">...</span><br><span class="line">    <span class="built_in">memset</span>(slabclass, <span class="number">0</span>, <span class="keyword">sizeof</span>(slabclass));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (++i &lt; MAX_NUMBER_OF_SLAB_CLASSES<span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (slab_sizes != <span class="literal">NULL</span>) &#123; <span class="comment">// scr: -----------------------------------&gt; a 1)</span></span><br><span class="line">            <span class="keyword">if</span> (slab_sizes[i<span class="number">-1</span>] == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            size = slab_sizes[i<span class="number">-1</span>];</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (size &gt;= settings.item_size_max / factor) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/* Make sure items are always n-byte aligned */</span></span><br><span class="line">        <span class="keyword">if</span> (size % CHUNK_ALIGN_BYTES) <span class="comment">// scr: ---------------------------------&gt; 2)</span></span><br><span class="line">            size += CHUNK_ALIGN_BYTES - (size % CHUNK_ALIGN_BYTES);</span><br><span class="line"></span><br><span class="line">        slabclass[i].size = size;</span><br><span class="line">        slabclass[i].perslab = settings.item_size_max / slabclass[i].size; <span class="comment">// -&gt; 3)</span></span><br><span class="line">        <span class="keyword">if</span> (slab_sizes == <span class="literal">NULL</span>)</span><br><span class="line">            size *= factor; <span class="comment">// scr: -----------------------------------------&gt; b 4)</span></span><br><span class="line">        <span class="keyword">if</span> (settings.verbose &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"slab class %3d: chunk size %9u perslab %7u\n"</span>,</span><br><span class="line">                    i, slabclass[i].size, slabclass[i].perslab);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// scr: -------------------------------------------------------------------&gt; 5)</span></span><br><span class="line">    power_largest = i;</span><br><span class="line">    slabclass[power_largest].size = settings.item_size_max;</span><br><span class="line">    slabclass[power_largest].perslab = <span class="number">1</span>;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">slabs_init@slabs.c</text></center>
+<h2 id="支线-a"><a href="#支线-a" class="headerlink" title="支线 a"></a>支线 a</h2><p>1) 使用 <code>slab_sizes</code> 里面的值；</p>
+<p>2) 将 <code>size</code> 用 <code>CHUNK_ALIGN_BYTES</code> 对其，并赋值给 <code>slabclass[i].size</code>；</p>
+<p>3) 计算 <code>slabclass[i].perslab</code>;</p>
+<p>5) 用 <code>settings.item_size_max</code> 初始化最后一个 <strong>板组</strong>。</p>
+<p>这里要注意 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#settings_item_size_max">settings.item_size_max</a> 是 <strong>slab</strong> 本身的大小，也即是 <strong>memcached</strong> 能存的最大对象。类似的，<a href="#" onclick="return false;" data-toggle="collapse" data-target="#settings_item_size_max">settings.item_size_max</a> 也可以在 <a href="#" onclick="return false;" data-toggle="collapse" data-target="#snippet3">运行时</a> 确定</p>
+<div id="settings_item_size_max" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">settings.item_size_max = <span class="number">1024</span> * <span class="number">1024</span>;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">settings_init@memcached.c:226</text></center><br></div>
+
+<div id="snippet3" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="string">'I'</span>:</span><br><span class="line">    buf = strdup(optarg);</span><br><span class="line">    unit = buf[<span class="built_in">strlen</span>(buf)<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">if</span> (unit == <span class="string">'k'</span> || unit == <span class="string">'m'</span> ||</span><br><span class="line">        unit == <span class="string">'K'</span> || unit == <span class="string">'M'</span>) &#123;</span><br><span class="line">        buf[<span class="built_in">strlen</span>(buf)<span class="number">-1</span>] = <span class="string">'\0'</span>;</span><br><span class="line">        size_max = atoi(buf);</span><br><span class="line">        <span class="keyword">if</span> (unit == <span class="string">'k'</span> || unit == <span class="string">'K'</span>)</span><br><span class="line">            size_max *= <span class="number">1024</span>;</span><br><span class="line">        <span class="keyword">if</span> (unit == <span class="string">'m'</span> || unit == <span class="string">'M'</span>)</span><br><span class="line">            size_max *= <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">        settings.item_size_max = size_max;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        settings.item_size_max = atoi(buf);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(buf);</span><br><span class="line">    <span class="keyword">if</span> (settings.item_size_max &lt; <span class="number">1024</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Item max size cannot be less than 1024 bytes.\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (settings.item_size_max &gt; <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">128</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Cannot set item size limit higher than 128 mb.\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (settings.item_size_max &gt; <span class="number">1024</span> * <span class="number">1024</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"WARNING: Setting item max size above 1MB is not"</span></span><br><span class="line">            <span class="string">" recommended!\n"</span></span><br><span class="line">            <span class="string">" Raising this limit increases the minimum memory requirements\n"</span></span><br><span class="line">            <span class="string">" and will decrease your memory efficiency.\n"</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5626</text></center><br></div>
+
+<h2 id="支线-b"><a href="#支线-b" class="headerlink" title="支线 b"></a>支线 b</h2><p>1) 用 <code>settings.chunk_size</code> 加上给每个对象附着的元数据（meta data）来计算基础大小（对象 <code>item</code> 会在后面讨论）；</p>
+<p>2) 将 <code>size</code> 用 <code>CHUNK_ALIGN_BYTES</code> 对其，并赋值给 <code>slabclass[i].size</code>（同支线a）；</p>
+<p>3) 计算 <code>slabclass[i].perslab</code>（同支线a）；</p>
+<p>4) 用 <code>factor(settings.factor)</code> 计算下一个 <strong>板组</strong> 的大小；</p>
+<p>5) 用 <code>settings.item_size_max</code> 初始化最后一个 <strong>板组</strong>。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://github.com/memcached/memcached/wiki" target="_blank" rel="noopener">memcached wiki</a></p>
+<p><a href="http://gihyo.jp/dev/feature/01/memcached/0002" target="_blank" rel="noopener">第2回　memcachedのメモリストレージを理解する</a></p>
+<p><a href="https://blog.csdn.net/initphp/article/details/44888555" target="_blank" rel="noopener">Memcached源码分析之存储机制Slabs（7）</a></p>
+<p><a href="https://gokulvasanblog.wordpress.com/2016/07/11/understanding-malloc-part1/" target="_blank" rel="noopener">Understanding Malloc</a></p>
+<p><a href="https://www.kernel.org/doc/gorman/html/understand/understand011.html" target="_blank" rel="noopener">Ch8 - Slab Allocator</a></p>
+<p><a href="https://www.usenix.org/legacy/publications/library/proceedings/bos94/full_papers/bonwick.a" target="_blank" rel="noopener">The Slab Allocator:An Object-Caching Kernel Memory Allocator</a></p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://medium.com/source-code/understanding-the-memcached-source-code-slab-i-9199de613762'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-源码分析/">Memcached 源码分析</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/slab-allocator/">slab allocator</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码/">源码</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码分析/">源码分析</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/cn/understanding-memcached-source-code-II/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          理解 Memcached 源码- Slab II
+        
+      </div>
+    </a>
+  
+  
+    <a href="/understanding-memcached-source-code-VIII/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Understanding The Memcached Source Code-Event Driven II</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#啥是Slab"><span class="nav-number">1.1.</span> <span class="nav-text">啥是Slab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刚刚提到的内存碎片是啥"><span class="nav-number">1.2.</span> <span class="nav-text">刚刚提到的内存碎片是啥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存碎片引起的问题"><span class="nav-number">1.3.</span> <span class="nav-text">内存碎片引起的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么办"><span class="nav-number">1.4.</span> <span class="nav-text">怎么办</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模块初始化"><span class="nav-number">2.</span> <span class="nav-text">模块初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#支线-a"><span class="nav-number">2.1.</span> <span class="nav-text">支线 a</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支线-b"><span class="nav-number">2.2.</span> <span class="nav-text">支线 b</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引用"><span class="nav-number">3.</span> <span class="nav-text">引用</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

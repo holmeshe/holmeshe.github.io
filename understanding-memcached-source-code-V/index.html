@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="memcachedcacheLRUhash map">
+  
+  
+  
+  
+  <meta name="description" content="More often than not, the LRU algorithm is combined with a hash map, and is referred to as a LRU cache. In a LRU-cache, the hash map enables fast accessing of cached objects; and LRU avoids the cache t">
+<meta name="keywords" content="memcached,cache,LRU,hash map">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding The Memcached Source Code - LRU II">
+<meta property="og:url" content="https://holmeshe.me/understanding-memcached-source-code-V/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="More often than not, the LRU algorithm is combined with a hash map, and is referred to as a LRU cache. In a LRU-cache, the hash map enables fast accessing of cached objects; and LRU avoids the cache t">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://holmeshe.me/gallery/spade.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/heart.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/club.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/diamond.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/expanding.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding The Memcached Source Code - LRU II">
+<meta name="twitter:description" content="More often than not, the LRU algorithm is combined with a hash map, and is referred to as a LRU cache. In a LRU-cache, the hash map enables fast accessing of cached objects; and LRU avoids the cache t">
+<meta name="twitter:image" content="https://holmeshe.me/gallery/spade.svg">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-understanding-memcached-source-code-V" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Understanding The Memcached Source Code - LRU II
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-V/" class="article-date">
+	  <time datetime="2018-12-17T22:00:00.000Z" itemprop="datePublished">December 18, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="/understanding-memcached-source-code-I/" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/spade.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">slab allocator (I, </text></a> <a href="/understanding-memcached-source-code-II/"><text style="color:black;font-weight:bold;">II, </text></a> <a href="/understanding-memcached-source-code-III/"><text style="color:black;font-weight:bold;">III)</text></a> is the core module of the cache system, which largely determines how efficient the bottleneck resource, memory, can be utilized. The other 3 parts, namely,</p>
+<p><a href="/understanding-memcached-source-code-IV/" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/heart.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">LRU algorithm (I</text></a> <a href="#"><text style="color:black;font-weight:bold;">, II - this article</text></a> <a href="/understanding-memcached-source-code-VI/"><text style="color:black;font-weight:bold;">, III)</text></a> for entry expiration; and an</p>
+<p><a href="/understanding-memcached-source-code-VII/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/club.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">event driven model (I</text></a> <a href="/understanding-memcached-source-code-VIII/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-IX/"><text style="color:black;font-weight:bold;">, III)</text></a> based on libevent; and the</p>
+<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/diamond.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">consistent harsh (not complete)</text></a> for data distribution,</p>
+<p>are built around it.</p>
+<p>More often than not, the <strong>LRU</strong> algorithm is combined with a <strong>hash map</strong>, and is referred to as a LRU cache. </p>
+<p>In a <strong>LRU-cache</strong>, the <strong>hash map</strong> enables fast accessing of <em>cached</em> objects; and <strong>LRU</strong> avoids the <em>cache</em> to grow infinitely by marking expired, or so called, <strong>least recently used</strong> objects. This time we examine the <strong>memcached</strong>‘s implementation of <strong>hash map</strong>.</p>
+<a id="more"></a>
+<h1 id="Overview-textbook-overlapped-skip"><a href="#Overview-textbook-overlapped-skip" class="headerlink" title="Overview (textbook overlapped, skip)"></a>Overview (textbook overlapped, <a href="#Module-initialization">skip</a>)</h1><p><strong>Hash map</strong> is basically a <em>fixed-sized</em> array that indexes <em>value</em>s with integers <strong>hashed</strong> from <em>key</em>s. In <strong>hash map</strong> an array entry is referred to as a <em>bucket</em>. If the <strong>hash value</strong> exceeds the number of buckets (i.e., array size), it <em>rolls over</em> using ‘mod’ (<code>%</code>). <em>Collision</em> occurs when more than two <em>key</em>s result in the same <strong>hash value</strong> or different <strong>hash value</strong>s roll over to the same bucket, then a *linked list is formed on the bucket in collision.</p>
+<p><em>Collision</em> slows down lookups speed for the sequential access of <em>linked list</em>, hence it is required to increase the <em>bucket number</em>, and to <em>rehash</em> entries using the new <strong>bucket number</strong> before the performance goes too bad. This process will be discussed <a href="#Scale-up-amp-entry-migration">soon</a>.</p>
+<h1 id="Module-initialization"><a href="#Module-initialization" class="headerlink" title="Module initialization"></a>Module initialization</h1><p>The first relevant method is</p>
+<h2 id="hash-init"><a href="#hash-init" class="headerlink" title="hash_init"></a>hash_init</h2><p>which simply determines the hash algorithm type.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hash_init</span><span class="params">(<span class="keyword">enum</span> hashfunc_type type)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span>(type) &#123;</span><br><span class="line">        <span class="keyword">case</span> JENKINS_HASH:</span><br><span class="line">            hash = jenkins_hash;</span><br><span class="line">            settings.hash_algorithm = <span class="string">"jenkins"</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> MURMUR3_HASH:</span><br><span class="line">            hash = MurmurHash3_x86_32;</span><br><span class="line">            settings.hash_algorithm = <span class="string">"murmur3"</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">hash_init@hash.c</text></center>
+<p>This method is called from <a href="#" onclick="return false;" data-toggle="collapse" data-target="#snippet1">here</a> as one of the init steps before the logic enters the main event loop.</p>
+<div id="snippet1" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    <span class="keyword">if</span> (hash_init(hash_type) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Failed to initialize hash_algorithm!\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(EX_USAGE);</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5849</text></center><br></div>
+
+<p>The parameter <code>hash_type</code> is set to <code>MURMUR3_HASH</code> by the mentioned command-line argument <a href="#" onclick="return false;" data-toggle="collapse" data-target="#snippet2">modern</a>.</p>
+<div id="snippet2" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">            <span class="keyword">case</span> MODERN:</span><br><span class="line">                <span class="comment">/* Modernized defaults. Need to add equivalent no_* flags</span></span><br><span class="line"><span class="comment">                 * before making truly default. */</span></span><br><span class="line">...</span><br><span class="line">                hash_type = MURMUR3_HASH;</span><br><span class="line">...</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5849</text></center><br></div>
+
+<p>The second method</p>
+<h2 id="assoc-init"><a href="#assoc-init" class="headerlink" title="assoc_init"></a>assoc_init</h2><p>allocates the fixed sized array mentioned in the beginning.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assoc_init</span><span class="params">(<span class="keyword">const</span> <span class="keyword">int</span> hashtable_init)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hashtable_init) &#123;</span><br><span class="line">        hashpower = hashtable_init;</span><br><span class="line">    &#125;</span><br><span class="line">    primary_hashtable = <span class="built_in">calloc</span>(hashsize(hashpower), <span class="keyword">sizeof</span>(<span class="keyword">void</span> *));</span><br><span class="line">    <span class="keyword">if</span> (! primary_hashtable) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Failed to init hashtable.\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line">...<span class="comment">// scr: stat</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">hash_init@hash.c</text></center>
+<p>This method is called in a similar <a href="#" onclick="return false;" data-toggle="collapse" data-target="#snippet3">location</a> as <code>hash_init</code> as part of the system bootstrap process.</p>
+<div id="snippet3" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    assoc_init(settings.hashpower_init);</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5976</text></center><br></div>
+
+<p>And the actual initial size is determined by the command-line argument <a href="#" onclick="return false;" data-toggle="collapse" data-target="#snippet4">hashpower</a>.</p>
+<div id="snippet4" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">case</span> HASHPOWER_INIT:</span><br><span class="line">    <span class="keyword">if</span> (subopts_value == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Missing numeric argument for hashpower\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    settings.hashpower_init = atoi(subopts_value);</span><br><span class="line">    <span class="keyword">if</span> (settings.hashpower_init &lt; <span class="number">12</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Initial hashtable multiplier of %d is too low\n"</span>,</span><br><span class="line">            settings.hashpower_init);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (settings.hashpower_init &gt; <span class="number">64</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Initial hashtable multiplier of %d is too high\n"</span></span><br><span class="line">            <span class="string">"Choose a value based on \"STAT hash_power_level\" from a running instance\n"</span>,</span><br><span class="line">            settings.hashpower_init);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5677</text></center><br></div>
+
+<p>As said before, the array can be replaced with a newly allocated larger one if the performance drops due to excessive <em>collision</em>. Next we discuss the process of</p>
+<h1 id="Scale-up-amp-entry-migration"><a href="#Scale-up-amp-entry-migration" class="headerlink" title="Scale up &amp; entry migration"></a>Scale up &amp; entry migration</h1><p>In <strong>memcached</strong>, the threshold is 1.5, meaning, if the <strong>item</strong>s number exceeds 1.5 * <strong>bucket number</strong>, the mentioned expanding process starts.</p>
+<p><img src="/gallery/expanding.png" alt="Expand hash map"></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    <span class="keyword">if</span> (! expanding &amp;&amp; hash_items &gt; (hashsize(hashpower) * <span class="number">3</span>) / <span class="number">2</span>) &#123;</span><br><span class="line">        assoc_start_expand();</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_insert@assoc.c:173</text></center>
+<p>The <code>assoc_start_expand</code> simply set a flag (i.e., <code>do_run_maintenance_thread</code>), and send a signal to awake a maintenance thread that does the actual job.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">assoc_start_expand</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (started_expanding)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    started_expanding = <span class="literal">true</span>;</span><br><span class="line">    pthread_cond_signal(&amp;maintenance_cond);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_insert@assoc.c:173</text></center>
+<h2 id="Maintenance-thread-main-loop"><a href="#Maintenance-thread-main-loop" class="headerlink" title="Maintenance thread main loop"></a>Maintenance thread main loop</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> *<span class="title">assoc_maintenance_thread</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  mutex_lock(&amp;maintenance_lock);</span><br><span class="line">  <span class="keyword">while</span> (do_run_maintenance_thread<span class="comment">/* scr: the flag*/</span>) &#123;</span><br><span class="line">    <span class="keyword">int</span> ii = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* There is only one expansion thread, so no need to global lock. */</span></span><br><span class="line">    <span class="keyword">for</span> (ii = <span class="number">0</span>; ii &lt; hash_bulk_move &amp;&amp; expanding; ++ii) &#123; <span class="comment">// scr: ----&gt; 2)</span></span><br><span class="line">      item *it, *next;</span><br><span class="line">      <span class="keyword">int</span> bucket;</span><br><span class="line">      <span class="keyword">void</span> *item_lock = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* bucket = hv &amp; hashmask(hashpower) =&gt;the bucket of hash table</span></span><br><span class="line"><span class="comment">       * is the lowest N bits of the hv, and the bucket of item_locks is</span></span><br><span class="line"><span class="comment">       *  also the lowest M bits of hv, and N is greater than M.</span></span><br><span class="line"><span class="comment">       *  So we can process expanding with only one item_lock. cool! */</span></span><br><span class="line">      <span class="keyword">if</span> ((item_lock = item_trylock(expand_bucket))) &#123; <span class="comment">// scr: --------&gt; 3)</span></span><br><span class="line">        <span class="keyword">for</span> (it = old_hashtable[expand_bucket]; <span class="literal">NULL</span> != it; it = next) &#123;</span><br><span class="line">          next = it-&gt;h_next; <span class="comment">// scr: ----------------------------------&gt; 4)</span></span><br><span class="line">          bucket = hash(ITEM_key(it), it-&gt;nkey) &amp; hashmask(hashpower);</span><br><span class="line">          it-&gt;h_next = primary_hashtable[bucket];</span><br><span class="line">          primary_hashtable[bucket] = it;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        old_hashtable[expand_bucket] = <span class="literal">NULL</span>; <span class="comment">// scr: ----------------&gt; 4.1)</span></span><br><span class="line"></span><br><span class="line">        expand_bucket++; <span class="comment">// scr: --------------------------------------&gt; 5)</span></span><br><span class="line">        <span class="keyword">if</span> (expand_bucket == hashsize(hashpower - <span class="number">1</span>)) &#123; <span class="comment">// scr: -------&gt; 6)</span></span><br><span class="line">          expanding = <span class="literal">false</span>;</span><br><span class="line">          <span class="built_in">free</span>(old_hashtable);</span><br><span class="line">... <span class="comment">// scr: ---------------------------------------------------&gt; stat &amp; log</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        usleep(<span class="number">10</span>*<span class="number">1000</span>); <span class="comment">// scr: ------------------------------------&gt; 3.1)</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (item_lock) &#123; <span class="comment">// scr: --------------------------------------&gt; 3.2)</span></span><br><span class="line">        item_trylock_unlock(item_lock);</span><br><span class="line">        item_lock = <span class="literal">NULL</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!expanding) &#123;</span><br><span class="line">      <span class="comment">/* We are done expanding.. just wait for next invocation */</span></span><br><span class="line">      started_expanding = <span class="literal">false</span>;</span><br><span class="line">      pthread_cond_wait(&amp;maintenance_cond, &amp;maintenance_lock); <span class="comment">// scr: &gt; 0)</span></span><br><span class="line">      <span class="comment">/* assoc_expand() swaps out the hash table entirely, so we need</span></span><br><span class="line"><span class="comment">       * all threads to not hold any references related to the hash</span></span><br><span class="line"><span class="comment">       * table while this happens.</span></span><br><span class="line"><span class="comment">       * This is instead of a more complex, possibly slower algorithm to</span></span><br><span class="line"><span class="comment">       * allow dynamic hash table expansion without causing significant</span></span><br><span class="line"><span class="comment">       * wait times.</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line">      pause_threads(PAUSE_ALL_THREADS);</span><br><span class="line">      assoc_expand(); <span class="comment">// scr: -----------------------------------------&gt; 1)</span></span><br><span class="line">      pause_threads(RESUME_ALL_THREADS);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_maintenance_thread@assoc.c</text></center>
+<p>0) This is where the thread waits up from sleep and start working, and goes to sleep when there is nothing to be done.</p>
+<p>1) <a href="#" onclick="return false;" data-toggle="collapse" data-target="#assoc_expand">assoc_expand</a> allocates the resource for the new <strong>hash map</strong> which is meant to replace the old one initialized from <a href="#assoc-init">here</a>.</p>
+<div id="assoc_expand" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* grows the hashtable to the next power of 2. */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">assoc_expand</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    old_hashtable = primary_hashtable;</span><br><span class="line"></span><br><span class="line">    primary_hashtable = <span class="built_in">calloc</span>(hashsize(hashpower + <span class="number">1</span>), <span class="keyword">sizeof</span>(<span class="keyword">void</span> *));</span><br><span class="line">    <span class="keyword">if</span> (primary_hashtable) &#123;</span><br><span class="line">... <span class="comment">// scr: log</span></span><br><span class="line">        hashpower++;</span><br><span class="line">        expanding = <span class="literal">true</span>;</span><br><span class="line">        expand_bucket = <span class="number">0</span>;</span><br><span class="line">... <span class="comment">// scr: stat</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        primary_hashtable = old_hashtable;</span><br><span class="line">        <span class="comment">/* Bad news, but we can keep running. */</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_expand@assoc.c</text></center><br></div>
+
+<p>2) Only migrate a certain number of <strong>item</strong>s in one batch. <a href="#" onclick="return false;" data-toggle="collapse" data-target="#hash_bulk_move">hash_bulk_move</a> avoids the thread hanging around too long when <a href="#" onclick="return false;" data-toggle="collapse" data-target="#stop_assoc_maintenance_thread">stop_assoc_maintenance_thread</a> is called. In contrast to the discussed <code>assoc_start_expand</code>, <a href="#" onclick="return false;" data-toggle="collapse" data-target="#stop_assoc_maintenance_thread">stop_assoc_maintenance_thread</a> reset the flag <code>do_run_maintenance_thread</code> and send the signal to wake up the thread to exit.</p>
+<div id="hash_bulk_move" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEFAULT_HASH_BULK_MOVE 1</span></span><br><span class="line"><span class="keyword">int</span> hash_bulk_move = DEFAULT_HASH_BULK_MOVE;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc.c:207</text></center><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    <span class="keyword">char</span> *env = getenv(<span class="string">"MEMCACHED_HASH_BULK_MOVE"</span>);</span><br><span class="line">    <span class="keyword">if</span> (env != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        hash_bulk_move = atoi(env);</span><br><span class="line">        <span class="keyword">if</span> (hash_bulk_move == <span class="number">0</span>) &#123;</span><br><span class="line">            hash_bulk_move = DEFAULT_HASH_BULK_MOVE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">start_assoc_maintenance_thread@assoc.c:281</text></center><br></div>
+
+<div id="stop_assoc_maintenance_thread" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop_assoc_maintenance_thread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mutex_lock(&amp;maintenance_lock);</span><br><span class="line">    do_run_maintenance_thread = <span class="number">0</span>;</span><br><span class="line">    pthread_cond_signal(&amp;maintenance_cond);</span><br><span class="line">    mutex_unlock(&amp;maintenance_lock);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Wait for the maintenance thread to stop */</span></span><br><span class="line">    pthread_join(maintenance_tid, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">stop_assoc_maintenance_thread@assoc.c</text></center><br></div>
+
+<p>3) (The “item lock” actually works on the whole <em>bucket</em> hence I will call it <em>bucket lock</em> instead) Use low priority <a href="#" onclick="return false;" data-toggle="collapse" data-target="#item_trylock">item_trylock</a> (<code>i.e., pthread_mutex_trylock</code>) to access the <em>bucket lock</em>; 3.1) sleep for 10 sec when the the <strong>item</strong> is not available; and 3.2) release the lock using <a href="#" onclick="return false;" data-toggle="collapse" data-target="#item_trylock_unlock">item_trylock_unlock</a> when the migration (of this <em>bucket</em>) completes.</p>
+<div id="item_trylock" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">item_trylock</span><span class="params">(<span class="keyword">uint32_t</span> hv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">pthread_mutex_t</span> *lock = &amp;item_locks[hv &amp; hashmask(item_lock_hashpower)];</span><br><span class="line">    <span class="keyword">if</span> (pthread_mutex_trylock(lock) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> lock;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item_trylock@thread.c</text></center><br></div>
+
+<div id="item_trylock_unlock" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">item_trylock_unlock</span><span class="params">(<span class="keyword">void</span> *lock)</span> </span>&#123;</span><br><span class="line">    mutex_unlock((<span class="keyword">pthread_mutex_t</span> *) lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item_trylock@thread.c</text></center><br></div>
+
+<p>4) Rehash all the <strong>item</strong>s in the bucket, and migrate them to the new hash map.</p>
+<p>5) Move on to the next <em>bucket</em>.</p>
+<p>6) Last <em>bucket</em> reached -&gt; go to 0)</p>
+<h2 id="Maintenance-thread-start"><a href="#Maintenance-thread-start" class="headerlink" title="Maintenance thread start"></a>Maintenance thread start</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">start_assoc_maintenance_thread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line">    <span class="keyword">char</span> *env = getenv(<span class="string">"MEMCACHED_HASH_BULK_MOVE"</span>);</span><br><span class="line">    <span class="keyword">if</span> (env != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        hash_bulk_move = atoi(env);</span><br><span class="line">        <span class="keyword">if</span> (hash_bulk_move == <span class="number">0</span>) &#123;</span><br><span class="line">            hash_bulk_move = DEFAULT_HASH_BULK_MOVE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    pthread_mutex_init(&amp;maintenance_lock, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> ((ret = pthread_create(&amp;maintenance_tid, <span class="literal">NULL</span>,</span><br><span class="line">                              assoc_maintenance_thread, <span class="literal">NULL</span>)) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Can't create thread: %s\n"</span>, strerror(ret));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">start_assoc_maintenance_thread@assoc.c</text></center>
+<p>Similar to initialization <a href="#Module-initialization">methods</a>, it is called during system <a href="#" onclick="return false;" data-toggle="collapse" data-target="#snippet5">bootstrap</a>. </p>
+<div id="snippet5" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (start_assoc_maintenance_thread() == <span class="number">-1</span>) &#123;</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5992</text></center><br></div>
+
+<h2 id="Maintenance-thread-stop"><a href="#Maintenance-thread-stop" class="headerlink" title="Maintenance thread stop"></a>Maintenance thread stop</h2><p>This method is called in system <a href="#" onclick="return false;" data-toggle="collapse" data-target="#snippet6">shutdown</a> process, hence it is opposite in logic to <code>start_assoc_maintenance_thread</code>. Nevertheless, the operations of this method are opposite that of <code>assoc_start_expand</code> mechanism wise.</p>
+<div id="snippet6" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    stop_assoc_maintenance_thread();</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:6098</text></center><br></div>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop_assoc_maintenance_thread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mutex_lock(&amp;maintenance_lock);</span><br><span class="line">    do_run_maintenance_thread = <span class="number">0</span>;</span><br><span class="line">    pthread_cond_signal(&amp;maintenance_cond);</span><br><span class="line">    mutex_unlock(&amp;maintenance_lock);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Wait for the maintenance thread to stop */</span></span><br><span class="line">    pthread_join(maintenance_tid, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">stop_assoc_maintenance_thread@assoc.c</text></center>
+<p>As said before, the expanding &amp; migration process discussed here has an impact on the logic of all <strong>hash map</strong> related operations. In the next section, we look at these operations.</p>
+<h1 id="CRUD"><a href="#CRUD" class="headerlink" title="CRUD"></a>CRUD</h1><p>N.b., <code>assoc_delete</code> has been discussed in the <a href="/understanding-memcached-source-code-IV/#assoc-delete-remove-from-hash-map">last post</a>; and in a key-value system <em>update</em> and <em>insert</em> are essentially the same, thus, this section will discuss the operations of <em>C</em> (create) and <em>R</em> (read) only.</p>
+<h2 id="assoc-insert"><a href="#assoc-insert" class="headerlink" title="assoc_insert"></a>assoc_insert</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">assoc_insert</span><span class="params">(item *it, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> oldbucket;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (expanding &amp;&amp;</span><br><span class="line">        (oldbucket = (hv &amp; hashmask(hashpower - <span class="number">1</span>))) &gt;= expand_bucket)</span><br><span class="line">    &#123;</span><br><span class="line">        it-&gt;h_next = old_hashtable[oldbucket]; <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">        old_hashtable[oldbucket] = it;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        it-&gt;h_next = primary_hashtable[hv &amp; hashmask(hashpower)]; <span class="comment">// scr: &gt; 2)</span></span><br><span class="line">        primary_hashtable[hv &amp; hashmask(hashpower)] = it;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pthread_mutex_lock(&amp;hash_items_counter_lock);</span><br><span class="line">    hash_items++; <span class="comment">// scr: ------------------------------------------------&gt; 3)</span></span><br><span class="line">    <span class="keyword">if</span> (! expanding &amp;&amp; hash_items &gt; (hashsize(hashpower) * <span class="number">3</span>) / <span class="number">2</span>) &#123;</span><br><span class="line">        assoc_start_expand();</span><br><span class="line">    &#125;</span><br><span class="line">    pthread_mutex_unlock(&amp;hash_items_counter_lock);</span><br><span class="line"></span><br><span class="line">    MEMCACHED_ASSOC_INSERT(ITEM_key(it), it-&gt;nkey, hash_items);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_insert@assoc.c</text></center>
+<p>1) If expanding process is undergoing and the <em>hash key</em> associated bucket has not been migrated, insert the item to <code>old_hashtable</code>. Note that here we use the old <em>bucket number</em> (i.e., <code>hashmask(hashpower - 1))</code>) to calculate the hash index.</p>
+<p>2) Otherwise, insert the <strong>item</strong>to <code>primary_hashtable</code> directly.</p>
+<p>3) Increase the global variable <a href="#" onclick="return false;" data-toggle="collapse" data-target="#hash_items">hash_items</a> (number of <strong>item</strong>s). If it exceeds the threshold after the <strong>item</strong> is added, start expanding &amp; migration process. Note that this is also the preamble of <a href="#Scale-up-amp-entry-migration">the last section</a>.</p>
+<div id="hash_items" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> hash_items = <span class="number">0</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc.c:51</text></center><br></div>
+
+<h2 id="assoc-find"><a href="#assoc-find" class="headerlink" title="assoc_find"></a>assoc_find</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function">item *<span class="title">assoc_find</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *key, <span class="keyword">const</span> <span class="keyword">size_t</span> nkey, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123;</span><br><span class="line">    item *it;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> oldbucket;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (expanding &amp;&amp;</span><br><span class="line">        (oldbucket = (hv &amp; hashmask(hashpower - <span class="number">1</span>))) &gt;= expand_bucket)</span><br><span class="line">    &#123;</span><br><span class="line">        it = old_hashtable[oldbucket]; <span class="comment">// scr: ---------------------------&gt; 1)</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        it = primary_hashtable[hv &amp; hashmask(hashpower)]; <span class="comment">// scr: --------&gt; 2)</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    item *ret = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> depth = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (it) &#123; <span class="comment">// scr: -------------------------------------------------&gt; 3)</span></span><br><span class="line">        <span class="keyword">if</span> ((nkey == it-&gt;nkey) &amp;&amp; (<span class="built_in">memcmp</span>(key, ITEM_key(it), nkey) == <span class="number">0</span>)) &#123;</span><br><span class="line">            ret = it;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        it = it-&gt;h_next;</span><br><span class="line">        ++depth;</span><br><span class="line">    &#125;</span><br><span class="line">    MEMCACHED_ASSOC_FIND(key, nkey, depth);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_find@assoc.c</text></center>
+<p>1) Similar to that of <a href="#assoc-insert">assoc_insert</a>, this step locates the bucket from <code>old_hashtable</code> when the key is yet to be rehashed.</p>
+<p>2) Use <code>primary_hashtable</code> directly otherwise.</p>
+<p>3) Go through the <em>linked list</em> and compare the <em>key</em> (instead of the <em>hash index</em>) directly to lookup the <strong>item</strong> in the case of <em>Collision</em>.</p>
+<p>One thing worth noting is that <code>assoc_find</code> is very similar to <code>_hashitem_before</code> which has been discussed in the <a href="/understanding-memcached-source-code-IV/#assoc-delete-remove-from-hash-map">last post</a>. The difference here is, <code>_hashitem_before</code> returns the <strong>address of the next member of the element before the found one</strong> (<code>pos = &amp;(*pos)-&gt;h_next;</code>), which is required when removing entries from a <em>singly linked list</em>; whilst this method returns the element found directly (<code>ret = it;</code>).</p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://medium.com/source-code/understanding-the-memcached-source-code-lru-ii-ea4067863652'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LRU/">LRU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hash-map/">hash map</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/understanding-memcached-source-code-VI/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The Memcached Source Code - LRU III
+        
+      </div>
+    </a>
+  
+  
+    <a href="/understanding-memcached-source-code-IV/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Understanding The Memcached Source Code - LRU I</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Overview-textbook-overlapped-skip"><span class="nav-number">1.</span> <span class="nav-text">Overview (textbook overlapped, skip)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Module-initialization"><span class="nav-number">2.</span> <span class="nav-text">Module initialization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hash-init"><span class="nav-number">2.1.</span> <span class="nav-text">hash_init</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#assoc-init"><span class="nav-number">2.2.</span> <span class="nav-text">assoc_init</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Scale-up-amp-entry-migration"><span class="nav-number">3.</span> <span class="nav-text">Scale up &amp; entry migration</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Maintenance-thread-main-loop"><span class="nav-number">3.1.</span> <span class="nav-text">Maintenance thread main loop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maintenance-thread-start"><span class="nav-number">3.2.</span> <span class="nav-text">Maintenance thread start</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maintenance-thread-stop"><span class="nav-number">3.3.</span> <span class="nav-text">Maintenance thread stop</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CRUD"><span class="nav-number">4.</span> <span class="nav-text">CRUD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#assoc-insert"><span class="nav-number">4.1.</span> <span class="nav-text">assoc_insert</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#assoc-find"><span class="nav-number">4.2.</span> <span class="nav-text">assoc_find</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

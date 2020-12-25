@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="JavaScriptreact.jscomponentsetstatetransaction">
+  
+  
+  
+  
+  <meta name="description" content="To some extent, the sophisticated and efficient UI updating is what makes React React. But before we dive into the well-known mechanisms (virtual DOM and  diffing algorithm) that empower the UI updati">
+<meta name="keywords" content="JavaScript,react.js,component,setstate,transaction">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding The React Source Code - UI Updating (Transaction) VI">
+<meta property="og:url" content="https://holmeshe.me/understanding-react-js-source-code-initial-rendering-VI/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="To some extent, the sophisticated and efficient UI updating is what makes React React. But before we dive into the well-known mechanisms (virtual DOM and  diffing algorithm) that empower the UI updati">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*HfouUUp41H3fSAYHWF0C_A.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding The React Source Code - UI Updating (Transaction) VI">
+<meta name="twitter:description" content="To some extent, the sophisticated and efficient UI updating is what makes React React. But before we dive into the well-known mechanisms (virtual DOM and  diffing algorithm) that empower the UI updati">
+<meta name="twitter:image" content="https://cdn-images-1.medium.com/max/800/1*HfouUUp41H3fSAYHWF0C_A.png">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-understanding-react-js-source-code-initial-rendering-VI" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Understanding The React Source Code - UI Updating (Transaction) VI
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-react-js-source-code-initial-rendering-VI/" class="article-date">
+	  <time datetime="2018-01-25T11:00:00.000Z" itemprop="datePublished">January 26, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>To some extent, the sophisticated and efficient UI updating is what makes React React. But before we dive into the well-known mechanisms (virtual DOM and  diffing algorithm) that empower the UI updating, we need to understand <code>Transaction</code> which transfers the control from the high-level API <code>setState()</code> to those underlying processing logic.</p>
+<a id="more"></a>
+<p><strong><em>Files used in this article</em></strong>:</p>
+<p><em>renderers/shared/utils/Transaction.js</em>: defines the core <code>Transaction</code> class</p>
+<p><em>renderers/shared/stack/reconciler/ReactDefaultBatchingStrategy.js</em>: defines <code>ReactDefaultBatchingStrategyTransaction</code> and its API wrapper <code>ReactDefaultBatchingStrategy</code></p>
+<p><em>renderers/shared/stack/reconciler/ReactUpdates.js</em>: defines the <code>enqueueUpdate()</code> that uses <code>ReactDefaultBatchingStrategy</code></p>
+<blockquote>
+<p>Unlike the previous posts that start from everyday APIs and move down the call stack. This post will take a bottom up approach.</p>
+</blockquote>
+<p>So firstly, we look at the</p>
+<h1 id="Transaction-the-core-class"><a href="#Transaction-the-core-class" class="headerlink" title="Transaction the core class"></a>Transaction the core class</h1><p>The only de facto “public” method of this class is perform that also offers its core functionality:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">...</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;function&#125;</span> </span>method Member of scope to call.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;Object&#125;</span> </span>scope Scope to invoke from.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;Object?=&#125;</span> </span>a Argument to pass to the method.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;Object?=&#125;</span> </span>b Argument to pass to the method.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;Object?=&#125;</span> </span>c Argument to pass to the method.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;Object?=&#125;</span> </span>d Argument to pass to the method.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;Object?=&#125;</span> </span>e Argument to pass to the method.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;Object?=&#125;</span> </span>f Argument to pass to the method.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return <span class="type">&#123;*&#125;</span> </span>Return value from `method`.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  perform: <span class="function"><span class="keyword">function</span>&lt;</span></span><br><span class="line"><span class="function">    <span class="title">A</span>,</span></span><br><span class="line"><span class="function">    <span class="title">B</span>,</span></span><br><span class="line"><span class="function">    <span class="title">C</span>,</span></span><br><span class="line"><span class="function">    <span class="title">D</span>,</span></span><br><span class="line"><span class="function">    <span class="title">E</span>,</span></span><br><span class="line"><span class="function">    <span class="title">F</span>,</span></span><br><span class="line"><span class="function">    <span class="title">G</span>,</span></span><br><span class="line"><span class="function">    <span class="title">T</span>: (<span class="params">a: A, b: B, c: C, d: D, e: E, f: F</span>) =&gt; <span class="title">G</span>,</span></span><br><span class="line"><span class="function">  &gt;(<span class="params">method: T, scope: any, a: A, b: B, c: C, d: D, e: E, f: F</span>): <span class="title">G</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* eslint-enable space-before-function-paren */</span></span><br><span class="line">...</span><br><span class="line">    <span class="keyword">var</span> errorThrown;</span><br><span class="line">    <span class="keyword">var</span> ret;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>._isInTransaction = <span class="literal">true</span>;</span><br><span class="line">...</span><br><span class="line">      <span class="comment">// one of these calls threw.</span></span><br><span class="line">      errorThrown = <span class="literal">true</span>;</span><br><span class="line">      <span class="keyword">this</span>.initializeAll(<span class="number">0</span>);</span><br><span class="line">      ret = method.call(scope, a, b, c, d, e, f);</span><br><span class="line">      errorThrown = <span class="literal">false</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (errorThrown) &#123;</span><br><span class="line">...</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.closeAll(<span class="number">0</span>);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (err) &#123;&#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">...</span><br><span class="line">          <span class="keyword">this</span>.closeAll(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>._isInTransaction = <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">TransactionImpl@renderers/shared/utils/Transaction.js</span><br></pre></td></tr></table></figure>
+<p>Besides the invocation of the callback method passed to it as the first argument, <code>perform()</code> simply 1) invokes <code>initializeAll()</code> before the callback and 2)  <code>closeAll()</code> after.</p>
+<p>Here the <code>errorThrown</code> is used to indicate an exception occurred within <code>method.call()</code>, in which case the logic jump directly to <code>finally</code> block before <code>errorThrown</code> can get a chance to be set to <code>false</code>.</p>
+<p>Next we look at the implementation of the two methods that are invoked before and after <code>perform()</code>,</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  initializeAll: <span class="function"><span class="keyword">function</span>(<span class="params">startIndex: number</span>): <span class="title">void</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> transactionWrappers = <span class="keyword">this</span>.transactionWrappers;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = startIndex; i &lt; transactionWrappers.length; i++) &#123;</span><br><span class="line">      <span class="keyword">var</span> wrapper = transactionWrappers[i];</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">...</span><br><span class="line">        <span class="keyword">this</span>.wrapperInitData[i] = OBSERVED_ERROR;</span><br><span class="line">        <span class="keyword">this</span>.wrapperInitData[i] = wrapper.initialize</span><br><span class="line">          ? wrapper.initialize.call(<span class="keyword">this</span>)</span><br><span class="line">          : <span class="literal">null</span>;</span><br><span class="line">      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.wrapperInitData[i] === OBSERVED_ERROR) &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.initializeAll(i + <span class="number">1</span>);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (err) &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">  closeAll: <span class="function"><span class="keyword">function</span>(<span class="params">startIndex: number</span>): <span class="title">void</span> </span>&#123;</span><br><span class="line">...<span class="comment">// scr: sanity check</span></span><br><span class="line">    <span class="keyword">var</span> transactionWrappers = <span class="keyword">this</span>.transactionWrappers;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = startIndex; i &lt; transactionWrappers.length; i++) &#123;</span><br><span class="line">      <span class="keyword">var</span> wrapper = transactionWrappers[i];</span><br><span class="line">      <span class="keyword">var</span> initData = <span class="keyword">this</span>.wrapperInitData[i];</span><br><span class="line">      <span class="keyword">var</span> errorThrown;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        errorThrown = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (initData !== OBSERVED_ERROR &amp;&amp; wrapper.close) &#123;</span><br><span class="line">          wrapper.close.call(<span class="keyword">this</span>, initData);</span><br><span class="line">        &#125;</span><br><span class="line">        errorThrown = <span class="literal">false</span>;</span><br><span class="line">      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (errorThrown) &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.closeAll(i + <span class="number">1</span>);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (e) &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.wrapperInitData.length = <span class="number">0</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> type Transaction = <span class="keyword">typeof</span> TransactionImpl;</span><br><span class="line"></span><br><span class="line">TransactionImpl@renderers/shared/utils/Transaction.js</span><br></pre></td></tr></table></figure>
+<p>These two methods simply iterate <code>this.transactionWrappers</code> and call their <code>initialize()</code> and <code>close()</code> respectively.</p>
+<p>The <code>this.transactionWrappers</code> is initialized in the de fecto constructor of <code>Transaction</code> with <code>this.getTransactionWrappers()</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  reinitializeTransaction: <span class="function"><span class="keyword">function</span>(<span class="params"></span>): <span class="title">void</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.transactionWrappers = <span class="keyword">this</span>.getTransactionWrappers();</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.wrapperInitData) &#123;</span><br><span class="line">      <span class="keyword">this</span>.wrapperInitData.length = <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.wrapperInitData = [];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>._isInTransaction = <span class="literal">false</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">TransactionImpl@renderers/shared/utils/Transaction.js</span><br></pre></td></tr></table></figure>
+<p>We will see what exactly are those <code>this.transactionWrappers</code> very soon.</p>
+<p>The exception handling detail here is a bit interesting. Take <code>initializeAll()</code> as an instance. In the case that an exception occurs within <code>initialize()</code>, a <code>finally</code> block (instead of a <code>catch</code>) processes the <code>initialize()</code> of the rest of <code>this.transactionWrappers</code> (i.e., from <code>i + 1</code> to <code>transactionWrappers.length-1</code>). Then the exception interrupts the <code>for</code> loop and the entire <code>initializeAll()</code> logic and processes all the way to the <code>finally</code> block within <code>perform()</code>, the <code>initializeAll()</code>’s caller, which effectively skips</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ret = method.call(scope, a, b, c, d, e, f);</span><br></pre></td></tr></table></figure>
+<p>in the case of a exceptional initialization. At last, <code>closeAll()</code> is invoked within the same <code>finally</code> block to finalize the transaction.</p>
+<p>Now we know what is a <code>Transaction</code> in its essence, but what is it used for? In order to answer this question, we take a <code>Transaction</code> instantiation as an example that is the transactional entry point of  UI updating.</p>
+<h1 id="ReactDefaultBatchingStrategyTransaction"><a href="#ReactDefaultBatchingStrategyTransaction" class="headerlink" title="ReactDefaultBatchingStrategyTransaction"></a><code>ReactDefaultBatchingStrategyTransaction</code></h1><p>Firstly <code>ReactDefaultBatchingStrategyTransaction</code> is a subclass of <code>Transaction</code> that implements <code>getTransactionWrappers()</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="built_in">Object</span>.assign(ReactDefaultBatchingStrategyTransaction.prototype, Transaction, &#123;</span><br><span class="line">  getTransactionWrappers: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> TRANSACTION_WRAPPERS;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">ReactDefaultBatchingStrategyTransaction@renderers/shared/stack/reconciler/ReactDefaultBatchingStrategy.js</span><br></pre></td></tr></table></figure>
+<p>Next, <code>TRANSACTION_WRAPPERS</code> are the source of <code>this.transactionWrappers</code> that offers the pre (<code>initialize()</code>) and post (<code>close()</code>) functions for <code>perform()</code> used in the last section.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">var</span> RESET_BATCHED_UPDATES = &#123;</span><br><span class="line">  initialize: emptyFunction,</span><br><span class="line">  close: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    ReactDefaultBatchingStrategy.isBatchingUpdates = <span class="literal">false</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;; <span class="comment">// scr: -----------------------------------------------------&gt; 2)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> FLUSH_BATCHED_UPDATES = &#123;</span><br><span class="line">  initialize: emptyFunction,</span><br><span class="line">  close: ReactUpdates.flushBatchedUpdates.bind(ReactUpdates),</span><br><span class="line">&#125;; <span class="comment">// scr: -----------------------------------------------------&gt; 2)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> TRANSACTION_WRAPPERS = [FLUSH_BATCHED_UPDATES, RESET_BATCHED_UPDATES];  <span class="comment">// scr: -------------------------------&gt; 2)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ReactDefaultBatchingStrategyTransaction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.reinitializeTransaction();</span><br><span class="line">&#125; <span class="comment">// scr: ------------------------------------------------------&gt; 1)</span></span><br><span class="line">...</span><br><span class="line">  <span class="comment">// scr: ------------------------------------------------------&gt; 3)</span></span><br><span class="line"><span class="keyword">var</span> transaction = <span class="keyword">new</span> ReactDefaultBatchingStrategyTransaction();</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">ReactDefaultBatchingStrategyTransaction@renderers/shared/stack/reconciler/ReactDefaultBatchingStrategy.js</span><br></pre></td></tr></table></figure>
+<p>1) in the constructor of <code>ReactDefaultBatchingStrategyTransaction</code> the super class <code>Transaction</code>’s constructor gets called, which initializes <code>this.transactionWrappers</code> with <code>FLUSH_BATCHED_UPDATES</code> defined in 2)</p>
+<p>2) defines the two wrapper and their respective <code>initialize()</code> and <code>close()</code>, which is used in the <code>Transaction.initializeAll()</code> and <code>Transaction.closeAll()</code> in the loops iterating <code>FLUSH_BATCHED_UPDATES</code></p>
+<p>3) defines <code>ReactDefaultBatchingStrategyTransaction</code> as a singleton.</p>
+<p>Last we look at the public API offered by <code>ReactDefaultBatchingStrategy</code> that can be called from the outside world</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ReactDefaultBatchingStrategy = &#123;</span><br><span class="line">  isBatchingUpdates: <span class="literal">false</span>,</span><br><span class="line"></span><br><span class="line">  batchedUpdates: <span class="function"><span class="keyword">function</span>(<span class="params">callback, a, b, c, d, e</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> alreadyBatchingUpdates = ReactDefaultBatchingStrategy.isBatchingUpdates;</span><br><span class="line"></span><br><span class="line">    ReactDefaultBatchingStrategy.isBatchingUpdates = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// The code is written this way to avoid extra allocations</span></span><br><span class="line">    <span class="keyword">if</span> (alreadyBatchingUpdates) &#123; <span class="comment">// scr: --------&gt; not applied here</span></span><br><span class="line">      <span class="keyword">return</span> callback(a, b, c, d, e);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> transaction.perform(callback, <span class="literal">null</span>, a, b, c, d, e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ReactDefaultBatchingStrategy@renderers/shared/stack/reconciler/ReactDefaultBatchingStrategy.js</span><br></pre></td></tr></table></figure>
+<p><code>ReactDefaultBatchingStrategy</code> is injected {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-II/">post two</a> *5} to <code>ReactUpdates</code> as <code>batchingStrategy</code>. And the <code>ReactDefaultBatchingStrategy.batchedUpdates()</code> is used by <code>ReactUpdates.enqueueUpdate()</code>, the underlying method of the UI updating entry point <code>setState()</code>.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">enqueueUpdate</span>(<span class="params">component</span>) </span>&#123;</span><br><span class="line">  ensureInjected();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!batchingStrategy.isBatchingUpdates) &#123; <span class="comment">// scr: ----------&gt; &#123;a&#125;</span></span><br><span class="line">    batchingStrategy.batchedUpdates(enqueueUpdate, component);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// scr: -----------------------------------------------------&gt; &#123;b&#125;</span></span><br><span class="line">  dirtyComponents.push(component);</span><br><span class="line">  <span class="keyword">if</span> (component._updateBatchNumber == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// scr: this field is used for sanity check later</span></span><br><span class="line">    component._updateBatchNumber = updateBatchNumber + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactUpdates@renderers/shared/stack/reconciler/ReactUpdates.js</span><br></pre></td></tr></table></figure>
+<p>Here is a similar recursion trick as we saw in <a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-V/">last post</a>.</p>
+<p>1) When the method is entered the first time, <code>ReactDefaultBatchingStrategy.isBatchingUpdates</code> is false, which triggers branch {a} that leads to <code>ReactDefaultBatchingStrategy.batchedUpdates()</code>;</p>
+<p>2) <code>batchedUpdates()</code> sets <code>ReactDefaultBatchingStrategy.isBatchingUpdates</code> to true, and initializes a <code>transaction</code>;</p>
+<p>3) the <code>callback</code> argument of <code>batchedUpdates</code> is <code>enqueueUpdate()</code> itself, so <code>enqueueUpdate</code> will be entered again with <code>transaction.perform()</code> straight away. Note that the pre-methods (<code>initialize()</code>) of both wrappers are <code>emptyFunction</code> so nothing happens between the two times invocation of <code>enqueueUpdate()</code>;</p>
+<p>4) when <code>enqueueUpdate()</code> is entered the second time (within the context of the <code>transaction</code> just initialized), branch {b} is executed;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">dirtyComponents.push(component);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>5) after <code>enqueueUpdate()</code> returned post-method (<code>close()</code>) of <code>FLUSH_BATCHED_UPDATES</code> is called; This is the workhorse method that processes all the <code>dirtyComponents</code> marked in the previous step(s)</p>
+<blockquote>
+<p>*8 we will come back to this <code>FLUSH_BATCHED_UPDATES.close()</code> and <code>ReactUpdates.flushBatchedUpdates()</code> in the next post</p>
+</blockquote>
+<p>6) last, post-method (<code>close()</code>) of <code>RESET_BATCHED_UPDATES</code> is called, which sets <code>ReactDefaultBatchingStrategy.isBatchingUpdates</code> back to <code>false</code> and completes the circle.</p>
+<p>It is important to note that any successive calls of <code>enqueueUpdate()</code> between 3) and 6) are supposed to be executed in the context of <code>ReactDefaultBatchingStrategy.isBatchingUpdates:false</code>, meaning, branch {b} will be taken in such case. So it’s like</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-&gt;dirtyComponents.push(component);</span><br><span class="line">-&gt;dirtyComponents.push(component);</span><br><span class="line">-&gt;dirtyComponents.push(component);</span><br><span class="line">...</span><br><span class="line">-----&gt;ReactUpdates.flushBatchedUpdates</span><br></pre></td></tr></table></figure>
+<h1 id="Wrap-up"><a href="#Wrap-up" class="headerlink" title="Wrap-up"></a>Wrap-up</h1><p><img src="https://cdn-images-1.medium.com/max/800/1*HfouUUp41H3fSAYHWF0C_A.png" alt></p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://hackernoon.com/understanding-the-react-source-code-vi-fe91ea58737f'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/component/">component</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/setstate/">setstate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/transaction/">transaction</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/understanding-react-js-source-code-initial-rendering-VII/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The React Source Code - UI Updating (Transactions) VII
+        
+      </div>
+    </a>
+  
+  
+    <a href="/understanding-react-js-source-code-initial-rendering-V/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Understanding The React Source Code - Initial Rendering (Class Component) V</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Transaction-the-core-class"><span class="nav-number">1.</span> <span class="nav-text">Transaction the core class</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReactDefaultBatchingStrategyTransaction"><span class="nav-number">2.</span> <span class="nav-text">ReactDefaultBatchingStrategyTransaction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Wrap-up"><span class="nav-number">3.</span> <span class="nav-text">Wrap-up</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

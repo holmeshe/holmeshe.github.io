@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="Smart Pointershared ptrautomatic ptrunique ptr">
+  
+  
+  
+  
+  <meta name="description" content="Objects life-cycle is crucial. A mistake in determining an object’s lifecycle can lead to resource (e.g., memory, fd) leaks as the resource owned cannot be properly released and recycled for future us">
+<meta name="keywords" content="Smart Pointer,shared ptr,automatic ptr,unique ptr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Smart Pointer, shared_ptr, Automatic pointer, and unique_ptr">
+<meta property="og:url" content="https://holmeshe.me/cpp-pointers/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="Objects life-cycle is crucial. A mistake in determining an object’s lifecycle can lead to resource (e.g., memory, fd) leaks as the resource owned cannot be properly released and recycled for future us">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://holmeshe.me/gallery/pointers_not_today.jpeg">
+<meta property="og:image" content="https://holmeshe.me/gallery/pointers_all_die.jpeg">
+<meta property="og:image" content="https://holmeshe.me/gallery/pointers_n64.jpeg">
+<meta property="og:image" content="https://holmeshe.me/gallery/pointers_gb.jpeg">
+<meta property="og:image" content="https://holmeshe.me/gallery/pointers_pqg.jpeg">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Smart Pointer, shared_ptr, Automatic pointer, and unique_ptr">
+<meta name="twitter:description" content="Objects life-cycle is crucial. A mistake in determining an object’s lifecycle can lead to resource (e.g., memory, fd) leaks as the resource owned cannot be properly released and recycled for future us">
+<meta name="twitter:image" content="https://holmeshe.me/gallery/pointers_not_today.jpeg">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-cpp-pointers" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Smart Pointer, shared_ptr, Automatic pointer, and unique_ptr
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/cpp-pointers/" class="article-date">
+	  <time datetime="2017-10-05T11:00:00.000Z" itemprop="datePublished">October 6, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Rvisit-C/">Rvisit C++</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Objects life-cycle is crucial. A mistake in determining an object’s lifecycle can lead to resource (e.g., memory, fd) leaks as the resource owned cannot be properly released and recycled for future use. When the leak accumulates to a certain level, it crashes the whole system.</p>
+<p>Objects life-cycle is also complicated since the ownership of one object might be relinquished by, transferred to, or shared with different entities which include but are not limited to variables, function arguments, modules, data structures, containers, and threads. Again, the resource has to be released and recycled by one of the owners at some undetermined point.</p>
+<p>There is no de-facto standard to determine objects life-cycle. Utilities like <strong>GC</strong> (garbage collection) that is used in Java, <strong>ARC</strong> used in Objective-C and all those pointers (ptrs) in C++, all have their pros and cons. However, this article is not about pros and cons but is focused on C++ resource management helper classes, <strong>Smart Pointer</strong>, <code>shared_ptr</code>, <code>auto_ptr</code> and <code>unique_ptr</code>.</p>
+<a id="more"></a>
+<h1 id="Smart-pointer"><a href="#Smart-pointer" class="headerlink" title="Smart pointer"></a>Smart pointer</h1><p>A <strong>smart pointer</strong> is a wrapper class of a normal pointer. <strong>Smart point</strong> defines life-cycle with a reference count that reflects how many time the smart pointer object is referenced.<br>Next, I will show a simple implementation of a <strong>smart pointer</strong>. The code is for demonstration purposes only, thus, there is no sanity check, no exception handling and no thread-safety guarantee.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt; <span class="keyword">typename</span> T &gt; <span class="class"><span class="keyword">class</span> <span class="title">SmartPointer</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  T* _pRes;</span><br><span class="line">  <span class="keyword">int</span>* _refCount;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> _release() &#123;</span><br><span class="line">    <span class="keyword">if</span>(--(*_refCount) == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"---Valar Morghulis:%d\n"</span>,*_refCount);</span><br><span class="line">      <span class="keyword">delete</span> _pRes;</span><br><span class="line">      <span class="keyword">delete</span> _refCount;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"---not today:%d\n"</span>,*_refCount);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  SmartPointer() : _pRes(<span class="literal">NULL</span>), _refCount(<span class="literal">NULL</span>) &#123;</span><br><span class="line">    _refCount = <span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"SP default cons:%d\n"</span>,*_refCount);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">SmartPointer(T* pRes) : _pRes(pRes), _refCount(<span class="literal">NULL</span>) &#123;</span><br><span class="line">    _refCount = <span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"SP cons:%d\n"</span>,*_refCount);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">SmartPointer(<span class="keyword">const</span> SmartPointer&lt;T&gt;&amp; sp) : _pRes(sp._pRes), _refCount(sp._refCount) &#123;</span><br><span class="line">    (*_refCount)++;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"SP copy cons:%d\n"</span>,*_refCount);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">SmartPointer&lt;T&gt;&amp; <span class="keyword">operator</span> = (<span class="keyword">const</span> SmartPointer&lt;T&gt;&amp; sp) &#123;</span><br><span class="line">    <span class="keyword">this</span>-&gt;_release(); <span class="comment">// release the last resource it points to </span></span><br><span class="line">    _pRes = sp._pRes;</span><br><span class="line">    _refCount = sp._refCount;</span><br><span class="line">    (*_refCount)++;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"SP assign:%d\n"</span>,*_refCount);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">~SmartPointer() &#123;</span><br><span class="line">    <span class="keyword">this</span>-&gt;_release();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// to mimic a real pointer</span></span><br><span class="line">  T&amp; <span class="keyword">operator</span>* () &#123;</span><br><span class="line">    <span class="keyword">return</span> *_pRes;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// to mimic a real pointer</span></span><br><span class="line">  T* <span class="keyword">operator</span>-&gt; () &#123;</span><br><span class="line">    <span class="keyword">return</span> _pRes;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AClass</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  AClass() &#123; <span class="built_in">printf</span>(<span class="string">"aclass cons\n"</span>); &#125;</span><br><span class="line">  ~AClass() &#123; <span class="built_in">printf</span>(<span class="string">"aclass des\n"</span>); &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">l2</span><span class="params">(SmartPointer&lt;AClass&gt;&amp; p)</span> </span>&#123;</span><br><span class="line">  SmartPointer&lt;AClass&gt; use3 = p;        <span class="comment">// &gt;&gt; SP copy cons:3</span></span><br><span class="line">&#125;                                       <span class="comment">// &gt;&gt; ---not today:2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">l1</span><span class="params">(SmartPointer&lt;AClass&gt;&amp; p)</span> </span>&#123;</span><br><span class="line">  SmartPointer&lt;AClass&gt; use2 = p;        <span class="comment">// &gt;&gt; SP copy cons:2</span></span><br><span class="line">  l2(p);</span><br><span class="line">&#125;                                       <span class="comment">// &gt;&gt; ---not today:1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  AClass *res = <span class="keyword">new</span> AClass();           <span class="comment">// &gt;&gt; aclass cons</span></span><br><span class="line">  <span class="function">SmartPointer&lt;AClass&gt; <span class="title">aSmartP</span><span class="params">(res)</span></span>;    <span class="comment">// &gt;&gt; SP cons:1</span></span><br><span class="line">  l1(aSmartP);</span><br><span class="line">&#125;                                       <span class="comment">// &gt;&gt; ---Valar Morghulis:0</span></span><br><span class="line">                                        <span class="comment">// &gt;&gt; aclass des</span></span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">aclass cons</span><br><span class="line">SP cons:<span class="number">1</span></span><br><span class="line">SP copy cons:<span class="number">2</span></span><br><span class="line">SP copy cons:<span class="number">3</span></span><br><span class="line">---<span class="keyword">not</span> today:<span class="number">2</span></span><br><span class="line">---<span class="keyword">not</span> today:<span class="number">1</span></span><br><span class="line">---Valar Morghulis:<span class="number">0</span></span><br><span class="line">aclass des</span><br></pre></td></tr></table></figure>
+<p>To briefly explain the code above:</p>
+<ol>
+<li><code>SmartPointer</code>‘s life-cycle is no more than that of an ordinary class. Thus, logic flow going out of a (function) scope destructs it;</li>
+<li><code>SmartPointer</code> has two properties, <code>_pRes</code> and <code>_refCount</code>, both are allocated from heap. Thus, logic flow going out of a (function) scope DOES NOT destruct them;</li>
+<li>each time a <code>SmartPointer</code> is constructed with a valid <code>_pRes</code> (of type <code>T</code>), the <code>_refCount</code> plus <code>1</code>;</li>
+<li>each time a <code>SmartPointer</code> is destructed, in our case, by a logic flow going out of a scope, the <code>_refCount</code> minus <code>1</code>;</li>
+<li>however, the destruction of <code>SmartPointer</code> does not necessarily lead to a destruction of <code>_pRes</code>:</li>
+</ol>
+<p>a)        when <code>_refCount</code> is still larger than <code>0</code>, <code>SmartPointer</code> simply reduce the <code>_refCount</code> and print</p>
+<p><img src="/gallery/pointers_not_today.jpeg" alt="not today"></p>
+<p>b)        only when <code>_refCount</code> is set to <code>0</code> by the minus, <code>SmartPointer</code> destructs the resource referred by <code>_pRes</code> and and print</p>
+<p><img src="/gallery/pointers_all_die.jpeg" alt="All men must die"></p>
+<p>So <strong>smart pointers</strong> work as handles that are used by different parts of a program to keep track and to control the resource instance. When all handles are destroyed, the resource is considered “not used”, and is deleted as well. In the end of this article, I will show some real handles that embody <strong>smart pointer</strong> in real world.</p>
+<p>The sample showcases the usage of <strong>smart pointer</strong> in program that is linear, which is rarely the case in real scenario. Rather, as mentioned before, the resource (i.e., the instance of <code>AClass</code>) can be shared, by multiple data structure and variables in parallel.</p>
+<h1 id="shared-ptr-C-11"><a href="#shared-ptr-C-11" class="headerlink" title="shared_ptr (C++11)"></a>shared_ptr (C++11)</h1><p><code>shared_ptr</code> is the std’s implementation of <strong>smart pointer</strong> that is more robust than the demo code listed above. And it does not generate dodgy log.</p>
+<h1 id="Automatic-pointer"><a href="#Automatic-pointer" class="headerlink" title="Automatic pointer"></a>Automatic pointer</h1><p>An <strong>automatic pointer</strong>, though looks similar to <strong>smart pointer</strong>, is totally different. It is a convenient helper class that destructs the resource whenever the logic flow going out of the scope, just in case a programmer forgets. To some extent, it makes a pointer (that refers to a memory chunk dynamically allocated in runtime) works similar to a stack variable (statically allocated in compiling time).</p>
+<p>Example, AutoPointer v1.0:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt; <span class="keyword">typename</span> T &gt; <span class="class"><span class="keyword">class</span> <span class="title">AutoPointer</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  T* _pRes;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  AutoPointer() : _pRes(<span class="literal">NULL</span>) &#123;&#125;</span><br><span class="line"> </span><br><span class="line">  AutoPointer(T* pRes) : _pRes(pRes) &#123;&#125;</span><br><span class="line"> </span><br><span class="line">  AutoPointer(<span class="keyword">const</span> AutoPointer&lt;T&gt;&amp; ap) : _pRes(ap._pRes) &#123;&#125;</span><br><span class="line"> </span><br><span class="line">  AutoPointer&lt;T&gt;&amp; <span class="keyword">operator</span> = (<span class="keyword">const</span> AutoPointer&lt;T&gt;&amp; ap) &#123;</span><br><span class="line">    <span class="keyword">delete</span> _pRes;</span><br><span class="line">    _pRes = ap._pRes;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  ~AutoPointer() &#123;</span><br><span class="line">    <span class="keyword">delete</span> _pRes;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">// to mimic a real pointer</span></span><br><span class="line">  T&amp; <span class="keyword">operator</span>* () &#123;</span><br><span class="line">    <span class="keyword">return</span> *_pRes;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// to mimic a real pointer</span></span><br><span class="line">  T* <span class="keyword">operator</span>-&gt; () &#123;</span><br><span class="line">    <span class="keyword">return</span> _pRes;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AClass</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  AClass() &#123; <span class="built_in">printf</span>(<span class="string">"cons\n"</span>); &#125;</span><br><span class="line">  ~AClass() &#123; <span class="built_in">printf</span>(<span class="string">"des\n"</span>); &#125;</span><br><span class="line">  <span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">l1</span><span class="params">(AutoPointer&lt;AClass&gt;&amp; p)</span> </span>&#123;</span><br><span class="line">  AutoPointer&lt;AClass&gt; use2 = p;</span><br><span class="line">&#125;<span class="comment">//the resource has already been deallocated here</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  AClass *res = <span class="keyword">new</span> AClass();</span><br><span class="line">  res-&gt;i = <span class="number">5</span>;</span><br><span class="line">  <span class="function">AutoPointer&lt;AClass&gt; <span class="title">use1</span><span class="params">(res)</span></span>;</span><br><span class="line">  l1(use1);</span><br><span class="line">&#125;<span class="comment">// abort, repeat deallocating pointer</span></span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cons</span><br><span class="line">des</span><br><span class="line">des</span><br><span class="line">autop(1148,0x7fff74eff000) malloc: *** error for object 0x7f9940c03240: pointer being freed was not allocated</span><br><span class="line">*** set a breakpoint in malloc_error_break to debug</span><br><span class="line">[1] 1148 abort ./a.out</span><br></pre></td></tr></table></figure>
+<p>As given by the code snippet above, <strong>automatic pointer</strong> works internally like a simplified <strong>smart pointer</strong> that deallocates the resource regardless of the reference count (in fact, there is no reference count at all).</p>
+<p>The coredump shows a major drawback of the <strong>automatic pointer</strong>: the ownership can not be transferred (to l1() ). As a result, even though the resource has been deallocate in l1(), main()still consider itself as the owner of <strong>automatic pointer</strong> and deallocates the pointer one time more.</p>
+<p>How about implementing the copy constructor as well as the assignment operator so the ownership can be properly transferred?</p>
+<p>Example, AutoPointer v2.0:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">  AutoPointer(AutoPointer&lt;T&gt;&amp; ap) : _pRes(ap._pRes) &#123;</span><br><span class="line">    ap._pRes = <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  AutoPointer&lt;T&gt;&amp; <span class="keyword">operator</span> = (AutoPointer&lt;T&gt;&amp; ap) &#123;</span><br><span class="line">    <span class="keyword">delete</span> _pRes;</span><br><span class="line">    _pRes = ap._pRes;</span><br><span class="line"></span><br><span class="line">    ap._pRes = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cons</span><br><span class="line">des</span><br></pre></td></tr></table></figure>
+<p>All seems good. Yet it is another example of “fixing one bug leads to another”.</p>
+<p>The new problem is that the two semantics, ownership-transferring and copy, are coupled. So it is not compatible to some of the library functions such as <code>std::sort</code> that takes one extra copy (as pivot in quick sort) as it destroys the previous one that is still in use. The detailed explanation of the problem can be found <a href="http://www.gotw.ca/gotw/025.htm" target="_blank" rel="noopener">here</a>, and thanks <a href="https://www.reddit.com/user/" target="_blank" rel="noopener">patatahooligan</a> for pointing out the mistake in the original implementation.</p>
+<p><code>std::auto_ptr</code> is the std implementation of the <strong>automatic pointer</strong>. As discussed above, it is either not very interesting or problematic, so it is now deprecated. And we should use <code>std::unique_ptr</code> instead.</p>
+<h1 id="std-unique-ptr-C-11"><a href="#std-unique-ptr-C-11" class="headerlink" title="std::unique_ptr (C++11)"></a>std::unique_ptr (C++11)</h1><p><code>std::unique_ptr</code> is the std’s replacement of <code>std::auto_ptr</code> in C++11. With the newly added <a href="http://holmeshe.me/cpp-rvalue-and-move/"><strong>rvalue</strong> and <strong>move</strong> semantics</a>, the ownership of a <code>unique_ptr</code> can be safely transferred to another entity. Moreover, the copy semantic is disabled for <code>unique_ptrs</code> to avoid ambiguity we saw in AutoPointer v2.0. Like <strong>automatic pointer</strong>, the last owner of the pointer is responsible for deallocation.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cassert&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AClass</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  AClass() &#123;<span class="built_in">printf</span>(<span class="string">"cons\n"</span>);&#125;</span><br><span class="line">  ~AClass() &#123;<span class="built_in">printf</span>(<span class="string">"des\n"</span>);&#125;</span><br><span class="line">  <span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt; <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;AClass&gt; &gt; v;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">l1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;AClass&gt; <span class="title">p1</span><span class="params">(<span class="keyword">new</span> AClass())</span></span>;    <span class="comment">// &gt;&gt; cons</span></span><br><span class="line">  p1-&gt;i = <span class="number">1</span>;</span><br><span class="line">  v.push_back(<span class="built_in">std</span>::move(p1));</span><br><span class="line">  <span class="function"><span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;AClass&gt; <span class="title">p2</span><span class="params">(<span class="keyword">new</span> AClass())</span></span>;    <span class="comment">// &gt;&gt; cons</span></span><br><span class="line">  p2-&gt;i = <span class="number">2</span>;</span><br><span class="line">  v.push_back(<span class="built_in">std</span>::move(p2));</span><br><span class="line">&#125; <span class="comment">// p1 and p2 are not destructed here</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  l1();</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; p: v) <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, p-&gt;i);</span><br><span class="line">&#125;                                              <span class="comment">// &gt;&gt; des</span></span><br><span class="line">                                               <span class="comment">// &gt;&gt; des</span></span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cons</span><br><span class="line">cons</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">des</span><br><span class="line">des</span><br></pre></td></tr></table></figure>
+<p>As shown in the code snippet above, the <strong>unique pointer</strong> is preserved across different owners. When the ownership has been <strong>moved</strong> to <code>vector v</code>, <code>l1()</code> does not deallocates the resource anymore. This gains <strong>unique pointer</strong> a much wider usage.</p>
+<p>N.b., I would rather believe <strong>unique pointer</strong> is the major reason of the introduction of the new move semantic. Because compared to the improvement gained here, the <a href="http://holmeshe.me/cpp-rvalue-and-move/">optimization enabled by move and rvalue</a> is less significant.</p>
+<h1 id="Take-home"><a href="#Take-home" class="headerlink" title="Take home"></a>Take home</h1><p>“I can understand the stuffs, but I’m not sure if I still remember them exactly next morning.”</p>
+<p>Sure. I will find some real world counterparts to enhance your memory.</p>
+<p>1) a <code>std::shared_ptr</code> is like a handle of a video game console.</p>
+<p><img src="/gallery/pointers_n64.jpeg" alt></p>
+<p>The console (resource) is “<strong>shared</strong>” by multiple players with handles, and the game should continue even if there is only one player left. Thus, “Game over” only when all players stop playing.</p>
+<p>2) a <code>std::unique_ptr</code> is like a portable game console.</p>
+<p><img src="/gallery/pointers_gb.jpeg" alt></p>
+<p>One player at a time, and one should “<strong>move</strong>” it to let another to play. “Game over” when the LAST player stops playing.</p>
+<p>3) a <code>std::auto_ptr</code> is a</p>
+<p><img src="/gallery/pointers_pqg.jpeg" alt></p>
+<p>as it can not be easily <strong>moved</strong>.</p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://hackernoon.com/smart-pointer-shared-ptr-automatic-pointer-and-unique-ptr-4fb12ff53914'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Rvisit-C/">Rvisit C++</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Smart-Pointer/">Smart Pointer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/automatic-ptr/">automatic ptr</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shared-ptr/">shared ptr</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unique-ptr/">unique ptr</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/understanding-react-js-source-code-initial-rendering-I/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The React Source Code - Initial Rendering (Simple Component) I
+        
+      </div>
+    </a>
+  
+  
+    <a href="/cpp-rvalue-and-move/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">C++ rvalue, &amp;&amp; and Move</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Smart-pointer"><span class="nav-number">1.</span> <span class="nav-text">Smart pointer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#shared-ptr-C-11"><span class="nav-number">2.</span> <span class="nav-text">shared_ptr (C++11)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Automatic-pointer"><span class="nav-number">3.</span> <span class="nav-text">Automatic pointer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#std-unique-ptr-C-11"><span class="nav-number">4.</span> <span class="nav-text">std::unique_ptr (C++11)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Take-home"><span class="nav-number">5.</span> <span class="nav-text">Take home</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="socketevent drivenstate machinememecached">
+  
+  
+  
+  
+  <meta name="description" content="We continue examining the other two operations, i.e., create and delete, in the event driven context. As usual, we start with a command sent to a Memcached server. In fact, most of the logic involved">
+<meta name="keywords" content="socket,event driven,state machine,memecached">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding The Memcached Source Code-Event Driven III">
+<meta property="og:url" content="https://holmeshe.me/understanding-memcached-source-code-IX/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="We continue examining the other two operations, i.e., create and delete, in the event driven context. As usual, we start with a command sent to a Memcached server. In fact, most of the logic involved">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://holmeshe.me/gallery/spade.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/heart.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/club.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/diamond.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/memcached-state-machine.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding The Memcached Source Code-Event Driven III">
+<meta name="twitter:description" content="We continue examining the other two operations, i.e., create and delete, in the event driven context. As usual, we start with a command sent to a Memcached server. In fact, most of the logic involved">
+<meta name="twitter:image" content="https://holmeshe.me/gallery/spade.svg">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-understanding-memcached-source-code-IX" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Understanding The Memcached Source Code-Event Driven III
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-IX/" class="article-date">
+	  <time datetime="2019-06-01T22:30:00.000Z" itemprop="datePublished">June 2, 2019</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="/understanding-memcached-source-code-I/" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/spade.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">slab allocator (I, </text></a> <a href="/understanding-memcached-source-code-II/"><text style="color:black;font-weight:bold;">II, </text></a> <a href="/understanding-memcached-source-code-III/"><text style="color:black;font-weight:bold;">III)</text></a> is the core module of the cache system, which largely determines how efficient the bottleneck resource, memory, can be utilized. The other 3 parts, namely,</p>
+<p><a href="/understanding-memcached-source-code-IV/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/heart.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">LRU algorithm (I</text></a> <a href="/understanding-memcached-source-code-V/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-VI/"><text style="color:black;font-weight:bold;">, III)</text></a> for entry expiration; and an</p>
+<p><a href="/understanding-memcached-source-code-VII/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/club.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">event driven model (I</text></a> <a href="/understanding-memcached-source-code-VIII/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="#"><text style="color:black;font-weight:bold;">, III - this article)</text></a> based on libevent; and the</p>
+<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/diamond.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">consistent harsh (not complete)</text></a> for data distribution,</p>
+<p>are built around it.</p>
+<p>We continue examining the other two operations, i.e., create and delete, in the <strong>event driven</strong> context. Now it’s a good chance to revisit the <a href="/understanding-memcached-source-code-VIII/#Core-data-structure-conn">core data structure</a> and look at the</p>
+<h1 id="Properties-in-discussion"><a href="#Properties-in-discussion" class="headerlink" title="Properties in discussion"></a>Properties in discussion</h1><a id="more"></a>
+<p><code>wbuf</code> - the address for <em>write buffer</em> for simple response output (e.g., STORED). used by <a href="#out-string">out_string</a></p>
+<p><code>wcurr</code> - not very useful as it points to the same address as <code>wbuf</code>. used by <a href="#conn-write">conn_write</a></p>
+<p><code>wsize</code> - the total size of <em>write buffer</em>. used by <a href="#out-string">out_string</a> to determine buff overflow</p>
+<p><code>wbytes</code> - the length of data populated in <em>write buffer</em>. value is set in <a href="#out-string">out_string</a>; used by <a href="#conn-write">conn_write</a> when writing it to the “real” output buffer <a href="/understanding-memcached-source-code-VIII/#add-iov">iov</a></p>
+<p><code>write_and_go</code> - set to <code>conn_new_cmd</code> in the <a href="#out-string">very last step</a> to form a “state loop”</p>
+<p><code>ritem</code> - one of the essential properties for <a href="#conn-nread">data reading</a>. it is set to the address of the data portion of the actual <strong>item</strong> created by <a href="#process-update-command">create command</a></p>
+<p><code>rlbytes</code> - one of the essential properties for <a href="#conn-nread">data reading</a>. it is set to the length of the data in need</p>
+<p><code>item</code> - record of the actual <strong>item</strong> created by <a href="#process-update-command">create command</a></p>
+<p><code>noreply</code> - determined by the command. we assume it is set to <code>false</code></p>
+<h1 id="Create"><a href="#Create" class="headerlink" title="Create"></a>Create</h1><p>As usual, we start with a command sent to a <strong>Memcached</strong> server.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; add test 0 60 11 (\r\n)</span><br><span class="line">&gt; hello world</span><br></pre></td></tr></table></figure>
+<p>As mentioned in <a href="/understanding-memcached-source-code-VI/#Create">LRU III</a>, two passes are involved in the command processing, the first pass creates an empty object after reading the first line, and the second populates the object with the concrete value contained in the second line. Such division is for the multiple <em>I/O</em> triggered by line breaks in <em>telnet</em>.</p>
+<p class="back"><br>In fact, most of the logic involved in this post has been discussed before such as in <a href="/understanding-memcached-source-code-VI">LRU III</a> and <a href="/understanding-memcached-source-code-VIII">Event Driven II</a>. Hence this post will only resolve the missing parts and linking points.<br></p>
+
+<p>For the first command,</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; add test 0 60 11 (\r\n)</span><br></pre></td></tr></table></figure>
+<p>The <strong>Memcached</strong> instance outputs the following lines. This time we omit the output for accepting the new connection</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">27: going from conn_new_cmd to conn_waiting</span><br><span class="line">27: going from conn_waiting to conn_read</span><br><span class="line">27: going from conn_read to conn_parse_cmd</span><br><span class="line">27: Client using the ascii protocol</span><br><span class="line">&lt;27 add test 0 60 11</span><br><span class="line">27: going from conn_parse_cmd to conn_nread</span><br></pre></td></tr></table></figure>
+<p>The logic for command reading and parsing (<code>conn_new_cmd</code> to <code>conn_parse_cmd</code>) are the same as what described in <a href="/understanding-memcached-source-code-VIII/#conn-new-cmd">Event Driven II</a>. The difference is that </p>
+<h2 id="process-update-command"><a href="#process-update-command" class="headerlink" title="process_update_command"></a>process_update_command</h2><p>is invoked after the command parsing. Though the method has been examined in <a href="/understanding-memcached-source-code-VI/#process-update-command">LRU III</a>, it is worth reminding that the last step is to update the <em>session context</em> for the next <strong>state</strong> (<code>conn_nread</code>) which handles the actual data reading.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">process_update_command</span><span class="params">(conn *c, <span class="keyword">token_t</span> *tokens, <span class="keyword">const</span> <span class="keyword">size_t</span> ntokens, <span class="keyword">int</span> comm, <span class="keyword">bool</span> handle_cas)</span> </span>&#123;</span><br><span class="line">... <span class="comment">// LRU III</span></span><br><span class="line">    c-&gt;item = it;</span><br><span class="line">    c-&gt;ritem = ITEM_data(it);</span><br><span class="line">    c-&gt;rlbytes = it-&gt;nbytes;</span><br><span class="line">    c-&gt;cmd = comm;</span><br><span class="line">    conn_set_state(c, conn_nread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">process_update_command@memcached.c</text></center>
+<p>Next we look at the second command</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">&gt; hello world</span><br></pre></td></tr></table></figure>
+<p>and its associated output</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; NOT FOUND test</span><br><span class="line">&gt;27 STORED</span><br><span class="line">27: going from conn_nread to conn_write</span><br><span class="line">27: going from conn_write to conn_new_cmd</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>The key code fragment for the <strong>state</strong> switching above is</p>
+<h2 id="conn-nread"><a href="#conn-nread" class="headerlink" title="conn_nread"></a>conn_nread</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">drive_machine</span><span class="params">(conn *c)</span> </span>&#123;</span><br><span class="line">...</span><br><span class="line">        <span class="keyword">case</span> conn_nread:</span><br><span class="line">            <span class="keyword">if</span> (c-&gt;rlbytes == <span class="number">0</span>) &#123; <span class="comment">// scr: ---------------------------&gt; 5)</span></span><br><span class="line">                complete_nread(c);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">...<span class="comment">// scr: error handling</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">/* first check if we have leftovers in the conn_read buffer */</span></span><br><span class="line">            <span class="keyword">if</span> (c-&gt;rbytes &gt; <span class="number">0</span>) &#123; <span class="comment">// scr: -----------------------------&gt; 1)</span></span><br><span class="line">                <span class="keyword">int</span> tocopy = c-&gt;rbytes &gt; c-&gt;rlbytes ? c-&gt;rlbytes : c-&gt;rbytes;</span><br><span class="line">                <span class="keyword">if</span> (c-&gt;ritem != c-&gt;rcurr) &#123;</span><br><span class="line">                    memmove(c-&gt;ritem, c-&gt;rcurr, tocopy);</span><br><span class="line">                &#125;</span><br><span class="line">                c-&gt;ritem += tocopy;</span><br><span class="line">                c-&gt;rlbytes -= tocopy;</span><br><span class="line">                c-&gt;rcurr += tocopy;</span><br><span class="line">                c-&gt;rbytes -= tocopy;</span><br><span class="line">                <span class="keyword">if</span> (c-&gt;rlbytes == <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/*  now try reading from the socket */</span></span><br><span class="line">            res = read(c-&gt;sfd, c-&gt;ritem, c-&gt;rlbytes); <span class="comment">// scr: --------&gt; 2)</span></span><br><span class="line">            <span class="keyword">if</span> (res &gt; <span class="number">0</span>) &#123;</span><br><span class="line">...<span class="comment">// scr: stat</span></span><br><span class="line">                <span class="keyword">if</span> (c-&gt;rcurr == c-&gt;ritem) &#123;</span><br><span class="line">                    c-&gt;rcurr += res;</span><br><span class="line">                &#125;</span><br><span class="line">                c-&gt;ritem += res;</span><br><span class="line">                c-&gt;rlbytes -= res;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (res == <span class="number">0</span>) &#123; <span class="comment">/* end of stream */</span> <span class="comment">// scr: --------------&gt; 3)</span></span><br><span class="line">                conn_set_state(c, conn_closing);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; <span class="comment">// scr: ------------------------------------------------&gt; 4)</span></span><br><span class="line">            <span class="keyword">if</span> (res == <span class="number">-1</span> &amp;&amp; (errno == EAGAIN || errno == EWOULDBLOCK)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!update_event(c, EV_READ | EV_PERSIST)) &#123;</span><br><span class="line">...<span class="comment">// scr: error handling</span></span><br><span class="line">                &#125;</span><br><span class="line">                stop = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">...<span class="comment">// scr: error handling</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">process_update_command@memcached.c</text></center>
+<p>1) Check if there are some leftover data (from the <a href="/understanding-memcached-source-code-VIII/#try-read-network">command read</a> phase). If so, read directly.</p>
+<p class="back"><br>More specific, say, if you can enter the command above fast enough (maybe copy paste it directly to <em>telnet</em>), the data portion will be coalesced in with the command by <a href="/understanding-memcached-source-code-VIII/#try-read-network">read</a>.<br></p>
+
+<p>2) Read the data to the memory pointed by <code>ritem</code>.</p>
+<p>3) If the connection is closed (<em>FIN</em>) in the middle of the read, close the session.</p>
+<p>4) If the data is separated into multiple <code>read</code>s, then set the <em>drive machine</em> to listen to more data and suspend.</p>
+<p>5) Normal termination - <code>read</code> finished, call <a href="/understanding-memcached-source-code-VI/#complete-nread-ascii">complete_nread</a> which is covered in <a href="/understanding-memcached-source-code-VI">LRU III</a>.</p>
+<p>The missing part in <a href="/understanding-memcached-source-code-VI">LRU III</a> is <code>out_string</code>. Combined with <code>conn_write</code>, it functions as a simpler version of <a href="/understanding-memcached-source-code-VIII/#process-get-command">process_get_command</a> for “simple response”, and the actual data writing is handled by <a href="/understanding-memcached-source-code-VIII/#conn-mwrite">conn_mwrite</a> (note the <code>fall through...</code> in the <code>switch case</code>) block which, as discussed, changes the <strong>state</strong> back to <code>conn_new_cmd</code>. Next we discuss the process in detail.</p>
+<h2 id="out-string"><a href="#out-string" class="headerlink" title="out_string"></a>out_string</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">out_string</span><span class="params">(conn *c, <span class="keyword">const</span> <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">size_t</span> len;</span><br><span class="line">    </span><br><span class="line">...<span class="comment">//scr: not applicable</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (settings.verbose &gt; <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"&gt;%d %s\n"</span>, c-&gt;sfd, str);</span><br><span class="line">        </span><br><span class="line">    <span class="comment">/* Nuke a partial output... */</span></span><br><span class="line">    c-&gt;msgcurr = <span class="number">0</span>; <span class="comment">// scr: ---------------------------&gt; 1)</span></span><br><span class="line">    c-&gt;msgused = <span class="number">0</span>;</span><br><span class="line">    c-&gt;iovused = <span class="number">0</span>;</span><br><span class="line">    add_msghdr(c);</span><br><span class="line">    </span><br><span class="line">    len = <span class="built_in">strlen</span>(str); <span class="comment">// scr: ------------------------&gt; 2)</span></span><br><span class="line">    <span class="keyword">if</span> ((len + <span class="number">2</span>) &gt; c-&gt;wsize) &#123;</span><br><span class="line">        <span class="comment">/* ought to be always enough. just fail for simplicity */</span></span><br><span class="line">        str = <span class="string">"SERVER_ERROR output line too long"</span>;</span><br><span class="line">        len = <span class="built_in">strlen</span>(str);</span><br><span class="line">    &#125;   </span><br><span class="line">    </span><br><span class="line">    <span class="built_in">memcpy</span>(c-&gt;wbuf, str, len); <span class="comment">// scr: ----------------&gt; 3)</span></span><br><span class="line">    <span class="built_in">memcpy</span>(c-&gt;wbuf + len, <span class="string">"\r\n"</span>, <span class="number">2</span>);</span><br><span class="line">    c-&gt;wbytes = len + <span class="number">2</span>;</span><br><span class="line">    c-&gt;wcurr = c-&gt;wbuf;</span><br><span class="line">    </span><br><span class="line">    conn_set_state(c, conn_write); <span class="comment">// scr: ------------&gt; 4)</span></span><br><span class="line">    c-&gt;write_and_go = conn_new_cmd; <span class="comment">// scr: -----------&gt; 5)</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;   </span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">memcached.c:out_string</text></center>
+<p>1) Initialize the <code>iov</code>. the mechanism and <a href="/understanding-memcached-source-code-VIII/#add-msghdr">add_msghdr</a> has been discussed in the <a href="/understanding-memcached-source-code-VIII/">last post</a></p>
+<p>2) Calculate string length, and be paranoid for survival.</p>
+<p>3) Populate <code>wbuf</code> with the output string and point <code>wcurr</code> to <code>wbuf</code>.</p>
+<p>4) Indicate the next <strong>state</strong> <code>conn_write</code>.</p>
+<p>5) Set the last <strong>state</strong> to <code>conn_new_cmd</code> and form the “loop”.</p>
+<h2 id="conn-write"><a href="#conn-write" class="headerlink" title="conn_write"></a>conn_write</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">        <span class="keyword">case</span> conn_write:</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * We want to write out a simple response. If we haven't already,</span></span><br><span class="line"><span class="comment">             * assemble it into a msgbuf list (this will be a single-entry</span></span><br><span class="line"><span class="comment">             * list for TCP or a two-entry list for UDP).</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (c-&gt;iovused == <span class="number">0</span> || (IS_UDP(c-&gt;transport) &amp;&amp; c-&gt;iovused == <span class="number">1</span>)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (add_iov(c, c-&gt;wcurr, c-&gt;wbytes) != <span class="number">0</span>) &#123; <span class="comment">// scr: ---&gt; 1)</span></span><br><span class="line">                    <span class="keyword">if</span> (settings.verbose &gt; <span class="number">0</span>)</span><br><span class="line">                        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Couldn't build response\n"</span>);</span><br><span class="line">                    conn_set_state(c, conn_closing);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* fall through... */</span></span><br><span class="line">        <span class="keyword">case</span> conn_mwrite:</span><br><span class="line">...<span class="comment">// scr: discussed</span></span><br><span class="line">            <span class="keyword">switch</span> (transmit(c)) &#123;</span><br><span class="line">            <span class="keyword">case</span> TRANSMIT_COMPLETE:</span><br><span class="line">                <span class="keyword">if</span> (c-&gt;state == conn_mwrite) &#123;</span><br><span class="line">...<span class="comment">// scr: discussed</span></span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c-&gt;state == conn_write) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (c-&gt;write_and_free) &#123;</span><br><span class="line">...<span class="comment">// scr: not applicable</span></span><br><span class="line">                    &#125;</span><br><span class="line">                    conn_set_state(c, c-&gt;write_and_go); <span class="comment">// scr: -------&gt; 2)</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">...<span class="comment">// scr: discussed</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">memcached.c:4507</text></center>
+<p>1) Add the content of “write buffer” to the actual <code>iov</code>.</p>
+<p>2) Pick up the <code>write_and_go</code> (i.e., conn_new_cmd) and set it to the next <strong>state</strong>.</p>
+<p>Next, we send the</p>
+<h1 id="Delete"><a href="#Delete" class="headerlink" title="Delete"></a>Delete</h1><p>command to delete the entry we just added.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; delete test</span><br></pre></td></tr></table></figure>
+<p>And the output this time is</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">28: going from conn_read to conn_parse_cmd</span><br><span class="line">&lt;28 delete test</span><br><span class="line">&gt; FOUND KEY test</span><br><span class="line">&gt;28 DELETED</span><br><span class="line">28: going from conn_parse_cmd to conn_write</span><br><span class="line">28: going from conn_write to conn_new_cmd</span><br><span class="line">28: going from conn_new_cmd to conn_waiting</span><br><span class="line">28: going from conn_waiting to conn_read</span><br></pre></td></tr></table></figure>
+<p>Like <a href="#create">add</a> the entry point of this command (after parsed) is <a href="/understanding-memcached-source-code-VI/#process-delete-command">process_delete_command</a> which has been fully covered in <a href="/understanding-memcached-source-code-VI">LRU III</a>. Furthermore, <code>out_string</code> is called within <code>process_delete_command</code> to trigger the <strong>state</strong> switches from <code>conn_write</code>, and back to <code>conn_new_cmd</code>.</p>
+<h1 id="To-go"><a href="#To-go" class="headerlink" title="To go"></a>To go</h1><p><img src="/gallery/memcached-state-machine.png" alt="Memcached state machine"></p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/event-driven/">event driven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memecached/">memecached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/state-machine/">state machine</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cn/understanding-memcached-source-code-IV/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">理解 Memcached 源码 - LRU I</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Properties-in-discussion"><span class="nav-number">1.</span> <span class="nav-text">Properties in discussion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Create"><span class="nav-number">2.</span> <span class="nav-text">Create</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#process-update-command"><span class="nav-number">2.1.</span> <span class="nav-text">process_update_command</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conn-nread"><span class="nav-number">2.2.</span> <span class="nav-text">conn_nread</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#out-string"><span class="nav-number">2.3.</span> <span class="nav-text">out_string</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conn-write"><span class="nav-number">2.4.</span> <span class="nav-text">conn_write</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Delete"><span class="nav-number">3.</span> <span class="nav-text">Delete</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To-go"><span class="nav-number">4.</span> <span class="nav-text">To go</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

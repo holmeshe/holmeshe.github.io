@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="memcachedslab allocatorcache">
+  
+  
+  
+  
+  <meta name="description" content="Last time we saw the memory allocating process, which further formulates slabs and the derivative “free lists” (a.k.a., slots). This time we will examine how to take advantage of the established data">
+<meta name="keywords" content="memcached,slab allocator,cache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding The Memcached Source Code - Slab III">
+<meta property="og:url" content="https://holmeshe.me/understanding-memcached-source-code-III/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="Last time we saw the memory allocating process, which further formulates slabs and the derivative “free lists” (a.k.a., slots). This time we will examine how to take advantage of the established data">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://holmeshe.me/gallery/spade.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/heart.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/club.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/diamond.svg">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding The Memcached Source Code - Slab III">
+<meta name="twitter:description" content="Last time we saw the memory allocating process, which further formulates slabs and the derivative “free lists” (a.k.a., slots). This time we will examine how to take advantage of the established data">
+<meta name="twitter:image" content="https://holmeshe.me/gallery/spade.svg">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-understanding-memcached-source-code-III" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Understanding The Memcached Source Code - Slab III
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-III/" class="article-date">
+	  <time datetime="2018-09-28T09:55:00.000Z" itemprop="datePublished">September 28, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+      <div>
+        <a class="ext-link" href='/cn/understanding-memcached-source-code-III/'>
+          <img src="/css/images/translate.svg" id="translate">
+          </img>
+        </a>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="/understanding-memcached-source-code-I/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/spade.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">slab allocator (I, </text></a> <a href="/understanding-memcached-source-code-II/"><text style="color:black;font-weight:bold;">II, </text></a> <a href="#"><text style="color:black;font-weight:bold;">III - this article)</text></a> is the core module of the cache system, which largely determines how efficient the bottleneck resource, memory, can be utilized. The other 3 parts, namely,</p>
+<p><a href="/understanding-memcached-source-code-IV/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/heart.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">LRU algorithm (I</text></a> <a href="/understanding-memcached-source-code-V/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-VI/"><text style="color:black;font-weight:bold;">, III)</text></a> for entry expiration; and an</p>
+<p><a href="/understanding-memcached-source-code-VII/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/club.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">event driven model (I</text></a> <a href="/understanding-memcached-source-code-VIII/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-IX/"><text style="color:black;font-weight:bold;">, III)</text></a> based on libevent; and the</p>
+<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/diamond.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">consistent harsh (not complete)</text></a> for data distribution,</p>
+<p>are built around it.</p>
+<p>Last time we saw the memory allocating process, which further formulates <strong>slabs</strong> and the derivative “free lists” (a.k.a., <code>slots</code>). This time we will examine how to take advantage of the established data structures to <strong>“slab allocate / release”</strong> memory chunks which will be used to store <strong>items</strong>.</p>
+<a id="more"></a>
+<h1 id="Slab-alloc"><a href="#Slab-alloc" class="headerlink" title="Slab alloc"></a>Slab alloc</h1><p>Firstly, we look at</p>
+<h2 id="do-slabs-alloc"><a href="#do-slabs-alloc" class="headerlink" title="do_slabs_alloc"></a>do_slabs_alloc</h2><p class="back"><br>which is opposite to the <a href="../understanding-memcached-source-code-II/#do-slabs-free">discussed <code>do_slabs_free</code></a>.<br></p>
+
+<p>Note that the “public” interface of <code>do_slabs_alloc</code> is <a href="#" onclick="return false;" data-toggle="collapse" data-target="#slabs_alloc">slabs_alloc</a> which is basically a thread-safe wrapper that locks the core data structures manipulated by the <strong>Memcached</strong> instance that is configured as <a href="#" onclick="return false;" data-toggle="collapse" data-target="#multithreaded">multithreaded</a>.</p>
+<div id="slabs_alloc" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">slabs_alloc</span><span class="params">(<span class="keyword">size_t</span> size, <span class="keyword">unsigned</span> <span class="keyword">int</span> id, <span class="keyword">unsigned</span> <span class="keyword">int</span> *total_chunks,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">unsigned</span> <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">void</span> *ret;</span><br><span class="line"></span><br><span class="line">    pthread_mutex_lock(&amp;slabs_lock);</span><br><span class="line">    ret = do_slabs_alloc(size, id, total_chunks, flags);</span><br><span class="line">    pthread_mutex_unlock(&amp;slabs_lock);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">slabs_alloc@slabs.c</text></center><br></div>
+
+<div id="multithreaded" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'t'</span>:</span><br><span class="line">            settings.num_threads = atoi(optarg);</span><br><span class="line">            <span class="keyword">if</span> (settings.num_threads &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Number of threads must be greater than 0\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/* There're other problems when you get above 64 threads.</span></span><br><span class="line"><span class="comment">             * In the future we should portably detect # of cores for the</span></span><br><span class="line"><span class="comment">             * default.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (settings.num_threads &gt; <span class="number">64</span>) &#123;</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"WARNING: Setting a high number of worker"</span></span><br><span class="line">                                <span class="string">"threads is not recommended.\n"</span></span><br><span class="line">                                <span class="string">" Set this value to the number of cores in"</span></span><br><span class="line">                                <span class="string">" your machine or less.\n"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">main@memcached.c:5572</text></center><br></div>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> *<span class="title">do_slabs_alloc</span><span class="params">(<span class="keyword">const</span> <span class="keyword">size_t</span> size, <span class="keyword">unsigned</span> <span class="keyword">int</span> id, <span class="keyword">unsigned</span> <span class="keyword">int</span> *total_chunks,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">unsigned</span> <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">slabclass_t</span> *p;</span><br><span class="line">    <span class="keyword">void</span> *ret = <span class="literal">NULL</span>;</span><br><span class="line">    item *it = <span class="literal">NULL</span>;</span><br><span class="line">...</span><br><span class="line">    p = &amp;slabclass[id]; <span class="comment">// scr: ----------------------------------------&gt; 1)</span></span><br><span class="line">...</span><br><span class="line">    <span class="keyword">if</span> (total_chunks != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        *total_chunks = p-&gt;slabs * p-&gt;perslab; <span class="comment">// scr: -----------------&gt; 2)</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* fail unless we have space at the end of a recently allocated page,</span></span><br><span class="line"><span class="comment">       we have something on our freelist, or we could allocate a new page */</span></span><br><span class="line">    <span class="keyword">if</span> (p-&gt;sl_curr == <span class="number">0</span> &amp;&amp; flags != SLABS_ALLOC_NO_NEWPAGE) &#123; <span class="comment">// scr: --&gt; *)</span></span><br><span class="line">        do_slabs_newslab(id); <span class="comment">// scr: ----------------------------------&gt; 3)</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p-&gt;sl_curr != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">/* return off our freelist */</span></span><br><span class="line">        it = (item *)p-&gt;slots; <span class="comment">// scr: ---------------------------------&gt; 4)</span></span><br><span class="line">        p-&gt;slots = it-&gt;next;</span><br><span class="line">        <span class="keyword">if</span> (it-&gt;next) it-&gt;next-&gt;prev = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">/* Kill flag and initialize refcount here for lock safety in slab</span></span><br><span class="line"><span class="comment">         * mover's freeness detection. */</span></span><br><span class="line">        it-&gt;it_flags &amp;= ~ITEM_SLABBED; <span class="comment">// scr: -------------------------&gt; 5)</span></span><br><span class="line">        it-&gt;refcount = <span class="number">1</span>;</span><br><span class="line">        p-&gt;sl_curr--;</span><br><span class="line">        ret = (<span class="keyword">void</span> *)it; <span class="comment">// scr: --------------------------------------&gt; 6)</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ret = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_slabs_alloc@slabs.c</text></center>
+<p>1) For <em>item allocation</em>, <code>id</code> indicates the <strong>slab class</strong> that suits the requested <em>item size</em> best. In other words, <code>id</code> is selected using the actual <em>item size</em>, the process of which will be discussed <a href="#slabs-clsid">very soon</a>.</p>
+<p>2) <code>total_chunks</code> is the parameter that outputs the total number of <em>memory chunks</em> (entries in the <em>free list</em>) available for the <strong>slab class</strong>. <code>if (total_chunks != NULL)</code> suggests that the argument is optional.</p>
+<p>*) As the name indicates, <code>SLABS_ALLOC_NO_NEWPAGE</code> (<code>flags</code>) prevents this method to allocate new <strong>slab</strong> when there is no memory chunk available. This option is not used in the normal path of <em>item allocation</em>, hence is ignored for now.</p>
+<p>3) When there is no free memory chunk, allocate a new <strong>slab</strong>. Here <code>p-&gt;sl_curr</code> indicates the number of available <em>chunks</em>, whose value decreases each time this method got called (in step 5 below).</p>
+<p class="back"><br>Conversely, this field is increased in <a href="../understanding-memcached-source-code-II/#do-slabs-free">do_slabs_free</a>. Note that <em>new slab</em> has also been covered from <a href="../understanding-memcached-source-code-II/#New-slab">here</a>.<br></p>
+
+<p>4) Remove the front element (<strong>f</strong>) from the <em>free list</em>, and set it to <code>it</code>.</p>
+<p class="back"><br>In <a href="../understanding-memcached-source-code-II/#do-slabs-free">do_slabs_free</a>, an element is added to the front of the <em>free list</em>.<br></p>
+
+<p>5) Clear the <code>ITEM_SLABBED</code> for the chuck (<strong>f</strong>), set its reference count to 1, and reduce <code>p-&gt;sl_curr</code> by <code>1</code>.</p>
+<p class="back"><br>Likewise, this flag is set in <a href="../understanding-memcached-source-code-II/#do-slabs-free">do_slabs_free</a>.<br></p>
+
+<p>6) Return (<strong>f</strong>).</p>
+<p>Next, we look at the process of determining the <code>id</code> based on <em>item size</em>, the workhorse method of which is</p>
+<h2 id="slabs-clsid"><a href="#slabs-clsid" class="headerlink" title="slabs_clsid"></a>slabs_clsid</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">slabs_clsid</span><span class="params">(<span class="keyword">const</span> <span class="keyword">size_t</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = POWER_SMALLEST;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (size &gt; slabclass[res].size)</span><br><span class="line">        <span class="keyword">if</span> (res++ == power_largest)     <span class="comment">/* won't fit in the biggest slab */</span></span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_slabs_alloc@slabs.c</text></center>
+<p><code>slabs_clsid</code> consists mainly of a <code>while</code> loop that linear search the possible smallest <strong>slab class</strong> that can contain the requested <code>size</code>. This method is called from <a href="#" onclick="return false;" data-toggle="collapse" data-target="#do_item_alloc">do_item_alloc</a> before <code>slabs_alloc</code>. We will discuss <a href="#" onclick="return false;" data-toggle="collapse" data-target="#do_item_alloc">do_item_alloc</a> in the following post.</p>
+<div id="do_item_alloc" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function">item *<span class="title">do_item_alloc</span><span class="params">(<span class="keyword">char</span> *key, <span class="keyword">const</span> <span class="keyword">size_t</span> nkey, <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params">                    <span class="keyword">const</span> <span class="keyword">rel_time_t</span> exptime, <span class="keyword">const</span> <span class="keyword">int</span> nbytes,</span></span></span><br><span class="line"><span class="function"><span class="params">                    <span class="keyword">const</span> <span class="keyword">uint32_t</span> cur_hv)</span> </span>&#123;</span><br><span class="line">...</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> id = slabs_clsid(ntotal);</span><br><span class="line">    <span class="keyword">if</span> (id == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">...</span><br><span class="line">        it = slabs_alloc(ntotal, id, &amp;total_chunks, <span class="number">0</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_alloc@items.c</text></center><br></div>
+
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://medium.com/source-code/https-medium-com-source-code-understanding-the-memcached-source-code-slab-iii-cb06e577d73e'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/slab-allocator/">slab allocator</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/understanding-memcached-source-code-IV/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The Memcached Source Code - LRU I
+        
+      </div>
+    </a>
+  
+  
+    <a href="/understanding-memcached-source-code-II/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Understanding The Memcached Source Code - Slab II</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Slab-alloc"><span class="nav-number">1.</span> <span class="nav-text">Slab alloc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#do-slabs-alloc"><span class="nav-number">1.1.</span> <span class="nav-text">do_slabs_alloc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#slabs-clsid"><span class="nav-number">1.2.</span> <span class="nav-text">slabs_clsid</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

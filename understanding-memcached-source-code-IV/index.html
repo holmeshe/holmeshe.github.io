@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="memcachedcacheLRU">
+  
+  
+  
+  
+  <meta name="description" content="More often than not, the LRU algorithm is combined with a hash map, and is referred to as a LRU Cache. In a LRU-cache, the hash map enables fast accessing of cached objects; and LRU avoids the cache t">
+<meta name="keywords" content="memcached,cache,LRU">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding The Memcached Source Code - LRU I">
+<meta property="og:url" content="https://holmeshe.me/understanding-memcached-source-code-IV/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="More often than not, the LRU algorithm is combined with a hash map, and is referred to as a LRU Cache. In a LRU-cache, the hash map enables fast accessing of cached objects; and LRU avoids the cache t">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://holmeshe.me/gallery/spade.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/heart.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/club.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/diamond.svg">
+<meta property="og:image" content="https://holmeshe.me/gallery/lru.png">
+<meta property="og:image" content="https://holmeshe.me/gallery/lru-linked-list.png">
+<meta property="og:image" content="https://holmeshe.me/gallery/item-chunk.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding The Memcached Source Code - LRU I">
+<meta name="twitter:description" content="More often than not, the LRU algorithm is combined with a hash map, and is referred to as a LRU Cache. In a LRU-cache, the hash map enables fast accessing of cached objects; and LRU avoids the cache t">
+<meta name="twitter:image" content="https://holmeshe.me/gallery/spade.svg">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-understanding-memcached-source-code-IV" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Understanding The Memcached Source Code - LRU I
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-IV/" class="article-date">
+	  <time datetime="2018-12-10T23:00:00.000Z" itemprop="datePublished">December 11, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+      <div>
+        <a class="ext-link" href='/cn/understanding-memcached-source-code-IV/'>
+          <img src="/css/images/translate.svg" id="translate">
+          </img>
+        </a>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="/understanding-memcached-source-code-I/" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/spade.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">slab allocator (I, </text></a> <a href="/understanding-memcached-source-code-II/"><text style="color:black;font-weight:bold;">II, </text></a> <a href="/understanding-memcached-source-code-III/"><text style="color:black;font-weight:bold;">III)</text></a> is the core module of the cache system, which largely determines how efficient the bottleneck resource, memory, can be utilized. The other 3 parts, namely,</p>
+<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/heart.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">LRU algorithm (I - this article</text></a> <a href="/understanding-memcached-source-code-V/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-VI/"><text style="color:black;font-weight:bold;">, III)</text></a> for entry expiration; and an</p>
+<p><a href="/understanding-memcached-source-code-VII/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/club.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">event driven model (I</text></a> <a href="/understanding-memcached-source-code-VIII/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-IX/"><text style="color:black;font-weight:bold;">, III)</text></a> based on libevent; and the</p>
+<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/diamond.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">consistent harsh (not complete)</text></a> for data distribution,</p>
+<p>are built around it.</p>
+<p>More often than not, the <strong>LRU</strong> algorithm is combined with a <strong>hash map</strong>, and is referred to as a </p>
+<h1 id="LRU-Cache"><a href="#LRU-Cache" class="headerlink" title="LRU Cache"></a>LRU Cache</h1><p>In a <strong>LRU-cache</strong>, the <strong>hash map</strong> enables fast accessing of <em>cached</em> objects; and <strong>LRU</strong> avoids the <em>cache</em> to grow infinitely by marking expired, or so called, <strong>least recently used</strong> objects. Next we look at how <strong>LRU</strong> works from a high level standpoint.</p>
+<a id="more"></a>
+<h2 id="Linked-list"><a href="#Linked-list" class="headerlink" title="Linked list"></a>Linked list</h2><p>Technically, <strong>LRU</strong> algorithm works on a <em>linked list</em>, whenever a list entry is used (accessed or updated), it is removed from the list and be attached to the list head. In this way, the closer an element is to the list tail, the <strong>less recently used</strong> it is. Hence it is easy to remove irrelevant or “expired” elements from the tail based on a certain configuration.</p>
+<h2 id="Harsh-map"><a href="#Harsh-map" class="headerlink" title="Harsh map"></a>Harsh map</h2><p><em>Linked list</em> is slow when it comes to element access, hence another data structure is employed. We have seen how <strong>linked list</strong> “strings” <em>chunks</em> in <strong>slabs</strong> to make <em>free list</em>s. In an <strong>LRU cache</strong>, the mechanism is similar, however, it is the <strong>hash map</strong> entries instead of <em>chunks</em> in <strong>slabs</strong> got wired up this time, which looks like:</p>
+<p><img src="/gallery/lru.png" alt="hash map perspective"></p>
+<p>We can also flatten the linked list, and make the structure a bit more clear,</p>
+<p><img src="/gallery/lru-linked-list.png" alt="linked list perspective"></p>
+<h1 id="Core-data-structure-item"><a href="#Core-data-structure-item" class="headerlink" title="Core data structure - item"></a>Core data structure - item</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">stritem</span> &#123;</span></span><br><span class="line">    <span class="comment">/* Protected by LRU locks */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">stritem</span> *<span class="title">next</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">stritem</span> *<span class="title">prev</span>;</span></span><br><span class="line">    <span class="comment">/* Rest are protected by an item lock */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">stritem</span> *<span class="title">h_next</span>;</span>    <span class="comment">/* hash chain next */</span></span><br><span class="line">    <span class="keyword">rel_time_t</span>      time;       <span class="comment">/* least recent access */</span></span><br><span class="line">    <span class="keyword">rel_time_t</span>      exptime;    <span class="comment">/* expire time */</span></span><br><span class="line">    <span class="keyword">int</span>             nbytes;     <span class="comment">/* size of data */</span></span><br><span class="line">    <span class="keyword">unsigned</span> short  refcount;</span><br><span class="line">    <span class="keyword">uint8_t</span>         nsuffix;    <span class="comment">/* length of flags-and-length string */</span></span><br><span class="line">    <span class="keyword">uint8_t</span>         it_flags;   <span class="comment">/* ITEM_* above */</span></span><br><span class="line">    <span class="keyword">uint8_t</span>         slabs_clsid;<span class="comment">/* which slab class we're in */</span></span><br><span class="line">    <span class="keyword">uint8_t</span>         nkey;       <span class="comment">/* key length, w/terminating null and padding */</span></span><br><span class="line">    <span class="comment">/* this odd type prevents type-punning issues when we do</span></span><br><span class="line"><span class="comment">     * the little shuffle to save space when not using CAS. */</span></span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">... <span class="comment">// scr: cas</span></span><br><span class="line">        <span class="keyword">char</span> end; <span class="comment">// scr: flexible array member indicating the item header "end"</span></span><br><span class="line">    &#125; data[];</span><br><span class="line">    <span class="comment">/* if it_flags &amp; ITEM_CAS we have 8 bytes CAS */</span></span><br><span class="line">    <span class="comment">/* then null-terminated key */</span></span><br><span class="line">    <span class="comment">/* then " flags length\r\n" (no terminating null) */</span></span><br><span class="line">    <span class="comment">/* then data with terminating \r\n (no terminating null; it's binary!) */</span></span><br><span class="line">&#125; item;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_unlink@item.c</text></center>
+<h2 id="Properties-in-discussion"><a href="#Properties-in-discussion" class="headerlink" title="Properties in discussion"></a>Properties in discussion</h2><p><code>next</code>, <code>prev</code> - <em>LRU list</em> pointers, initialized in <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a>, used by <a href="#item-link-q-add-to-linked-list">item_link_q</a>, <a href="#item-unlink-q-remove-from-linked-list">item_unlink_q</a></p>
+<p><code>h_next</code> - <em>hash collision</em> list pointers, initialized in <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a>, used by <a href="#assoc-insert-add-to-hash-map">assoc_insert</a>, <a href="#assoc-delete-remove-from-hash-map">assoc_delete</a>, <a href="/understanding-memcached-source-code-II">various methods (LRU II)</a> </p>
+<p><code>time</code> - last access time, set in <a href="#do-item-link">do_item_link</a>, used by <a href="(/understanding-memcached-source-code-VI/#lru-pull-tail">lru_pull_tail (LRU III)</a></p>
+<p><code>exptime</code> - expire time indicated by request argument, initialized in <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a>, used by <a href="(/understanding-memcached-source-code-VI/#lru-pull-tail">lru_pull_tail (LRU III)</a></p>
+<p><code>nbytes</code> - data size indicated by request argument, initialized in <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a></p>
+<p><code>refcount</code> - reference cound, initialized in <a href="/understanding-memcached-source-code-III/#do-slabs-alloc">do_slabs_alloc (Slab III)</a>, used by <a href="#do-item-link">do_item_link</a></p>
+<p><code>nsuffix</code> - initialized in <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a> with <code>item_make_header</code></p>
+<p><code>it_flags</code> - initialized in <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a>, used by <a href="#do-item-link">do_item_link</a>, <a href="#do-item-unlink">do_item_unlink</a></p>
+<p><code>slabs_clsid</code> - the <strong>LRU</strong> list the <strong>item</strong> belongs, initialized in <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a>, used by <a href="#item-link-q-add-to-linked-list">item_link_q</a>, <a href="#item-unlink-q-remove-from-linked-list">item_unlink_q</a></p>
+<p><code>nkey</code> - key size, calcuated in <a href="/understanding-memcached-source-code-VI/#do-item-alloc">do_item_alloc (LRU III)</a>, used by <a href="#assoc-delete-remove-from-hash-map">assoc_delete</a></p>
+<h2 id="Memory-layout-of-an-item-chunk"><a href="#Memory-layout-of-an-item-chunk" class="headerlink" title="Memory layout of an item chunk"></a>Memory layout of an item chunk</h2><p>We have mentioned <em>item chunk</em> in <a href="/understanding-memcached-source-code-II/#do-slabs-free">do_slabs_free</a>. With the help of this data structure, we can now examine the chunk more closely.</p>
+<p><img src="/gallery/item-chunk.png" alt="item chunk"></p>
+<p>Next we read the relevant code that performs the above discussed LRU operations.</p>
+<h1 id="do-item-link"><a href="#do-item-link" class="headerlink" title="do_item_link"></a>do_item_link</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_item_link</span><span class="params">(item *it, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123; <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">...</span><br><span class="line">    it-&gt;it_flags |= ITEM_LINKED;                <span class="comment">// scr: -------------------&gt; 2)</span></span><br><span class="line">    it-&gt;time = current_time;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: stat</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Allocate a new CAS ID on link. */</span></span><br><span class="line">... <span class="comment">// scr: cas</span></span><br><span class="line">    assoc_insert(it, hv);                       <span class="comment">// scr: -------------------&gt; 3)</span></span><br><span class="line">    item_link_q(it);                            <span class="comment">// scr: -------------------&gt; 4)</span></span><br><span class="line">    refcount_incr(&amp;it-&gt;refcount);               <span class="comment">// scr: -------------------&gt; 5)</span></span><br><span class="line">... <span class="comment">// scr: stat</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_link@item.c</text></center>
+<p>1) <code>hv</code> is supposed to be the shortened “hashed value”.</p>
+<p>2) Set <code>ITEM_LINKED</code> in <code>it-&gt;it_flags</code>, and set current time to <code>it-&gt;time</code>.</p>
+<p class="back"><br>The field <code>it_flags</code> is used in <a href="/understanding-memcached-source-code-II/#do-slabs-free">do_slabs_free</a> and <a href="/understanding-memcached-source-code-III/#do-slabs-alloc">do_slabs_alloc</a><br></p>
+
+<p>3) Insert the <strong>item</strong> to hash map.</p>
+<p>4) Insert the <strong>item</strong> to linked list.</p>
+<p>5) Increase the <em>reference count</em>.</p>
+<p class="back"><br>This field is initialized as <code>1</code> in <a href="/understanding-memcached-source-code-III/#do-slabs-alloc">do_slabs_alloc</a><br></p>
+
+<p>It is worth noting here that <em>reference count</em> indicates how many sub-modules are using the same resource, so as to determine when to actually deallocate the resource (In this particular case, <strong>item</strong> is referred by both <strong>slab</strong> and <strong>LRU</strong>). I have written <a href="/cpp-pointers/">this article</a> that explains a similar mechanism of C++.</p>
+<h2 id="item-link-q-add-to-linked-list"><a href="#item-link-q-add-to-linked-list" class="headerlink" title="item_link_q - add to linked list"></a>item_link_q - add to linked list</h2><a href="#" onclick="return false;" data-toggle="collapse" data-target="#item_link_q">item_link_q</a> is a thread safe wrapper of the workhorse method <code>do_item_link_q</code>.<br><br><div id="item_link_q" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">item_link_q</span><span class="params">(item *it)</span> </span>&#123;</span><br><span class="line">    pthread_mutex_lock(&amp;lru_locks[it-&gt;slabs_clsid]);</span><br><span class="line">    do_item_link_q(it);</span><br><span class="line">    pthread_mutex_unlock(&amp;lru_locks[it-&gt;slabs_clsid]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item_link_q@item.c</text></center>
+<p></p></div><p></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_item_link_q</span><span class="params">(item *it)</span> </span>&#123; <span class="comment">/* item is the new head */</span></span><br><span class="line">    item **head, **tail;</span><br><span class="line">    assert((it-&gt;it_flags &amp; ITEM_SLABBED) == <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    head = &amp;heads[it-&gt;slabs_clsid];           <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">    tail = &amp;tails[it-&gt;slabs_clsid];</span><br><span class="line">    assert(it != *head);</span><br><span class="line">    assert((*head &amp;&amp; *tail) || (*head == <span class="number">0</span> &amp;&amp; *tail == <span class="number">0</span>));</span><br><span class="line">    it-&gt;prev = <span class="number">0</span>;                             <span class="comment">// scr: -------------------&gt; 2)</span></span><br><span class="line">    it-&gt;next = *head;</span><br><span class="line">    <span class="keyword">if</span> (it-&gt;next) it-&gt;next-&gt;prev = it;</span><br><span class="line">    *head = it;</span><br><span class="line">    <span class="keyword">if</span> (*tail == <span class="number">0</span>) *tail = it;</span><br><span class="line">    sizes[it-&gt;slabs_clsid]++;                 <span class="comment">// scr: -------------------&gt; 3)</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_link_q@item.c</text></center>
+<p>1) Get the <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals">head</a> and <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals">tail</a> of the respective <strong>LRU linked list</strong> indicated by <code>slabs_clsid</code>. Note that the <code>slabs_clsid</code> is <em>salted</em> with the type of the queue, hence each <strong>slab group</strong> may enlist multiple <em>lists</em>.</p>
+<p>2) Standard operations of “adding an element to the front”.</p>
+<p>3) Increase the global array <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals">sizes</a>.</p>
+<div id="globals" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> item *heads[LARGEST_ID];</span><br><span class="line"><span class="keyword">static</span> item *tails[LARGEST_ID];</span><br><span class="line">...</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> sizes[LARGEST_ID];</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item.c:59</text></center><br></div>
+
+<h2 id="assoc-insert-add-to-hash-map"><a href="#assoc-insert-add-to-hash-map" class="headerlink" title="assoc_insert - add to hash map"></a>assoc_insert - add to hash map</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">assoc_insert</span><span class="params">(item *it, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123; <span class="comment">// scr: again, hv -&gt; hash value</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> oldbucket;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: expanding related operations</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        it-&gt;h_next = primary_hashtable[hv &amp; hashmask(hashpower)]; <span class="comment">// scr:  1)</span></span><br><span class="line">        primary_hashtable[hv &amp; hashmask(hashpower)] = it;         // scr:  2)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: expanding related operations</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_insert@assoc.c</text></center>
+<p>1) Deal with potential conflict. If there is no, the <code>h_next</code> is set to <code>null</code>.</p>
+<p>2) Set the <strong>item</strong> to the bucket in <a href="#" onclick="return false;" data-toggle="collapse" data-target="#primary_hashtable">primary_hashtable</a>.</p>
+<div id="primary_hashtable" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">static</span> item** primary_hashtable = <span class="number">0</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc.c:42</text></center><br></div>
+
+<p>The expanding logic omitted here will be covered in the <a href="/understanding-memcached-source-code-V/#Scale-up-amp-entry-migration">next post</a>.</p>
+<h1 id="do-item-unlink"><a href="#do-item-unlink" class="headerlink" title="do_item_unlink"></a>do_item_unlink</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">do_item_unlink</span><span class="params">(item *it, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123;</span><br><span class="line">    MEMCACHED_ITEM_UNLINK(ITEM_key(it), it-&gt;nkey, it-&gt;nbytes);</span><br><span class="line">    <span class="keyword">if</span> ((it-&gt;it_flags &amp; ITEM_LINKED) != <span class="number">0</span>) &#123;</span><br><span class="line">        it-&gt;it_flags &amp;= ~ITEM_LINKED;         <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">... <span class="comment">// scr: stat</span></span><br><span class="line">        assoc_delete(ITEM_key(it), it-&gt;nkey, hv); <span class="comment">// scr: ---------------&gt; 2)</span></span><br><span class="line">        item_unlink_q(it);                    <span class="comment">// scr: -------------------&gt; 3)</span></span><br><span class="line">        do_item_remove(it);                   <span class="comment">// scr: -------------------&gt; *)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_unlink@item.c</text></center>
+<p>1) Clear <code>ITEM_LINKED</code> in <code>it-&gt;it_flags</code>.</p>
+<p>2) Remove the <strong>item</strong> from hash map.</p>
+<p>3) Remove the <strong>item</strong> from linked list.</p>
+<p>*) The actual releasing of an <em>item</em> will be covered in later posts.</p>
+<h2 id="item-unlink-q-remove-from-linked-list"><a href="#item-unlink-q-remove-from-linked-list" class="headerlink" title="item_unlink_q - remove from linked list"></a>item_unlink_q - remove from linked list</h2><p>Likewise, <a href="#" onclick="return false;" data-toggle="collapse" data-target="#item_unlink_q">item_unlink_q</a> is a thread safe wrapper of the workhorse method <code>do_item_unlink_q</code>.</p>
+<div id="item_unlink_q" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">item_link_q</span><span class="params">(item *it)</span> </span>&#123;</span><br><span class="line">    pthread_mutex_lock(&amp;lru_locks[it-&gt;slabs_clsid]);</span><br><span class="line">    do_item_link_q(it);</span><br><span class="line">    pthread_mutex_unlock(&amp;lru_locks[it-&gt;slabs_clsid]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item_unlink_q@item.c</text></center><br></div>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_item_unlink_q</span><span class="params">(item *it)</span> </span>&#123;</span><br><span class="line">    item **head, **tail;</span><br><span class="line">    head = &amp;heads[it-&gt;slabs_clsid];           <span class="comment">// scr: -------------------&gt; 1)</span></span><br><span class="line">    tail = &amp;tails[it-&gt;slabs_clsid];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (*head == it) &#123;                        <span class="comment">// scr: -------------------&gt; 2)</span></span><br><span class="line">        assert(it-&gt;prev == <span class="number">0</span>);</span><br><span class="line">        *head = it-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (*tail == it) &#123;</span><br><span class="line">        assert(it-&gt;next == <span class="number">0</span>);</span><br><span class="line">        *tail = it-&gt;prev;</span><br><span class="line">    &#125;</span><br><span class="line">    assert(it-&gt;next != it);</span><br><span class="line">    assert(it-&gt;prev != it);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (it-&gt;next) it-&gt;next-&gt;prev = it-&gt;prev;</span><br><span class="line">    <span class="keyword">if</span> (it-&gt;prev) it-&gt;prev-&gt;next = it-&gt;next;</span><br><span class="line">    sizes[it-&gt;slabs_clsid]--;                 <span class="comment">// scr: -------------------&gt; 3)</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">do_item_unlink_q@item.c</text></center>
+<p>1) Same, get the <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals1">head</a> and <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals1">tail</a> of the respective <strong>LRU linked list</strong> indicated by <code>slabs_clsid</code>.</p>
+<p>2) Standard operations of “removing an element from a linked list”.</p>
+<p>3) Decrease the global array <a href="#" onclick="return false;" data-toggle="collapse" data-target="#globals1">sizes</a>.</p>
+<div id="globals1" class="collapse"><br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> item *heads[LARGEST_ID];</span><br><span class="line"><span class="keyword">static</span> item *tails[LARGEST_ID];</span><br><span class="line">...</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> sizes[LARGEST_ID];</span><br></pre></td></tr></table></figure><br><center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">item.c:59</text></center><br></div>
+
+<h2 id="assoc-delete-remove-from-hash-map"><a href="#assoc-delete-remove-from-hash-map" class="headerlink" title="assoc_delete - remove from hash map"></a>assoc_delete - remove from hash map</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> item** _hashitem_before (<span class="keyword">const</span> <span class="keyword">char</span> *key, <span class="keyword">const</span> <span class="keyword">size_t</span> nkey, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv) &#123;</span><br><span class="line">    item **pos;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> oldbucket;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: expanding related operations</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        pos = &amp;primary_hashtable[hv &amp; hashmask(hashpower)]; <span class="comment">// scr: -----&gt; 1)</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (*pos &amp;&amp; ((nkey != (*pos)-&gt;nkey) || <span class="built_in">memcmp</span>(key, ITEM_key(*pos), nkey))) &#123;</span><br><span class="line">        pos = &amp;(*pos)-&gt;h_next; <span class="comment">// scr: ----------------------------------&gt; 2)</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assoc_delete</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *key, <span class="keyword">const</span> <span class="keyword">size_t</span> nkey, <span class="keyword">const</span> <span class="keyword">uint32_t</span> hv)</span> </span>&#123;</span><br><span class="line">    item **before = _hashitem_before(key, nkey, hv);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (*before) &#123;</span><br><span class="line">        item *nxt;</span><br><span class="line">...</span><br><span class="line">        nxt = (*before)-&gt;h_next; <span class="comment">// scr: --------------------------------&gt; 3)</span></span><br><span class="line">        (*before)-&gt;h_next = <span class="number">0</span>;   <span class="comment">/* probably pointless, but whatever. */</span></span><br><span class="line">        *before = nxt; <span class="comment">// scr: ------------------------------------------&gt; 4)</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* Note:  we never actually get here.  the callers don't delete things</span></span><br><span class="line"><span class="comment">       they can't find. */</span></span><br><span class="line">    assert(*before != <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<center style="line-height:0.8;margin:0;"><text style="color:black;font-weight:bold;">assoc_delete@assoc.c</text></center>
+<p>1) Get the hash bucket using <code>hv</code>.</p>
+<p>2) Go through the conflict chain and compare the <code>key</code>. Note that the result value is the <strong>address of the <code>next</code> member of the element <code>before</code> the found one</strong>. When there is no conflict, the address is the bucket itself.</p>
+<p>3) Set the next element after the found one to temporary variable <code>nxt</code>.</p>
+<p>4) Update the <strong><code>next</code> member of the element <code>before</code> the found one</strong>.</p>
+<h1 id="Take-home"><a href="#Take-home" class="headerlink" title="Take home"></a>Take home</h1><p>Try <a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noopener">this</a>.</p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://medium.com/source-code/understanding-the-memcached-source-code-lru-i-8b383c561638'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LRU/">LRU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/understanding-memcached-source-code-V/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The Memcached Source Code - LRU II
+        
+      </div>
+    </a>
+  
+  
+    <a href="/understanding-memcached-source-code-III/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Understanding The Memcached Source Code - Slab III</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LRU-Cache"><span class="nav-number">1.</span> <span class="nav-text">LRU Cache</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linked-list"><span class="nav-number">1.1.</span> <span class="nav-text">Linked list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Harsh-map"><span class="nav-number">1.2.</span> <span class="nav-text">Harsh map</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Core-data-structure-item"><span class="nav-number">2.</span> <span class="nav-text">Core data structure - item</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Properties-in-discussion"><span class="nav-number">2.1.</span> <span class="nav-text">Properties in discussion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memory-layout-of-an-item-chunk"><span class="nav-number">2.2.</span> <span class="nav-text">Memory layout of an item chunk</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#do-item-link"><span class="nav-number">3.</span> <span class="nav-text">do_item_link</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#item-link-q-add-to-linked-list"><span class="nav-number">3.1.</span> <span class="nav-text">item_link_q - add to linked list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#assoc-insert-add-to-hash-map"><span class="nav-number">3.2.</span> <span class="nav-text">assoc_insert - add to hash map</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#do-item-unlink"><span class="nav-number">4.</span> <span class="nav-text">do_item_unlink</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#item-unlink-q-remove-from-linked-list"><span class="nav-number">4.1.</span> <span class="nav-text">item_unlink_q - remove from linked list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#assoc-delete-remove-from-hash-map"><span class="nav-number">4.2.</span> <span class="nav-text">assoc_delete - remove from hash map</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Take-home"><span class="nav-number">5.</span> <span class="nav-text">Take home</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

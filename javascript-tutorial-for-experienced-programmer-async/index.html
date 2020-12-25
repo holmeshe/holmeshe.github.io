@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="JavaScriptasynccallbackpromise">
+  
+  
+  
+  
+  <meta name="description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+<meta name="keywords" content="JavaScript,async,callback,promise">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript Tutorial for Programmers - Async">
+<meta property="og:url" content="https://holmeshe.me/javascript-tutorial-for-experienced-programmer-async/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript Tutorial for Programmers - Async">
+<meta name="twitter:description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-javascript-tutorial-for-experienced-programmer-async" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      JavaScript Tutorial for Programmers - Async
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/javascript-tutorial-for-experienced-programmer-async/" class="article-date">
+	  <time datetime="2017-09-11T10:00:00.000Z" itemprop="datePublished">September 11, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on differences so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="Nothing-new-under-the-sun"><a href="#Nothing-new-under-the-sun" class="headerlink" title="Nothing new under the sun"></a>Nothing new under the sun</h1><p>Basically, asynchronization has two layers of meaning 1) unblocking of slow operations; and 2) triggering events non-linearly. In OS terms, the event is also called an interruption that can represent a coming network packet, a clock tick, or simply a mouse click. Technically, the event interrupts the current process, puts the next CPU instruction on hold, and calls a predefined code block (a.k.a., an event handler), “asynchronously”.</p>
+<p>The concept is essentially the same in application level.</p>
+<h2 id="The-problem-of-blocking-operations"><a href="#The-problem-of-blocking-operations" class="headerlink" title="The problem of blocking operations"></a>The problem of blocking operations</h2><p>In a narrow sense, asynchronization solves a fundamental difficulty in application development: blocking operation (mostly I/O). Why blocking is difficult? Well, no matter what kinds of App (with UI) you are working on (an embedded system, an mobile App, a game, or a web page), there is a underlying “loop” that refreshes the screen in a very high frequency. If the “loop” is blocked by a slow operation, say, a network interaction, your UI will be frozen, and the users might just let the App go. In particular, JavaScript runs as part of the “loop”, so we need to wield this black magic wisely.</p>
+<p>Before we start experimenting on JS, let’s do some preparations.</p>
+<p>Firstly, we download <a href="https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc?hl=en" target="_blank" rel="noopener">Moesif Origin &amp; CORS Changer</a> because we are going to make (a lot of) cross-origin HTTP requests. (as briefly mentioned in my <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-some-basics/">first post</a>)</p>
+<p>Secondly, we use python (Flask) to simulate a slow API which sleeps ten seconds for each request to impose noticeable latency:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line">@app.route(<span class="string">"/lazysvr"</span>)</span><br><span class="line">def recv():</span><br><span class="line">  time.sleep(<span class="number">10</span>)</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"ok"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">  app.run(host=<span class="string">'***.***.***.***'</span>, threaded=True)</span><br></pre></td></tr></table></figure>
+<p>Now we toggle the CORS plug-in to “on” (otherwise the network request will fail instantly) and run the example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">  &lt;button type="button"&gt;Click Me!&lt;/</span>button&gt; </span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    <span class="keyword">var</span> xmlHttp = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    xmlHttp.open( <span class="string">"GET"</span>, <span class="string">"http://***.***.***.***:5000/lazysvr"</span>, <span class="literal">false</span> ); <span class="comment">// false for synchronous request</span></span><br><span class="line">    xmlHttp.send( <span class="literal">null</span> ); <span class="comment">// the thread is suspended here</span></span><br><span class="line">    alert(xmlHttp.responseText);</span><br><span class="line">  &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>By debugging the code, we can observe that that after the network request, the code is suspended at the following line:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xmlHttp.send( <span class="literal">null</span> ); <span class="comment">// it is the aforementioned blocking operation</span></span><br></pre></td></tr></table></figure>
+<p>for &gt;10 seconds and the button is not clickable at all before it displays the result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ok</span><br></pre></td></tr></table></figure>
+<p>Moreover, the runtime (I’m using Chrome) complaints:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/.</span><br></pre></td></tr></table></figure>
+<p>which can be an official statement of the problem.</p>
+<h2 id="Asynchronization-in-action"><a href="#Asynchronization-in-action" class="headerlink" title="Asynchronization in action"></a>Asynchronization in action</h2><p>Broadly speaking, asychronization can be 1) (slow) operations that are performed from another thread; or 2) events that are triggered from external; or the composite of both. I am introducing three examples to demonstrate asychronization in code:</p>
+<h3 id="The-first-one-a-packet-arrival"><a href="#The-first-one-a-packet-arrival" class="headerlink" title="The first one, a packet arrival"></a>The first one, a packet arrival</h3><p>The code used by this example also can solve the problem discussed in the previous section:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">  &lt;button type="button"&gt;Click Me!&lt;/</span>button&gt; </span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    <span class="keyword">var</span> xmlHttp = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">--  xmlHttp.open( <span class="string">"GET"</span>, <span class="string">"http://192.241.212.230:5000/lazysvr"</span>, <span class="literal">false</span> );</span><br><span class="line">++  xmlHttp.open( <span class="string">"GET"</span>, <span class="string">"http://192.241.212.230:5000/lazysvr"</span>, <span class="literal">true</span> ); <span class="comment">// 1) change the param to "true" for asynchronous request</span></span><br><span class="line"></span><br><span class="line">++  xmlHttp.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 2) add the callback</span></span><br><span class="line">++    <span class="keyword">if</span>(xmlHttp.readyState == <span class="number">4</span> &amp;&amp; xmlHttp.status == <span class="number">200</span>) &#123;</span><br><span class="line">++      alert(xmlHttp.responseText);</span><br><span class="line">++    &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    xmlHttp.send(); </span><br><span class="line">--  alert(xmlHttp.responseText);</span><br><span class="line">  &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>In this example, we 1) change the second parameter to “true” so as to offload the slow network interaction to another thread, and 2) register a callback as an event handler for the response packet. The callback will be effectively triggered from the other thread when the network interaction completes.</p>
+<p>This time, the button can respond to a user’s click throughout the process and</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ok</span><br></pre></td></tr></table></figure>
+<p>is displayed after the send as expected.</p>
+<h3 id="The-second-a-clock-tick"><a href="#The-second-a-clock-tick" class="headerlink" title="The second, a clock tick"></a>The second, a clock tick</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(callback, <span class="number">3000</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">callback</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(<span class="string">'event triggered'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>N.b., 1, JavaScript does not allow synchronous sleep() from beginning.<br>N.b., 2, unlike OS kernel, the clock tick here will never trigger a process (thread) scheduling. As mentioned before, all the JavaScript code is running in one thread.</p>
+<h3 id="And-the-third-a-mouse-click"><a href="#And-the-third-a-mouse-click" class="headerlink" title="And the third, a mouse click"></a>And the third, a mouse click</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">  &lt;button type="button" onclick="callback()"&gt;Click Me!&lt;/</span>button&gt; </span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">callback</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      alert(<span class="string">'event triggered'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>In all the three examples, we register handlers (a.k.a., callbacks) for certain events occurred outside of the main thread. In the first example, we also offload a slow operation to an external thread to fight the blocking problem. As mentioned, all operations can be abstracted in one word, asynchronization!</p>
+<h1 id="The-new-fetch-API"><a href="#The-new-fetch-API" class="headerlink" title="The new fetch() API"></a>The new fetch() API</h1><p>In the first example, packet arrival, I use a callback to make the operation more obvious as asynchronized. A better practice of sending network request is to use the newer API — fetch(). The function returns a Promise that can call then() in turn, so that</p>
+<ol>
+<li>the asynchronized operation can be coded in a synchronized manner (thus less obvious), and</li>
+<li>the so dubbed “callback hell” can be effectively avoided, and the best part</li>
+<li>all the potential exceptions involved in multiple asynchronized calls can be handled in one place:</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">  &lt;button type="button" onclick="callback()"&gt;Click Me!&lt;/</span>button&gt; </span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    fetch(<span class="string">"http://192.241.212.230:5000/lazysvr"</span>)</span><br><span class="line">    .then(<span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> response.text();</span><br><span class="line">    &#125;).then(<span class="function">(<span class="params">text</span>) =&gt;</span> &#123; </span><br><span class="line">      alert(text);</span><br><span class="line">    &#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'error: '</span> + error.message);</span><br><span class="line">    &#125;);</span><br><span class="line"> &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>The result is the same as the example one, and I leave the button there for you to click.</p>
+<h1 id="Under-the-hood-multi-threaded-event-loop"><a href="#Under-the-hood-multi-threaded-event-loop" class="headerlink" title="Under the hood, multi-threaded + event loop"></a>Under the hood, multi-threaded + event loop</h1><h2 id="Isn’t-JavaScript-single-threaded"><a href="#Isn’t-JavaScript-single-threaded" class="headerlink" title="Isn’t JavaScript single threaded"></a>Isn’t JavaScript single threaded</h2><p>The answer is yes and no. I’ll explain:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">var</span> i;</span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">  <span class="keyword">var</span> xmlHttp = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xmlHttp.open( <span class="string">"GET"</span>, <span class="string">"http://192.241.212.230:5000/lazysvr"</span>, <span class="literal">true</span> );</span><br><span class="line">  xmlHttp.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; </span><br><span class="line">    <span class="keyword">if</span> (xmlHttp.readyState == <span class="number">4</span> &amp;&amp; xmlHttp.status == <span class="number">200</span>) &#123;</span><br><span class="line">        alert(xmlHttp.responseText);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="comment">// end of the callback</span></span><br><span class="line"></span><br><span class="line">  xmlHttp.send( <span class="literal">null</span> );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Assuming the browser’s pid is 666, we can use a simple script (I’m using Mac) to monitor the status of threads belonging to the browser :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">while true; do ps -M 666; sleep 1; done</span><br></pre></td></tr></table></figure>
+<p>initial values (I beautified the output a bit by removing the irrelevant columns and rows):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">USER     PID ... STIME    UTIME</span><br><span class="line">holmes   666 ... 0:00.42  0:01.47 ...</span><br><span class="line">...</span><br><span class="line">         666     0:00.20  0:00.64</span><br></pre></td></tr></table></figure>
+<p>values when I stop:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">USER     PID ... STIME    UTIME</span><br><span class="line">holmes   666 ... 0:00.50  0:01.88 ...</span><br><span class="line">...</span><br><span class="line">         666     0:00.37  0:01.28</span><br></pre></td></tr></table></figure>
+<p>Besides the main thread, there is another thread that is pretty active during the process, which indicate that one more thread is involved, most likely, by sending the network request and listening to the multiplex socket.</p>
+<p>So JavaScript runs in a single thread indeed. But you take the perspective from the application, it is multi-threaded. Feel free to conduct the same experiment on other JavaScript platforms like Node.js.</p>
+<h2 id="Event-loop-the-coarse-grained-asynchronization"><a href="#Event-loop-the-coarse-grained-asynchronization" class="headerlink" title="Event loop, the coarse-grained asynchronization"></a>Event loop, the coarse-grained asynchronization</h2><p>I hope you still remember that asynchronized exception is triggered in a granularity of CPU instruction in OS level as I mentioned it in the beginning of this article. What about that in JavaScript?</p>
+<p>We look at a frequent example first:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">  alert(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setTimeout(callback, <span class="number">0</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">callback</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(<span class="string">'event triggered'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We know that the result is:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">event triggered</span><br></pre></td></tr></table></figure>
+<p>To recap, though we register a time event and indicate the callback should be invoked immediately, the runtime still waits for the current “loop” iteration to finish before it executes the callback from an “event queue”.</p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>In this series, I have covered the <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-some-basics/">diversified “equals to” operation and “null” value</a>; as well as the <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-string-and-array/">simplified string, array, object and dictionary</a>, in JavaScript. And I further discussed the object from a low level point of view, prototype in <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-prototype-1/">this</a> and <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-prototype-2/">this</a> post. And I highlighted “this” pitfall throughout the series in three different posts,</p>
+<p><a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-this/">1st time</a></p>
+<p><a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-object-dictionary/">2nd time</a></p>
+<p><a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-prototype-2/">3rd time</a></p>
+<p>which signals its importance.</p>
+<p>Then we come to this one that demystifies the asynchronization operation.</p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/async/">async</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/callback/">callback</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/promise/">promise</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/cpp-rvalue-and-move/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          C++ rvalue, &amp;&amp; and Move
+        
+      </div>
+    </a>
+  
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-prototype-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JavaScript Tutorial for Programmers - Prototype(2)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Nothing-new-under-the-sun"><span class="nav-number">1.</span> <span class="nav-text">Nothing new under the sun</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-problem-of-blocking-operations"><span class="nav-number">1.1.</span> <span class="nav-text">The problem of blocking operations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Asynchronization-in-action"><span class="nav-number">1.2.</span> <span class="nav-text">Asynchronization in action</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-first-one-a-packet-arrival"><span class="nav-number">1.2.1.</span> <span class="nav-text">The first one, a packet arrival</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-second-a-clock-tick"><span class="nav-number">1.2.2.</span> <span class="nav-text">The second, a clock tick</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#And-the-third-a-mouse-click"><span class="nav-number">1.2.3.</span> <span class="nav-text">And the third, a mouse click</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-new-fetch-API"><span class="nav-number">2.</span> <span class="nav-text">The new fetch() API</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Under-the-hood-multi-threaded-event-loop"><span class="nav-number">3.</span> <span class="nav-text">Under the hood, multi-threaded + event loop</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Isn’t-JavaScript-single-threaded"><span class="nav-number">3.1.</span> <span class="nav-text">Isn’t JavaScript single threaded</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Event-loop-the-coarse-grained-asynchronization"><span class="nav-number">3.2.</span> <span class="nav-text">Event loop, the coarse-grained asynchronization</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

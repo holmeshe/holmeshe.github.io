@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="JavaScriptreactreact.jssource codeprogramming">
+  
+  
+  
+  
+  <meta name="description" content="In the last article we went through the process that creates a ReactCompositeComponent instance from JSX expression. This one will continue the walk-through of simple component rendering, from the poi">
+<meta name="keywords" content="JavaScript,react,react.js,source code,programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding The React Source Code - Initial Rendering (Simple Component) II">
+<meta property="og:url" content="https://holmeshe.me/understanding-react-js-source-code-initial-rendering-II/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="In the last article we went through the process that creates a ReactCompositeComponent instance from JSX expression. This one will continue the walk-through of simple component rendering, from the poi">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://holmeshe.me/gallery/scr-react-II-1.png">
+<meta property="og:image" content="http://holmeshe.me/gallery/scr-react-II-2.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding The React Source Code - Initial Rendering (Simple Component) II">
+<meta name="twitter:description" content="In the last article we went through the process that creates a ReactCompositeComponent instance from JSX expression. This one will continue the walk-through of simple component rendering, from the poi">
+<meta name="twitter:image" content="http://holmeshe.me/gallery/scr-react-II-1.png">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-understanding-react-js-source-code-initial-rendering-II" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Understanding The React Source Code - Initial Rendering (Simple Component) II
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-react-js-source-code-initial-rendering-II/" class="article-date">
+	  <time datetime="2017-12-30T11:00:00.000Z" itemprop="datePublished">December 31, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>In the last article we went through the process that creates a <code>ReactCompositeComponent</code> instance from JSX expression. This one will continue the walk-through of simple component rendering, from the point of <code>batchedMountComponentIntoNode()</code>.</p>
+<a id="more"></a>
+<p><strong><em>Files used in this article:</em></strong></p>
+<p><em>renderers/dom/client/ReactMount.js</em>: defines <code>mountComponentIntoNode()</code>, entry point of the logic process in this article, and <code>ReactDOMContainerInfo</code> which is used in DOM rendering</p>
+<p><em>renderers/shared/stack/reconciler/ReactReconciler.js</em>: call <code>mountComponent</code> of various <code>ReactXXXComponent</code></p>
+<p><em>renderers/shared/stack/reconciler/ReactCompositeComponent.js</em>: call <code>mountComponent</code> to initiate <code>TopLevelWrapper</code>, and <code>performInitialMount</code> to initiate <code>ReactDOMComponent</code></p>
+<p><em>renderers/dom/shared/ReactDOMComponent.js</em>: define <code>ReactDOMComponent</code></p>
+<p><strong><em>A complete static call hierarchy used in this article:</em></strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">|=ReactMount.render(nextElement, container, callback)     ___</span><br><span class="line">|=ReactMount._renderSubtreeIntoContainer()                 |</span><br><span class="line">  |-ReactMount._renderNewRootComponent()                   |</span><br><span class="line">    |-instantiateReactComponent()                          |</span><br><span class="line">    |~batchedMountComponentIntoNode()                  upper half</span><br><span class="line">      |~mountComponentIntoNode()                 (platform agnostic)</span><br><span class="line">        |-ReactReconciler.mountComponent()                 |</span><br><span class="line">          |-ReactCompositeComponent.mountComponent()       |</span><br><span class="line">          |-ReactCompositeComponent.performInitialMount()  |</span><br><span class="line">            |-instantiateReactComponent()                 _|_</span><br><span class="line">            |-ReactDOMComponent.mountComponent()       lower half</span><br><span class="line">        |-_mountImageIntoNode()                  (HTML DOM specific)</span><br><span class="line">                                                          _|_</span><br></pre></td></tr></table></figure>
+<p><code>batchedMountComponentIntoNode()</code> does not do much. It simply invokes another function call to <code>mountComponentIntoNode()</code>.</p>
+<blockquote>
+<p>For now  let’s omit the delicacy of those indirect function calls and just see them as direct ones. I will cover <code>transaction</code> and <code>batched updates</code> in later articles.</p>
+</blockquote>
+<h1 id="mountComponentIntoNode-the-cross-point-of-the-two-halves"><a href="#mountComponentIntoNode-the-cross-point-of-the-two-halves" class="headerlink" title="mountComponentIntoNode() - the cross point of the two halves"></a><code>mountComponentIntoNode()</code> - the cross point of the two halves</h1><p><code>mountComponentIntoNode()</code> is the cross point of logic that consists of platform agnostic code (in this article referred as “upper half”) and logic that is HTML specific (lower half). All major tasks of this walk-through are also effectively completed within this function (and its sub-calls), from where 1) a <code>ReactDOMComponent</code> is derived from the top level <code>ReactCompositeComponent[T]</code>; 2) the <code>ReactDOMComponent</code> is rendered to a real DOM <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element" target="_blank" rel="noopener">element</a>, and 3) the element is inserted into the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document" target="_blank" rel="noopener">document</a> object.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mountComponentIntoNode</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params"> wrapperInstance,   <span class="regexp">//</span> scr: -----&gt; ReactCompositeComponent[T]</span></span></span><br><span class="line"><span class="function"><span class="params"> container,         <span class="regexp">//</span> scr: -----&gt; document.getElementById(<span class="string">"root"</span></span>)</span></span><br><span class="line"><span class="function"> <span class="title">transaction</span>,       // <span class="title">scr</span>: -----&gt; <span class="title">not</span> <span class="title">of</span> <span class="title">interest</span></span></span><br><span class="line"><span class="function"> <span class="title">shouldReuseMarkup</span>, // <span class="title">scr</span>: -----&gt; <span class="title">null</span></span></span><br><span class="line"><span class="function"> <span class="title">context</span>,           // <span class="title">scr</span>: -----&gt; <span class="title">emptyObject</span></span></span><br><span class="line"><span class="function">) </span>&#123;</span><br><span class="line">...</span><br><span class="line">  <span class="keyword">var</span> markup = ReactReconciler.mountComponent( <span class="comment">// scr: -----&gt; 1),2)</span></span><br><span class="line">    wrapperInstance,</span><br><span class="line">    transaction,</span><br><span class="line">    <span class="literal">null</span>,</span><br><span class="line">    ReactDOMContainerInfo(wrapperInstance, container),</span><br><span class="line">    context,</span><br><span class="line">    <span class="number">0</span> <span class="comment">/* parentDebugID */</span>,</span><br><span class="line">  );</span><br><span class="line">...</span><br><span class="line">  ReactMount._mountImageIntoNode(                <span class="comment">// scr: -----&gt; 3)</span></span><br><span class="line">    markup,</span><br><span class="line">    container,</span><br><span class="line">    wrapperInstance,</span><br><span class="line">    shouldReuseMarkup,</span><br><span class="line">    transaction,</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">ReactMount@renderers/dom/client/ReactMount.js</span><br></pre></td></tr></table></figure>
+<p>In which, 1) is still conducted as a high level operation in upper half, while 2), 3) are concrete DOM operations. After 2) completes, we will be able to see the element <code>&lt;h1 style={&quot;color&quot;:&quot;blue&quot;}&gt;hello world&lt;/h1&gt;</code> rendered on the screen.</p>
+<p>For 1), <code>ReactReconciler.mountComponent()</code> is yet another simple function that calls the corresponding <code>mountComponent()</code> of <code>internalInstance</code> passed to it, in this case, <code>ReactCompositeComponent[T]</code>.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mountComponent: <span class="function"><span class="keyword">function</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params"> internalInstance,</span></span></span><br><span class="line"><span class="function"><span class="params"> transaction,</span></span></span><br><span class="line"><span class="function"><span class="params"> hostParent,</span></span></span><br><span class="line"><span class="function"><span class="params"> hostContainerInfo,</span></span></span><br><span class="line"><span class="function"><span class="params"> context,</span></span></span><br><span class="line"><span class="function"><span class="params"> parentDebugID, <span class="regexp">//</span> <span class="number">0</span> in production and for roots</span></span></span><br><span class="line"><span class="function"><span class="params"> </span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> markup = internalInstance.mountComponent(</span><br><span class="line">    transaction,</span><br><span class="line">    hostParent,</span><br><span class="line">    hostContainerInfo,</span><br><span class="line">    context,</span><br><span class="line">    parentDebugID,</span><br><span class="line">  );</span><br><span class="line">... <span class="comment">// scr: transaction related code</span></span><br><span class="line">  <span class="keyword">return</span> markup;</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">ReactReconciler@renderers/shared/stack/reconciler/ReactReconciler.js</span><br></pre></td></tr></table></figure>
+<p>One special parameter here is <code>ReactDOMContainerInfo</code>, it is constructed at the same time when it is passed down to <code>ReactReconciler.mountComponent()</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ReactDOMContainerInfo</span>(<span class="params">topLevelWrapper, node</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> info = &#123;</span><br><span class="line">    _topLevelWrapper: topLevelWrapper, <span class="comment">// scr: -------------------&gt; ReactCompositeComponent[T]</span></span><br><span class="line">    _idCounter: <span class="number">1</span>,</span><br><span class="line">    _ownerDocument: node ? node.nodeType === DOC_NODE_TYPE ? node : node.ownerDocument : <span class="literal">null</span>, <span class="comment">// scr: -----&gt; node.nowerDocument</span></span><br><span class="line">    _node: node, <span class="comment">// src: -----&gt; document.getElementById("root")</span></span><br><span class="line">    _tag: node ? node.nodeName.toLowerCase() : <span class="literal">null</span>, <span class="comment">// scr: -----&gt; 'div'</span></span><br><span class="line">    _namespaceURI: node ? node.namespaceURI : <span class="literal">null</span>   <span class="comment">// scr: -----&gt;</span></span><br><span class="line">element.namespaceURI</span><br><span class="line">&#125;;</span><br><span class="line">... <span class="comment">// scr: DEV code</span></span><br><span class="line">  <span class="keyword">return</span> info;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOMContainerInfo@renderers/dom/client/ReactMount.js</span><br></pre></td></tr></table></figure>
+<p>The result object <code>ReactDOMContainerInfo[ins]</code>  will be used by 3).</p>
+<p>Here is the end of the corridor that consists of transient functions. Now we move on to the next important stop.</p>
+<h1 id="ReactCompositeComponent-mountComponent-initialize-ReactCompositeComponent-T"><a href="#ReactCompositeComponent-mountComponent-initialize-ReactCompositeComponent-T" class="headerlink" title="ReactCompositeComponent.mountComponent() - initialize ReactCompositeComponent[T]"></a><code>ReactCompositeComponent.mountComponent()</code> - initialize <code>ReactCompositeComponent[T]</code></h1><blockquote>
+<p>This is where the magic, I mean, the reaction happens</p>
+</blockquote>
+<p>In the previous step only <code>_currentElement</code> of <code>ReactCompositeComponent[T]</code> is populated with a reference to <code>ReactElement[2]</code>, which makes the object a little bit dull. But not anymore. This property will in turn be used to trigger a “reaction” within <code>ReactCompositeComponent[T]</code> and transforms (initialize) the object to something more meaningful.</p>
+<p>The designated data structure of this step is:</p>
+<p><img src="http://holmeshe.me/gallery/scr-react-II-1.png" alt></p>
+<p>The call stack in action is:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render</span><br><span class="line">|=ReactMount.render(nextElement, container, callback)</span><br><span class="line">|=ReactMount._renderSubtreeIntoContainer()</span><br><span class="line">  |-ReactMount._renderNewRootComponent()</span><br><span class="line">  |-instantiateReactComponent()</span><br><span class="line">    |~batchedMountComponentIntoNode(</span><br><span class="line">        componentInstance, <span class="comment">// scr: -----&gt; ReactCompositeComponent[T]</span></span><br><span class="line">        container,        <span class="comment">// scr: -&gt; document.getElementById("root")</span></span><br><span class="line">        shouldReuseMarkup, <span class="comment">// scr: -----&gt; null</span></span><br><span class="line">        context,           <span class="comment">// scr: -----&gt; emptyObject</span></span><br><span class="line">      )</span><br><span class="line">      |~mountComponentIntoNode(</span><br><span class="line">          wrapperInstance, <span class="comment">// scr: -----&gt; ReactCompositeComponent[T]</span></span><br><span class="line">          container,       <span class="comment">// scr: -----&gt; same</span></span><br><span class="line">          transaction,     <span class="comment">// scr: -----&gt; not of interest</span></span><br><span class="line">          shouldReuseMarkup, <span class="comment">// scr: ---&gt; same</span></span><br><span class="line">          context,         <span class="comment">// scr: -----&gt; not of interest</span></span><br><span class="line">        )</span><br><span class="line">        |-ReactReconciler.mountComponent(</span><br><span class="line">            internalInstance, <span class="comment">// scr: --&gt; ReactCompositeComponent[T]</span></span><br><span class="line">            transaction,      <span class="comment">// scr: --&gt; not of interest</span></span><br><span class="line">            hostParent,       <span class="comment">// scr: --&gt; null</span></span><br><span class="line">            hostContainerInfo,<span class="comment">// scr: --&gt; ReactDOMContainerInfo[ins]</span></span><br><span class="line">            context,          <span class="comment">// scr: --&gt; not of interest</span></span><br><span class="line">            parentDebugID,    <span class="comment">// scr: --&gt; 0</span></span><br><span class="line">          )</span><br><span class="line">          <span class="comment">/* we are here */</span>       </span><br><span class="line">          |-ReactCompositeComponent[T].mountComponent(same)</span><br></pre></td></tr></table></figure>
+<p>Next let’s look at the <code>ReactCompositeComponent.mountComponent()</code> implementation.</p>
+<blockquote>
+<p>I will not list the implementation for small functions (when they are get called) but give return value directly for the sake of concision.</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">mountComponent: <span class="function"><span class="keyword">function</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params"> transaction,</span></span></span><br><span class="line"><span class="function"><span class="params"> hostParent,</span></span></span><br><span class="line"><span class="function"><span class="params"> hostContainerInfo,</span></span></span><br><span class="line"><span class="function"><span class="params"> context,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="regexp">//</span> scr: this ------&gt; ReactCompositeComponent[T]</span></span></span><br><span class="line"><span class="function"><span class="params"> </span>) </span>&#123;</span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 1)</span></span><br><span class="line">  <span class="keyword">this</span>._context = context;          <span class="comment">// scr: -----&gt; emptyObject</span></span><br><span class="line">  <span class="keyword">this</span>._mountOrder = nextMountID++; <span class="comment">// scr: ----------------------&gt; global veriable, accumulative</span></span><br><span class="line">  <span class="keyword">this</span>._hostParent = hostParent;    <span class="comment">// scr: -----&gt; null</span></span><br><span class="line">  <span class="keyword">this</span>._hostContainerInfo = hostContainerInfo; <span class="comment">// scr: -----------&gt; ReactDOMContainerInfo[ins]</span></span><br><span class="line">  <span class="keyword">var</span> publicProps = <span class="keyword">this</span>._currentElement.props; <span class="comment">// scr: ----------&gt; &#123; child: ReactElement[1] &#125;</span></span><br><span class="line">  <span class="keyword">var</span> publicContext = <span class="keyword">this</span>._processContext(context); <span class="comment">// scr: -----&gt; meaning less, emptyObject</span></span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 2)</span></span><br><span class="line">  <span class="keyword">var</span> Component = <span class="keyword">this</span>._currentElement.type; <span class="comment">// scr: -------------&gt; TopLevelWrapper</span></span><br><span class="line">  <span class="keyword">var</span> updateQueue = transaction.getUpdateQueue(); <span class="comment">// scr: --------&gt; not of interest</span></span><br><span class="line"><span class="comment">// Initialize the public class</span></span><br><span class="line">  <span class="keyword">var</span> doConstruct = shouldConstruct(Component); <span class="comment">// scr: ----------&gt; true, for TopLevelWrapper.prototype.isReactComponent = &#123;&#125;;</span></span><br><span class="line">  <span class="keyword">var</span> inst = <span class="keyword">this</span>._constructComponent(</span><br><span class="line">    doConstruct,</span><br><span class="line">    publicProps,</span><br><span class="line">    publicContext,</span><br><span class="line">    updateQueue,</span><br><span class="line">  ); <span class="comment">// scr: ----------&gt; call TopLevelWrapper’s constructor</span></span><br><span class="line">  <span class="keyword">var</span> renderedElement;</span><br><span class="line"><span class="comment">// Support functional components</span></span><br><span class="line">  <span class="keyword">if</span> (!doConstruct &amp;&amp; (inst == <span class="literal">null</span> || inst.render == <span class="literal">null</span>)) &#123;</span><br><span class="line">...</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (isPureComponent(Component)) &#123; <span class="comment">// scr: --------------------&gt; TopLevelWrapper.prototype.isPureReactComponent is not defined</span></span><br><span class="line">...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>._compositeType = CompositeTypes.ImpureClass;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 3)</span></span><br><span class="line"><span class="comment">// These should be set up in the constructor, but as a convenience   </span></span><br><span class="line"><span class="comment">// for simpler class abstractions, we set them up after the fact.</span></span><br><span class="line">  inst.props = publicProps; <span class="comment">// scr: ----&gt; &#123; child: ReactElement[1] &#125;</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 4)</span></span><br><span class="line">  <span class="keyword">this</span>._instance = inst; <span class="comment">// scr: ---------------------------------&gt; link the ReactCompositeComponent[T] to the TopLevelWrapper instance</span></span><br><span class="line"><span class="comment">// Store a reference from the instance back to the internal representation</span></span><br><span class="line">  ReactInstanceMap.set(inst, <span class="keyword">this</span>); <span class="comment">// scr: ----------------------&gt; link the TopLevelWrapper instance back to ReactCompositeComponent[T]</span></span><br><span class="line">...</span><br><span class="line">  <span class="keyword">var</span> markup;</span><br><span class="line">  <span class="keyword">if</span> (inst.unstable_handleError) &#123; <span class="comment">// scr: -----------------------&gt; false, TopLevelWrapper.prototype.unstable_handleError is not defined</span></span><br><span class="line">...</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 5)</span></span><br><span class="line">    markup = <span class="keyword">this</span>.performInitialMount( <span class="comment">// scr: a initial at the end?</span></span><br><span class="line">      renderedElement,</span><br><span class="line">      hostParent,</span><br><span class="line">      hostContainerInfo,</span><br><span class="line">      transaction,</span><br><span class="line">      context,</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">...</span><br><span class="line">  <span class="keyword">return</span> markup;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactCompositeComponent@renderers/shared/stack/reconciler/ReactCompositeComponent.js</span><br></pre></td></tr></table></figure>
+<p>Running in the context of <code>ReactCompositeComponent[T]</code> (as a member function), this method</p>
+<p>1) assigns the parameters directly to the corresponding properties of <code>ReactCompositeComponent[T]</code> and local variables. The interesting one variable here is <code>publicProps</code>. It will be used very soon;</p>
+<p>2) extracts <code>TopLevelWrapper</code> from <code>this._currentElement.type</code>, and calls its constructor to create a <code>TopLevelWrapper</code> instance. In this process:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shouldConstruct(Component)</span><br></pre></td></tr></table></figure>
+<p>checks if <code>TopLevelWrapper.prototype.isReactComponent</code> is set, and returns true if so; and</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._constructComponent()</span><br></pre></td></tr></table></figure>
+<p>calls the <code>TopLevelWrapper</code> constructor if <code>true</code> is the result of the previous function. I will name the instance <code>TopLevelWrapper[ins]</code> this time.;</p>
+<blockquote>
+<p>This is the time you may want to check the definition of <code>TopLevelWrapper</code> in the <a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-I/">previous post</a>, search for ***.</p>
+</blockquote>
+<p>3) initializes the <code>TopLevelWrapper[ins].props</code> of the new instance with the information stored previously in the wrapper element <code>ReactElement[2]</code> through the <code>publicProps</code> in 1);</p>
+<p>4) creates a doubly link between this (<code>ReactCompositeComponent[T]</code>) and <code>TopLevelWrapper[ins]</code>. One link is created using <code>this._instance</code>, another is made with <code>ReactInstanceMap</code>. <code>this._instance</code> will be used very soon in the next step, and <code>ReactInstanceMap</code> will be used in later posts.</p>
+<blockquote>
+<p>I type 4 stars **** here as you might need to come back to check <code>ReactInstanceMap</code>‘s origin.</p>
+</blockquote>
+<p>5) goes to the next step.</p>
+<h1 id="ReactCompositeComponent-performInitialMount-create-a-ReactDOMComponent-from-ReactElement-1"><a href="#ReactCompositeComponent-performInitialMount-create-a-ReactDOMComponent-from-ReactElement-1" class="headerlink" title="ReactCompositeComponent.performInitialMount() - create a ReactDOMComponent from ReactElement[1]"></a><code>ReactCompositeComponent.performInitialMount()</code> - create a <code>ReactDOMComponent</code> from <code>ReactElement[1]</code></h1><p>This step strips the wrapper and creates a <code>ReactDOMComponent</code> instance. Plus, we are going to see <code>ReactHostComponent</code> the tirst time. This component is used to chain the function call from the upper half to lower half.</p>
+<p>First thing first, the target data structure:</p>
+<p><img src="http://holmeshe.me/gallery/scr-react-II-2.png" alt></p>
+<p>The call stack in action:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render</span><br><span class="line">|=ReactMount.render(nextElement, container, callback)</span><br><span class="line">|=ReactMount._renderSubtreeIntoContainer()</span><br><span class="line">  |-ReactMount._renderNewRootComponent()</span><br><span class="line">    |-instantiateReactComponent()</span><br><span class="line">    |~batchedMountComponentIntoNode()</span><br><span class="line">      |~mountComponentIntoNode()</span><br><span class="line">        |-ReactReconciler.mountComponent()</span><br><span class="line">          |-ReactCompositeComponent[T].mountComponent(same)</span><br><span class="line">            <span class="comment">/* we are here */</span></span><br><span class="line">            |-ReactCompositeComponent[T].performInitialMount(</span><br><span class="line">                renderedElement,   <span class="comment">// scr: -------&gt; undefined</span></span><br><span class="line">                hostParent,        <span class="comment">// scr: -------&gt; null</span></span><br><span class="line">                hostContainerInfo, <span class="comment">// scr: -------&gt; ReactDOMContainerInfo[ins]</span></span><br><span class="line">                transaction,       <span class="comment">// scr: -------&gt; not of interest</span></span><br><span class="line">                context,           <span class="comment">// scr: -------&gt; not of interest</span></span><br><span class="line">              )</span><br></pre></td></tr></table></figure>
+<p><code>ReactCompositeComponent.performInitialMount()</code> does three things. It 1) extracts the <code>ReactElement[1]</code> as mentioned before; 2) instantiates a  <code>ReactDOMComponent</code> based on the <code>ReactElement[1].type</code>; and 3) calls <code>ReactDOMComponent.mountComponent()</code> to render a DOM element.</p>
+<blockquote>
+<p>why a <code>performInitialMount</code> is invoked at the end of the <code>mountComponent</code> function? Because it is “initial” for the next mountComponent</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">performInitialMount: <span class="function"><span class="keyword">function</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params"> renderedElement,</span></span></span><br><span class="line"><span class="function"><span class="params"> hostParent,</span></span></span><br><span class="line"><span class="function"><span class="params"> hostContainerInfo,</span></span></span><br><span class="line"><span class="function"><span class="params"> transaction,</span></span></span><br><span class="line"><span class="function"><span class="params"> context,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> inst = <span class="keyword">this</span>._instance;</span><br><span class="line">  <span class="keyword">var</span> debugID = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> (inst.componentWillMount) &#123; <span class="comment">// scr: ----------&gt; undefined</span></span><br><span class="line">…</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// scr: ------------------------------------------------------&gt; 1)</span></span><br><span class="line">  <span class="comment">// If not a stateless component, we now render</span></span><br><span class="line">  <span class="keyword">if</span> (renderedElement === <span class="literal">undefined</span>) &#123;</span><br><span class="line">    renderedElement = <span class="keyword">this</span>._renderValidatedComponent(); <span class="comment">// scr: ---&gt; calls TopLevelWrapper.render() to extract ReactElement[1].</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// scr: ------------------------------------------------------&gt; 2)</span></span><br><span class="line">  <span class="keyword">var</span> nodeType = ReactNodeTypes.getType(renderedElement); <span class="comment">// scr: -&gt; ReactNodeTypes.HOST</span></span><br><span class="line">  <span class="keyword">this</span>._renderedNodeType = nodeType;</span><br><span class="line">  <span class="keyword">var</span> child = <span class="keyword">this</span>._instantiateReactComponent(</span><br><span class="line">    renderedElement,</span><br><span class="line">    nodeType !== ReactNodeTypes.EMPTY <span class="comment">/* shouldHaveDebugID */</span>,</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">this</span>._renderedComponent = child;</span><br><span class="line">  <span class="comment">// scr: ------------------------------------------------------&gt; 3)</span></span><br><span class="line">  <span class="keyword">var</span> markup = ReactReconciler.mountComponent(</span><br><span class="line">    child,</span><br><span class="line">    transaction,</span><br><span class="line">    hostParent,</span><br><span class="line">    hostContainerInfo,</span><br><span class="line">    <span class="keyword">this</span>._processChildContext(context),</span><br><span class="line">    debugID,</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">return</span> markup;</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">ReactCompositeComponent@renderers/shared/stack/reconciler/ReactCompositeComponent.js</span><br></pre></td></tr></table></figure>
+<p>Now I give a detailed explanation for each step:</p>
+<p>1) <code>this._renderValidatedComponent()</code> simply calls <code>TopLevelWrapper.render()</code> so that <code>ReactElement[1]</code> extracted from <code>TopLevelWrapper[T].props.child</code> is assigned to <code>renderedElement</code>.</p>
+<p>2) <code>this._instantiateReactComponent()</code> is an alias to <code>_instantiateReactComponent@renderers/shared/stack/reconciler/instantiateReactComponent.js</code> that has been discussed in the last post. However, <code>renderedElement</code>(i.e., <code>ReactElement[1]</code>) is used to create a <code>ReactDOMComponent</code> instance this time…</p>
+<p>wait here,</p>
+<p>if we look at the implementation of <code>_instantiateReactComponent()</code> again</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">// Special case string values</span></span><br><span class="line"> <span class="keyword">if</span> (<span class="keyword">typeof</span> element.type === ‘string’) &#123; <span class="comment">// scr: -------&gt; this time </span></span><br><span class="line">   instance = ReactHostComponent.createInternalComponent(element);</span><br><span class="line"> &#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">_instantiateReactComponent@renderers/shared/stack/reconciler/instantiateReactComponent.js</span><br></pre></td></tr></table></figure>
+<p>the <code>createInternalComponent()</code> of <code>ReactHostComponent</code> is got called because <code>ReactElement[1].type</code> is “h1”, which instantiate a <code>genericComponentClass</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createInternalComponent</span>(<span class="params">element</span>) </span>&#123;</span><br><span class="line">...</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> genericComponentClass(element);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactHostComponent@renderers/shared/stack/reconciler/ReactHostComponent.js</span><br></pre></td></tr></table></figure>
+<p>but why it has anything to do with <code>ReactDOMComponent</code>?</p>
+<p>In fact, the platform specific component <code>ReactDOMComponent</code> is “injected” to <code>ReactHostComponent</code> as <code>genericComponentClass</code> during compiling time. For now we consider link has already been established and injection mechanism will be discussed later posts.</p>
+<blockquote>
+<p>I type *5 here.</p>
+</blockquote>
+<p>The constructor of <code>ReactDOMComponent</code> is very similar to that of <code>ReactCompositeComponent</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ReactDOMComponent</span>(<span class="params">element</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> tag = element.type;         <span class="comment">// scr: --------&gt; 'h1'</span></span><br><span class="line">...</span><br><span class="line">  <span class="keyword">this</span>._currentElement = element; <span class="comment">// scr: --------&gt; ReactElement[1]</span></span><br><span class="line">  <span class="keyword">this</span>._tag = tag.toLowerCase();  <span class="comment">// scr: --------&gt; 'h1'</span></span><br><span class="line">... <span class="comment">// scr: default values, null, 0, etc.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOMComponent@renderers/dom/shared/ReactDOMComponent.js</span><br></pre></td></tr></table></figure>
+<p>We name the returned instance <code>ReactDOMComponent[ins]</code>;</p>
+<p>3) <code>ReactReconciler.mountComponent()</code> has already been covered, it simply calls the <code>mountComponent()</code> of the first parameter, in this case, <code>ReactDOMComponent[ins]</code>.</p>
+<p>Now the logic processes to lower half.</p>
+<p>To be continued…</p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://hackernoon.com/understanding-the-react-source-code-initial-rendering-simple-component-ii-79e7e8bed56c'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/source-code/">source code</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/understanding-react-js-source-code-initial-rendering-III/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The React Source Code - Initial Rendering (Simple Component) III
+        
+      </div>
+    </a>
+  
+  
+    <a href="/understanding-react-js-source-code-initial-rendering-I/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Understanding The React Source Code - Initial Rendering (Simple Component) I</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mountComponentIntoNode-the-cross-point-of-the-two-halves"><span class="nav-number">1.</span> <span class="nav-text">mountComponentIntoNode() - the cross point of the two halves</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReactCompositeComponent-mountComponent-initialize-ReactCompositeComponent-T"><span class="nav-number">2.</span> <span class="nav-text">ReactCompositeComponent.mountComponent() - initialize ReactCompositeComponent[T]</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReactCompositeComponent-performInitialMount-create-a-ReactDOMComponent-from-ReactElement-1"><span class="nav-number">3.</span> <span class="nav-text">ReactCompositeComponent.performInitialMount() - create a ReactDOMComponent from ReactElement[1]</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

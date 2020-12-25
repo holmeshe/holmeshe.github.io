@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="C++rvaluemove">
+  
+  
+  
+  
+  <meta name="description" content="C++ is hard, the newer versions become even harder. This article will deal with some of the hard parts in C++, rvalue, rvalue reference (&amp;amp;&amp;amp;) and move semantics. And I am going to reverse engi">
+<meta name="keywords" content="C++,rvalue,move">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ rvalue, &amp;&amp; and Move">
+<meta property="og:url" content="https://holmeshe.me/cpp-rvalue-and-move/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="C++ is hard, the newer versions become even harder. This article will deal with some of the hard parts in C++, rvalue, rvalue reference (&amp;amp;&amp;amp;) and move semantics. And I am going to reverse engi">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://holmeshe.me/gallery/compatibility.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++ rvalue, &amp;&amp; and Move">
+<meta name="twitter:description" content="C++ is hard, the newer versions become even harder. This article will deal with some of the hard parts in C++, rvalue, rvalue reference (&amp;amp;&amp;amp;) and move semantics. And I am going to reverse engi">
+<meta name="twitter:image" content="https://holmeshe.me/gallery/compatibility.png">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-cpp-rvalue-and-move" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      C++ rvalue, &amp;&amp; and Move
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/cpp-rvalue-and-move/" class="article-date">
+	  <time datetime="2017-09-19T12:00:00.000Z" itemprop="datePublished">September 20, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Rvisit-C/">Rvisit C++</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>C++ is hard, the newer versions become even harder. This article will deal with some of the hard parts in C++, rvalue, rvalue reference (&amp;&amp;) and move semantics. And I am going to reverse engineer (not a metaphor) these complex and correlated topics, so you can understand them completely in one shot.</p>
+</blockquote>
+<a id="more"></a>
+<p>Firstly, let’s examine</p>
+<h1 id="What-is-a-rvalue"><a href="#What-is-a-rvalue" class="headerlink" title="What is a rvalue?"></a>What is a rvalue?</h1><p>A rvalue is one that should be on the right side of an equals sign.</p>
+<p>Example:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> var; <span class="comment">// too much JavaScript recently:)</span></span><br><span class="line">var = <span class="number">8</span>; <span class="comment">// OK! lvalue (yes, there is a lvalue) on the left</span></span><br><span class="line"></span><br><span class="line"><span class="number">8</span> = var; <span class="comment">// ERROR! rvalue on the left</span></span><br><span class="line">(var + <span class="number">1</span>) = <span class="number">8</span>; <span class="comment">// ERROR! rvalue on the left</span></span><br></pre></td></tr></table></figure>
+<p>Simple enough. Then let’s look at some more subtle rvalues, ones that are returned by functions:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> g_var = <span class="number">8</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span>&amp; <span class="title">returnALvalue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> g_var; <span class="comment">//here we return a lvalue</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">returnARvalue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> g_var; <span class="comment">//here we return a rvalue</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">"%d"</span>, returnALvalue()++); <span class="comment">// g_var += 1;</span></span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">"%d"</span>, returnARvalue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">8</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+<p>It is worth noting that the way of returning a l-value (in the example) is considered a bad practice. So do not do that in real world programming.</p>
+<h1 id="Beyond-theoretical-level"><a href="#Beyond-theoretical-level" class="headerlink" title="Beyond theoretical level"></a>Beyond theoretical level</h1><p>Whether a variable is a rvalue can make differences in real programming even before <code>&amp;&amp;</code> is invented.</p>
+<p>For example, this line</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span>&amp; var = <span class="number">8</span>;</span><br></pre></td></tr></table></figure>
+<p>can be compiled fine while this:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>&amp; var = <span class="number">8</span>; <span class="comment">// use a lvalue reference for a rvalue</span></span><br></pre></td></tr></table></figure>
+<p>generates following error:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rvalue.cc:24:6: error: non-const lvalue reference to type &apos;int&apos; cannot bind to a</span><br><span class="line">      temporary of type &apos;int&apos;</span><br></pre></td></tr></table></figure>
+<p>The error message means that the compiler enforces a const reference for rvalue.</p>
+<p>A more interesting example:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"rvalue detected:%s\n"</span>, name.c_str());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">string</span>&amp; name)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"lvalue detected:%s\n"</span>, name.c_str());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> name = <span class="string">"lvalue"</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> rvalu = <span class="string">"rvalu"</span>;</span><br><span class="line"></span><br><span class="line">    print(name); <span class="comment">//compiler can detect the right function for lvalue</span></span><br><span class="line">    print(rvalu + <span class="string">"e"</span>); <span class="comment">// likewise for rvalue</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lvalue detected:lvalue</span><br><span class="line">rvalue detected:rvalue</span><br></pre></td></tr></table></figure>
+<p>The difference is actually significant enough and compiler can determine overloaded functions.</p>
+<h1 id="So-rvalue-is-constant-value"><a href="#So-rvalue-is-constant-value" class="headerlink" title="So rvalue is constant value?"></a>So rvalue is constant value?</h1><p>Not exactly. And this where <code>&amp;&amp;</code> (rvalue reference)comes in.</p>
+<p>Example:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(“<span class="keyword">const</span> value detected:%s\n”, name.c_str());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">string</span>&amp; name)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(“lvalue detected%s\n”, name.c_str());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">string</span>&amp;&amp; name)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(“rvalue detected:%s\n”, name.c_str());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> name = “lvalue”;</span><br><span class="line">  <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> cname = “cvalue”;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> rvalu = <span class="string">"rvalu"</span>;</span><br><span class="line"></span><br><span class="line">  print(name);</span><br><span class="line">  print(cname);</span><br><span class="line">  print(rvalu + <span class="string">"e"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lvalue detected:lvalue</span><br><span class="line">const value detected:cvalue</span><br><span class="line">rvalue detected:rvalue</span><br></pre></td></tr></table></figure>
+<p>If the functions are overloaded for rvalue, a rvalue variable choose the more specified version over the version takes a const reference parameter that is compatible for both. Thus, <code>&amp;&amp;</code> can further diversify rvalue from const value.</p>
+<p>In bellow I summarize the compatibility of overloaded function versions to different types in default setting. You can verify the result by selectively commenting out lines in the example above.</p>
+<p><img src="/gallery/compatibility.png" alt="compatibility"></p>
+<p>It sounds cool to further differentiate rvalue and constant value as they are not exactly the same indeed. But what is the practical value?</p>
+<h1 id="What-problem-does-amp-amp-solve-exactly"><a href="#What-problem-does-amp-amp-solve-exactly" class="headerlink" title="What problem does &amp;&amp; solve exactly?"></a>What problem does &amp;&amp; solve exactly?</h1><p>The problem is the unnecessary deep copy when the argument is a rvalue.</p>
+<p>To be more specific. <code>&amp;&amp;</code> notation is provided to specify a rvalue, which can be used to avoid the deep copy when the rvalue, 1) is passed as an argument of either a constructor or an assignment operator, and 2) the class of which contains a pointer (or pointers) referring to dynamically allocated resource (memory).</p>
+<p>It can be more specific with examples:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ResourceOwner</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ResourceOwner(<span class="keyword">const</span> <span class="keyword">char</span> res[]) &#123;</span><br><span class="line">    theResource = <span class="keyword">new</span> <span class="built_in">string</span>(res);</span><br><span class="line">  &#125;</span><br><span class="line">  ResourceOwner(<span class="keyword">const</span> ResourceOwner&amp; other) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"copy %s\n"</span>, other.theResource-&gt;c_str());</span><br><span class="line">    theResource = <span class="keyword">new</span> <span class="built_in">string</span>(other.theResource-&gt;c_str());</span><br><span class="line">  &#125;</span><br><span class="line">  ResourceOwner&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> ResourceOwner&amp; other) &#123;</span><br><span class="line">    ResourceOwner tmp(other);</span><br><span class="line">    swap(theResource, tmp.theResource);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"assign %s\n"</span>, other.theResource-&gt;c_str());</span><br><span class="line">  &#125;</span><br><span class="line">  ~ResourceOwner() &#123;</span><br><span class="line">    <span class="keyword">if</span> (theResource) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"destructor %s\n"</span>, theResource-&gt;c_str());</span><br><span class="line">      <span class="keyword">delete</span> theResource;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="built_in">string</span>* theResource;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testCopy</span><span class="params">()</span> </span>&#123; <span class="comment">// case 1</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=====start testCopy()=====\n"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="function">ResourceOwner <span class="title">res1</span><span class="params">(<span class="string">"res1"</span>)</span></span>;</span><br><span class="line">  ResourceOwner res2 = res1;  <span class="comment">//copy res1</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=====destructors for stack vars, ignore=====\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testAssign</span><span class="params">()</span> </span>&#123; <span class="comment">// case 2</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=====start testAssign()=====\n"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="function">ResourceOwner <span class="title">res1</span><span class="params">(<span class="string">"res1"</span>)</span></span>;</span><br><span class="line">  <span class="function">ResourceOwner <span class="title">res2</span><span class="params">(<span class="string">"res2"</span>)</span></span>;</span><br><span class="line">  res2 = res1; <span class="comment">//copy res1, assign res1, destrctor res2</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=====destructors for stack vars, ignore=====\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testRValue</span><span class="params">()</span> </span>&#123; <span class="comment">// case 3</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=====start testRValue()=====\n"</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="function">ResourceOwner <span class="title">res2</span><span class="params">(<span class="string">"res2"</span>)</span></span>;</span><br><span class="line">  res2 = ResourceOwner(<span class="string">"res1"</span>); <span class="comment">//copy res1, assign res1, destructor res2, destructor res1</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=====destructors for stack vars, ignore=====\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  testCopy();</span><br><span class="line">  testAssign();</span><br><span class="line">  testRValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">=====start testCopy()=====</span><br><span class="line">copy res1</span><br><span class="line">=====destructors for stack vars, ignore=====</span><br><span class="line">destructor res1</span><br><span class="line">destructor res1</span><br><span class="line">=====start testAssign()=====</span><br><span class="line">copy res1</span><br><span class="line">assign res1</span><br><span class="line">destructor res2</span><br><span class="line">=====destructors for stack vars, ignore=====</span><br><span class="line">destructor res1</span><br><span class="line">destructor res1</span><br><span class="line">=====start testRValue()=====</span><br><span class="line">copy res1</span><br><span class="line">assign res1</span><br><span class="line">destructor res2</span><br><span class="line">destructor res1</span><br><span class="line">=====destructors for stack vars, ignore=====</span><br><span class="line">destructor res1</span><br></pre></td></tr></table></figure>
+<p>The result are all good for the first two test cases, i.e., <code>testCopy()</code> and <code>testAssign()</code>, in which resource in <code>res1</code> is copied for the <code>res2</code>. It is reasonable to copy the resource because they are two entities both need their unshared resource (a string).</p>
+<p>However, in the third case, the (deep) copying of the resource in <code>res1</code> is superfluous because the anonymous rvalue (returned by ResourceOwner(<code>“res1”</code>)) will be destructed right after the assignment thus it does not need the resource anymore:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">res2 = ResourceOwner(&quot;res1&quot;); // Please note that the destructor res1 is called right after this line before the point where stack variables are destructed.</span><br></pre></td></tr></table></figure>
+<p>I think it is a good chance to repeat the problem statement:</p>
+<blockquote>
+<p><code>&amp;&amp;</code> notation is provided to specify a rvalue, which can be used to avoid the deep copy when the rvalue, 1) is passed as an argument of either a constructor or an assignment operator, and 2) the class of which contains a pointer (or pointers) referring to dynamically allocated resource (memory).</p>
+</blockquote>
+<p>If copying of a resource that is about to disappear is not optimal, what is the right operation then? The answer is</p>
+<h1 id="Move"><a href="#Move" class="headerlink" title="Move"></a>Move</h1><p>The idea is pretty straightforward, if the argument is a rvalue, we do not need to copy. Rather, we can simply “move” the resource (that is the memory the rvalue points to). Now let’s overload the assignment operator using the new technique:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ResourceOwner&amp; <span class="keyword">operator</span>=(ResourceOwner&amp;&amp; other) &#123;</span><br><span class="line">  theResource = other.theResource;</span><br><span class="line">  other.theResource = <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This new assignment operator is called a <strong>move</strong> assignment operator. And a <strong>move</strong> constructor can be programmed in a similar way.</p>
+<p>A good way of understanding this is: when you sell your old property and move to a new house, you do not have to toss all the furniture as we did in case 3 right? Rather, you can simply move the furniture to the new home.</p>
+<p>All good.</p>
+<h1 id="What-is-std-move"><a href="#What-is-std-move" class="headerlink" title="What is std::move?"></a>What is std::move?</h1><p>Besides the <strong>move</strong> assignment operator and <strong>move</strong> constructor discussed above, there is one last missing piece in this puzzle, <code>std::move</code>.</p>
+<p>Again, we look at the problem first:</p>
+<p>when 1) we know a variable is in fact a rvalue, while 2) the compiler does not. The right version of the overloaded functions can not be called.</p>
+<p>A common case is when we add another layer of resource owner, <code>ResourceHolder</code> and the relation of the three entities is given as bellow:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">holder</span><br><span class="line"> |</span><br><span class="line"> |-----&gt;owner</span><br><span class="line">         |</span><br><span class="line">         |-----&gt;resource</span><br></pre></td></tr></table></figure>
+<p>(N.b., in the following example, I complete the implementation of <code>ResourceOwner</code>’s <strong>move</strong> constructor as well)</p>
+<p>Example:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ResourceOwner</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ResourceOwner(<span class="keyword">const</span> <span class="keyword">char</span> res[]) &#123;</span><br><span class="line">    theResource = <span class="keyword">new</span> <span class="built_in">string</span>(res);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ResourceOwner(<span class="keyword">const</span> ResourceOwner&amp; other) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(“copy %s\n”, other.theResource-&gt;c_str());</span><br><span class="line">    theResource = <span class="keyword">new</span> <span class="built_in">string</span>(other.theResource-&gt;c_str());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">++ResourceOwner(ResourceOwner&amp;&amp; other) &#123;</span><br><span class="line">++ <span class="built_in">printf</span>(“move cons %s\n”, other.theResource-&gt;c_str());</span><br><span class="line">++ theResource = other.theResource;</span><br><span class="line">++ other.theResource = <span class="literal">NULL</span>;</span><br><span class="line">++&#125;</span><br><span class="line"></span><br><span class="line">  ResourceOwner&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> ResourceOwner&amp; other) &#123;</span><br><span class="line">    ResourceOwner tmp(other);</span><br><span class="line">    swap(theResource, tmp.theResource);</span><br><span class="line">    <span class="built_in">printf</span>(“assign %s\n”, other.theResource-&gt;c_str());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">++ResourceOwner&amp; <span class="keyword">operator</span>=(ResourceOwner&amp;&amp; other) &#123;</span><br><span class="line">++ <span class="built_in">printf</span>(“move assign %s\n”, other.theResource-&gt;c_str());</span><br><span class="line">++ theResource = other.theResource;</span><br><span class="line">++ other.theResource = <span class="literal">NULL</span>;</span><br><span class="line">++&#125;</span><br><span class="line"></span><br><span class="line">  ~ResourceOwner() &#123;</span><br><span class="line">    <span class="keyword">if</span> (theResource) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(“destructor %s\n”, theResource-&gt;c_str());</span><br><span class="line">      <span class="keyword">delete</span> theResource;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="built_in">string</span>* theResource;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ResourceHolder</span> &#123;</span></span><br><span class="line"></span><br><span class="line">……</span><br><span class="line"></span><br><span class="line">ResourceHolder&amp; <span class="keyword">operator</span>=(ResourceHolder&amp;&amp; other) &#123;</span><br><span class="line">  <span class="built_in">printf</span>(“move assign %s\n”, other.theResource-&gt;c_str());</span><br><span class="line">  resOwner = other.resOwner;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">……</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  ResourceOwner resOwner;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>In <code>ResourceHolder</code>’s <strong>move</strong> assignment operator, we want to call <code>ResourceOwner</code>’s <strong>move</strong> assignment operator since “a no-pointer member of a rvalue should be a rvalue too”. However, when we simply code <code>resOwner = other.resOwner</code>, what gets invoked is actually the <code>ResourceOwner</code>’s normal assignment operator that, again, incurs the extra copy.</p>
+<p>It’s a good chance to repeat the problem statement again:</p>
+<blockquote>
+<p>when 1) we know a variable is in fact a rvalue, while 2) the compiler does not. The right version of the overloaded functions can not be called.</p>
+</blockquote>
+<p>As a solution we use to <code>std::move</code> to cast the variable to rvalue, so the right version of <code>ResourceOwner</code>’s assignment operator can be called.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ResourceHolder&amp; operator=(ResourceHolder&amp;&amp; other) &#123;</span><br><span class="line">  printf(“move assign %s\n”, other.theResource-&gt;c_str());</span><br><span class="line">  resOwner = std::move(other.resOwner);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="What-is-std-move-exactly"><a href="#What-is-std-move-exactly" class="headerlink" title="What is std::move exactly?"></a>What is std::move exactly?</h1><p>We know that type cast is not simply a compiler placebo telling a compiler that “I know what I am doing”. It effectively generate instructions of <code>mov</code> a value to bigger or smaller registers (e.g.,<code>%eax</code>-&gt;<code>%cl</code>) to conduct the “cast”.</p>
+<p>So what <code>std::move</code> does exactly behind scene. I do not know myself when I am writing this paragraph, so let’s find out together.</p>
+<p>First we modify the main a bit (I tried to make the style consistent)</p>
+<p>Example:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ResourceOwner <span class="title">res</span><span class="params">(“res1”)</span></span>;</span><br><span class="line">  <span class="keyword">asm</span>(“nop”); <span class="comment">// remeber me</span></span><br><span class="line">  ResourceOwner &amp;&amp; rvalue = <span class="built_in">std</span>::move(res);</span><br><span class="line">  <span class="keyword">asm</span>(“nop”); <span class="comment">// remeber me</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Compile it, and dissemble the obj using</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">clang++ -g -c -std=c++11 -stdlib=libc++ -Weverything move.cc</span><br><span class="line">gobjdump -d -D move.o</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;_main&gt;:</span><br><span class="line"> 0: 55 push %rbp</span><br><span class="line"> 1: 48 89 e5 mov %rsp,%rbp</span><br><span class="line"> 4: 48 83 ec 20 sub $0x20,%rsp</span><br><span class="line"> 8: 48 8d 7d f0 lea -0x10(%rbp),%rdi</span><br><span class="line"> c: 48 8d 35 41 03 00 00 lea 0x341(%rip),%rsi # 354 &lt;GCC_except_table5+0x18&gt;</span><br><span class="line"> 13: e8 00 00 00 00 callq 18 &lt;_main+0x18&gt;</span><br><span class="line"> 18: 90 nop // remember me</span><br><span class="line"> 19: 48 8d 75 f0 lea -0x10(%rbp),%rsi</span><br><span class="line"> 1d: 48 89 75 f8 mov %rsi,-0x8(%rbp)</span><br><span class="line"> 21: 48 8b 75 f8 mov -0x8(%rbp),%rsi</span><br><span class="line"> 25: 48 89 75 e8 mov %rsi,-0x18(%rbp)</span><br><span class="line"> 29: 90 nop // remember me</span><br><span class="line"> 2a: 48 8d 7d f0 lea -0x10(%rbp),%rdi</span><br><span class="line"> 2e: e8 00 00 00 00 callq 33 &lt;_main+0x33&gt;</span><br><span class="line"> 33: 31 c0 xor %eax,%eax</span><br><span class="line"> 35: 48 83 c4 20 add $0x20,%rsp</span><br><span class="line"> 39: 5d pop %rbp</span><br><span class="line"> 3a: c3 retq</span><br><span class="line"> 3b: 0f 1f 44 00 00 nopl 0x0(%rax,%rax,1)</span><br></pre></td></tr></table></figure>
+<p>between the two <code>nop</code>, we can notice some dummy instructions generated for the <code>move</code> (if looking closely, you can know that they do basically nothing) However, if we turn on <code>O (-O1)</code> for the compiler, all the instructions will be gone.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">clang++ -g -c -O1 -std=c++11 -stdlib=libc++ -Weverything move.cc</span><br><span class="line">gobjdump -d -D move.o</span><br></pre></td></tr></table></figure>
+<p>Moreover, if changing the critical line to:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ResourceOwner &amp; rvalue = res;</span><br></pre></td></tr></table></figure>
+<p>The assembly generated is identical.</p>
+<p>That means the <code>move</code> semantics is pure syntax candy and a machine does not care at all.</p>
+<p>To conclude,</p>
+<blockquote>
+<p>The MACHINE thinks it irrelevant, we don’t.<br>-Harold Finch</p>
+</blockquote>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://hackernoon.com/one-shot-learning-of-c-r-value-and-move-27e5d6bcec3b'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Rvisit-C/">Rvisit C++</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/move/">move</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rvalue/">rvalue</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/cpp-pointers/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Smart Pointer, shared_ptr, Automatic pointer, and unique_ptr
+        
+      </div>
+    </a>
+  
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-async/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JavaScript Tutorial for Programmers - Async</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-a-rvalue"><span class="nav-number">1.</span> <span class="nav-text">What is a rvalue?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Beyond-theoretical-level"><span class="nav-number">2.</span> <span class="nav-text">Beyond theoretical level</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#So-rvalue-is-constant-value"><span class="nav-number">3.</span> <span class="nav-text">So rvalue is constant value?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-problem-does-amp-amp-solve-exactly"><span class="nav-number">4.</span> <span class="nav-text">What problem does &amp;&amp; solve exactly?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Move"><span class="nav-number">5.</span> <span class="nav-text">Move</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-std-move"><span class="nav-number">6.</span> <span class="nav-text">What is std::move?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-std-move-exactly"><span class="nav-number">7.</span> <span class="nav-text">What is std::move exactly?</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

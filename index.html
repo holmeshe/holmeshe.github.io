@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Holmes He">
+<meta property="og:url" content="https://holmeshe.me/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Holmes He">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body>
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main">
+  
+    <article id="post-understanding-memcached-source-code-IX"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-IX/">Understanding The Memcached Source Code-Event Driven III</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-IX/" class="article-date">
+	  <time datetime="2019-06-01T22:30:00.000Z" itemprop="datePublished">June 2, 2019</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            We continue examining the other two operations, i.e., create and delete, in the event driven context. As usual, we start with a command sent to a Memcached server. In fact, most of the logic involved in this post has been discussed before such as in LRU III and Event Driven II. Hence this post will only resolve the missing parts and linking points.
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-IX/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/event-driven/">event driven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memecached/">memecached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/state-machine/">state machine</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-understanding-memcached-source-code-VIII"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-VIII/">Understanding The Memcached Source Code-Event Driven II</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-VIII/" class="article-date">
+	  <time datetime="2019-01-27T20:00:00.000Z" itemprop="datePublished">January 28, 2019</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            In classic multithreading, blocking I/O operations constrain the maximum number of requests a server can handle. Hence asynchronous event driven model is used to eliminate the throughput bottleneck. As such, the synchronous and potentially slow process is divided into logic segments that are free of I/O, and are executed asynchronously. When it comes to asynchronization, extra space is required to store contexts. This is because the logic segments, that could be associated with different sessions, are executed in an interleaved way. For instance, in the case when asynchronization is implemented (emulated) using synchronous multithreading, the “extra space” is in the form of thread stack. Whilst contexts are maintained in user land in event driven.
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-VIII/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/event-driven/">event driven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/multithreading/">multithreading</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/state-machine/">state machine</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-understanding-memcached-source-code-VII"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-VII/">Understanding The Memcached Source Code - Event Driven I</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-VII/" class="article-date">
+	  <time datetime="2019-01-17T20:00:00.000Z" itemprop="datePublished">January 18, 2019</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            In classic multithreading, large amounts of slow and blocking operations, mostly, I/O, can easily drain out available thread resources, which severely constrains the maximum number of requests a server can handle per unit time. More specific, threads are scheduled out and put into sleep in the middle of procedures that contain blocking I/O, despite piling up requests packets queuing within the network stack. In such situation, server side will show low throughput, low CPU saturation and high latency.
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-VII/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/event-driven/">event driven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/multithreading/">multithreading</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/state-machine/">state machine</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-understanding-memcached-source-code-VI"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-VI/">Understanding The Memcached Source Code - LRU III</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-VI/" class="article-date">
+	  <time datetime="2018-12-23T22:00:00.000Z" itemprop="datePublished">December 24, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            In previous posts, we have discussed different facets of an item, i.e., slab, hash map and LRU list as well as their associated (CRUD) methods, which build up the internal procedures and perform client requests after the corresponding commands are parsed by the drive machine. This time we will go through those procedures by issuing telnet commands to a Memcached instance and see how the discussed modules work together on various item operations. We will also see the whole picture of LRU lists that maintain the property of ‘least recently used’ in accordance to those operations.
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-VI/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LRU/">LRU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-understanding-memcached-source-code-V"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-V/">Understanding The Memcached Source Code - LRU II</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-V/" class="article-date">
+	  <time datetime="2018-12-17T22:00:00.000Z" itemprop="datePublished">December 18, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            More often than not, the LRU algorithm is combined with a hash map, and is referred to as a LRU cache. In a LRU-cache, the hash map enables fast accessing of cached objects; and LRU avoids the cache to grow infinitely by marking expired, or so called, least recently used objects. This time we examine the memcached‘s implementation of hash map.
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-V/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LRU/">LRU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hash-map/">hash map</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-understanding-memcached-source-code-IV"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-IV/">Understanding The Memcached Source Code - LRU I</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-IV/" class="article-date">
+	  <time datetime="2018-12-10T23:00:00.000Z" itemprop="datePublished">December 11, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+      <div>
+        <a class="ext-link" href='/cn/understanding-memcached-source-code-IV/'>
+          <img src="/css/images/translate.svg" id="translate">
+          </img>
+        </a>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            More often than not, the LRU algorithm is combined with a hash map, and is referred to as a LRU Cache. In a LRU-cache, the hash map enables fast accessing of cached objects; and LRU avoids the cache to grow infinitely by marking expired, or so called, least recently used objects. Next we look at how LRU works from a high level standpoint.
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-IV/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LRU/">LRU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-understanding-memcached-source-code-III"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-III/">Understanding The Memcached Source Code - Slab III</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-III/" class="article-date">
+	  <time datetime="2018-09-28T09:55:00.000Z" itemprop="datePublished">September 28, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+      <div>
+        <a class="ext-link" href='/cn/understanding-memcached-source-code-III/'>
+          <img src="/css/images/translate.svg" id="translate">
+          </img>
+        </a>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            Last time we saw the memory allocating process, which further formulates slabs and the derivative “free lists” (a.k.a., slots). This time we will examine how to take advantage of the established data structures to “slab allocate / release” memory chunks which will be used to store items. Firstly, we look at do_slabs_alloc
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-III/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/slab-allocator/">slab allocator</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-understanding-memcached-source-code-II"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-II/">Understanding The Memcached Source Code - Slab II</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-II/" class="article-date">
+	  <time datetime="2018-09-17T08:17:00.000Z" itemprop="datePublished">September 17, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+      <div>
+        <a class="ext-link" href='/cn/understanding-memcached-source-code-II/'>
+          <img src="/css/images/translate.svg" id="translate">
+          </img>
+        </a>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            This time we continue examining how slabs memory is allocated. Firstly we look at the two arguments for slabs_init, which were passed over in the previous article. The first one is settings.maxbytes. It limits the overall memory that can be used by the memcached instance. In slabs_init, the value of settings.maxbytes is assigned to the global variable mem_limit which will be used very soon. The other argument is preallocate. It determines whether to preallocate slab for each slab class. This argument is toggled with L command line argument.
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-II/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/slab-allocator/">slab allocator</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/source-code-analysis/">source code analysis</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-understanding-memcached-source-code-I"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/understanding-memcached-source-code-I/">Understanding The Memcached Source Code - Slab I</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-memcached-source-code-I/" class="article-date">
+	  <time datetime="2018-09-12T09:17:00.000Z" itemprop="datePublished">September 12, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+ 
+      
+    </div>
+    
+      <div>
+        <a class="ext-link" href='/cn/understanding-memcached-source-code-I/'>
+          <img src="/css/images/translate.svg" id="translate">
+          </img>
+        </a>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+             slab allocator (I - this article , II , III) is the core module of the cache system, which largely determines how efficient the bottleneck resource, memory, can be utilized. The other 3 parts, namely,
+ LRU algorithm (I , II , III) for entry expiration; and an
+ event driven model (I , II , III) based on libevent; and the
+ consistent harsh (not complete) for data distribution,
+are built around it.
+Variants of slab allocator is implemented in other systems, such as nginx and Linux kernel, to fight a common problem called memory fragmentation. And this article will, of course, focus on Memcached‘s implementation of the algorithm.
+memcached version: 1.4.28
+Firstly, let’s answer some questions.
+          
+
+        
+          <p class="article-more-link">
+            <a href="/understanding-memcached-source-code-I/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cache/">cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memcached/">memcached</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/slab-allocator/">slab allocator</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-network-essentials-setsockopt-TCP_NODELAY"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/network-essentials-setsockopt-TCP_NODELAY/">setsockopt, TCP_NODELAY and Packet Aggregation I</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/network-essentials-setsockopt-TCP_NODELAY/" class="article-date">
+	  <time datetime="2018-06-08T23:47:00.000Z" itemprop="datePublished">June 9, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Network-Essentials/">Network Essentials</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+          <div class="entry-summary">
+          
+            Latency, instead of throughput, is found as the system bottleneck more often than not. However, the TCP socket enables a so-called nagle algorithm by default, which delays an egress packet in order to coalesces it with one that could be sent in the future, into a single TCP segment. This effectively reduces the number of TCP segments and the bandwidth overhead used by the TCP headers, whilst potentially imposes latency for every network request (response) being sent.
+
+Lock, and his temperamental brother, Block, are the two notorious villains in the world of programming. In the beginning, they always show up to assist. But sooner or later, they will kick your back-end like really hard.
+
+When I consider about nagle algorithem, it seems to me another scenario involving block operations which are meant to be helpful. So I decide to put hands on a keyboard to test if I am wrong.
+Software setupClient OS: Debian 4.9.88Server OS (LAN &amp; WAN): Unbutu 16.04gcc: 6.3.0
+Hardware (or VM) setupServer (LAN): Intel® Core™2 Duo CPU E8400 @ 3.00GHz × 2, 4GBServer (WAN): t2.micro, 1GB
+          
+
+        
+          <p class="article-more-link">
+            <a href="/network-essentials-setsockopt-TCP_NODELAY/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Network-Essentials/">Network Essentials</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SOL-TCP/">SOL_TCP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TCP-NODELAY/">TCP_NODELAY</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nagle-algorithm/">nagle algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/network/">network</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/packet-aggregation/">packet aggregation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/setsockopt/">setsockopt</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next</a>
+  </nav>
+
+</section>
+          <aside id="sidebar">
+  
+    <div style="margin: 20px 0;">
+	<div id="search-form-wrap">
+
+    <form class="search-form">
+        <label style="width: 72%;">
+            <span class="screen-reader-text">Search for:</span>
+            <input type="search" class="search-field" style="height: 36px; width: 100%;" placeholder=" Search…" value="" name="s" title="Search for:">
+        </label>
+        <input type="submit" class="search-form-submit" value="Search">
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+</div>
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">elsewhere</h3>
+    <div class="widget">
+    	<ul>   
+    	
+   			<li class="clearfix">
+                          <h6 style="margin: 0">
+                            
+                            <a href="https://hackernoon.com/https-hackernoon-com-build-vod-apps-using-react-native-f7fdcd7959bf">Building VOD Apps with React Native</a>
+                          </h6>
+                        </li> 
+
+   		
+   			<li class="clearfix">
+                          <h6 style="margin: 0">
+                            
+                            <a href="https://medium.com/backend/this-is-how-i-break-up-and-get-started-with-microservice-acf3bf6636b1">This is How I Break Up</a>
+                          </h6>
+                        </li> 
+
+   		
+   			<li class="clearfix">
+                          <h6 style="margin: 0">
+                            
+                            <a href="https://hackernoon.com/back-end-performance-those-metrics-we-care-about-ade678e87969">Those Metrics We Should Care About</a>
+                          </h6>
+                        </li> 
+
+   		
+   			<li class="clearfix">
+                          <h6 style="margin: 0">
+                            
+                              <img src="/gallery/graduate-cap.svg" height="18" width="18">
+                            
+                            <a href="https://ieeexplore.ieee.org/abstract/document/7881623/">Reverse Replication of VMs</a>
+                          </h6>
+                        </li> 
+
+   		
+   		</ul>
+
+
+   		<!--
+   		<ul class="clearfix widget-social-icons">   		
+   		<li class="widget-si-twitter"><a href="http://twitter.com" title="Twitter"><i class="ico-twitter"></i></a></li> 
+		<li class="widget-si-facebook"><a href="http://facebook.com" title="Facebook"><i class="ico-facebook"></i></a></li>
+			<li class="widget-si-gplus"><a href="http://plus.google.com" title="Google+"><i class="ico-gplus"></i></a></li>
+			<li class="widget-si-pinterest"><a href="http://pinterest.com" title="Pinterest"><i class="ico-pinterest"></i></a></li>
+			<li class="widget-si-flickr"><a href="http://flickr.com" title="Flickr"><i class="ico-flickr"></i></a></li>
+			<li class="widget-si-instagram"><a href="http://instagram.com" title="Instagram"><i class="ico-instagram"></i></a></li>
+		</ul> -->
+
+    </div>
+  </div>
+
+
+
+  
+    
+  <div class="widget_athemes_tabs">
+    <ul id="widget-tab" class="clearfix widget-tab-nav">
+      <li class="active"><a>Recent Posts</a></li>
+    </ul>
+    <div class="widget">
+      <ul>
+        
+          <li class="clearfix">
+
+            
+              <div class="widget-entry-summary" style="margin: 0;">
+            
+
+              <h6 style="margin: 0;"><a href="/understanding-memcached-source-code-IX/">Understanding The Memcached Source Code-Event Driven III</a></h6>
+              <span>June 2, 2019</span>
+            </div>
+
+          </li>
+        
+          <li class="clearfix">
+
+            
+              <div class="widget-entry-summary" style="margin: 0;">
+            
+
+              <h6 style="margin: 0;"><a href="/cn/understanding-memcached-source-code-IV/">理解 Memcached 源码 - LRU I</a></h6>
+              <span>May 18, 2019</span>
+            </div>
+
+          </li>
+        
+          <li class="clearfix">
+
+            
+              <div class="widget-entry-summary" style="margin: 0;">
+            
+
+              <h6 style="margin: 0;"><a href="/cn/understanding-memcached-source-code-III/">理解 Memcached 源码 - Slab III</a></h6>
+              <span>March 24, 2019</span>
+            </div>
+
+          </li>
+        
+          <li class="clearfix">
+
+            
+              <div class="widget-entry-summary" style="margin: 0;">
+            
+
+              <h6 style="margin: 0;"><a href="/cn/understanding-memcached-source-code-II/">理解 Memcached 源码- Slab II</a></h6>
+              <span>March 24, 2019</span>
+            </div>
+
+          </li>
+        
+          <li class="clearfix">
+
+            
+              <div class="widget-entry-summary" style="margin: 0;">
+            
+
+              <h6 style="margin: 0;"><a href="/cn/understanding-memcached-source-code-I/">理解 Memcached 源码- Slab I</a></h6>
+              <span>March 23, 2019</span>
+            </div>
+
+          </li>
+        
+          <li class="clearfix">
+
+            
+              <div class="widget-entry-summary" style="margin: 0;">
+            
+
+              <h6 style="margin: 0;"><a href="/understanding-memcached-source-code-VIII/">Understanding The Memcached Source Code-Event Driven II</a></h6>
+              <span>January 28, 2019</span>
+            </div>
+
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Series</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Memcached-Source-Code/">Memcached Source Code</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Memcached-源码分析/">Memcached 源码分析</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network-Essentials/">Network Essentials</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Rvisit-C/">Rvisit C++</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a><span class="category-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/">==</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/">===</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/">=></a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LRU/">LRU</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOL-SOCKET/">SOL_SOCKET</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOL-TCP/">SOL_TCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SO-KEEPALIVE/">SO_KEEPALIVE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Smart-Pointer/">Smart Pointer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP-NODELAY/">TCP_NODELAY</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/array/">array</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/arrow-method/">arrow method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/async/">async</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/automatic-ptr/">automatic ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/big-endian/">big endian</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/byte-order/">byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cache/">cache</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/callback/">callback</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/class/">class</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/code/">code</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/comparison/">comparison</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/component/">component</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concatenation/">concatenation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/constructor/">constructor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dictionary/">dictionary</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/diffing/">diffing</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/endianness/">endianness</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/equal/">equal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/escape/">escape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/event-driven/">event driven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hash-map/">hash map</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/heartbeat/">heartbeat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/host-byte-order/">host byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/inheritance/">inheritance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/">js</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/little-endian/">little endian</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memecached/">memecached</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/move/">move</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/multithreading/">multithreading</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nagle-algorithm/">nagle algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/">network</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-byte-order/">network byte order</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/new/">new</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/object/">object</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/packet-aggregation/">packet aggregation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming/">programming</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/promise/">promise</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prototype/">prototype</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/react/">react</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/react-js/">react.js</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/render/">render</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rvalue/">rvalue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/setsockopt/">setsockopt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/setstate/">setstate</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shared-ptr/">shared ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/simple-component/">simple component</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slab-allocator/">slab allocator</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slice/">slice</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/source-code/">source code</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/source-code-analysis/">source code analysis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/special-character/">special character</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/state-machine/">state machine</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/string/">string</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/substring/">substring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/this/">this</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/transaction/">transaction</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/undefined/">undefined</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-ptr/">unique ptr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/virtual-dom/">virtual dom</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码分析/">源码分析</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/" style="font-size: 10px;">==</a> <a href="/tags/" style="font-size: 10px;">===</a> <a href="/tags/" style="font-size: 10px;">=></a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/LRU/" style="font-size: 13.75px;">LRU</a> <a href="/tags/SOL-SOCKET/" style="font-size: 10px;">SOL_SOCKET</a> <a href="/tags/SOL-TCP/" style="font-size: 10px;">SOL_TCP</a> <a href="/tags/SO-KEEPALIVE/" style="font-size: 10px;">SO_KEEPALIVE</a> <a href="/tags/Smart-Pointer/" style="font-size: 10px;">Smart Pointer</a> <a href="/tags/TCP-NODELAY/" style="font-size: 10px;">TCP_NODELAY</a> <a href="/tags/array/" style="font-size: 10px;">array</a> <a href="/tags/arrow-method/" style="font-size: 10px;">arrow method</a> <a href="/tags/async/" style="font-size: 10px;">async</a> <a href="/tags/automatic-ptr/" style="font-size: 10px;">automatic ptr</a> <a href="/tags/big-endian/" style="font-size: 10px;">big endian</a> <a href="/tags/byte-order/" style="font-size: 10px;">byte order</a> <a href="/tags/cache/" style="font-size: 17.5px;">cache</a> <a href="/tags/callback/" style="font-size: 10px;">callback</a> <a href="/tags/class/" style="font-size: 10px;">class</a> <a href="/tags/code/" style="font-size: 11.25px;">code</a> <a href="/tags/comparison/" style="font-size: 10px;">comparison</a> <a href="/tags/component/" style="font-size: 11.25px;">component</a> <a href="/tags/concatenation/" style="font-size: 10px;">concatenation</a> <a href="/tags/constructor/" style="font-size: 10px;">constructor</a> <a href="/tags/dictionary/" style="font-size: 10px;">dictionary</a> <a href="/tags/diffing/" style="font-size: 11.25px;">diffing</a> <a href="/tags/endianness/" style="font-size: 10px;">endianness</a> <a href="/tags/equal/" style="font-size: 10px;">equal</a> <a href="/tags/escape/" style="font-size: 10px;">escape</a> <a href="/tags/event-driven/" style="font-size: 12.5px;">event driven</a> <a href="/tags/hash-map/" style="font-size: 10px;">hash map</a> <a href="/tags/heartbeat/" style="font-size: 10px;">heartbeat</a> <a href="/tags/host-byte-order/" style="font-size: 10px;">host byte order</a> <a href="/tags/inheritance/" style="font-size: 10px;">inheritance</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/little-endian/" style="font-size: 10px;">little endian</a> <a href="/tags/memcached/" style="font-size: 18.75px;">memcached</a> <a href="/tags/memecached/" style="font-size: 10px;">memecached</a> <a href="/tags/move/" style="font-size: 10px;">move</a> <a href="/tags/multithreading/" style="font-size: 11.25px;">multithreading</a> <a href="/tags/nagle-algorithm/" style="font-size: 10px;">nagle algorithm</a> <a href="/tags/network/" style="font-size: 12.5px;">network</a> <a href="/tags/network-byte-order/" style="font-size: 10px;">network byte order</a> <a href="/tags/new/" style="font-size: 10px;">new</a> <a href="/tags/object/" style="font-size: 10px;">object</a> <a href="/tags/packet-aggregation/" style="font-size: 10px;">packet aggregation</a> <a href="/tags/programming/" style="font-size: 13.75px;">programming</a> <a href="/tags/promise/" style="font-size: 10px;">promise</a> <a href="/tags/prototype/" style="font-size: 11.25px;">prototype</a> <a href="/tags/react/" style="font-size: 15px;">react</a> <a href="/tags/react-js/" style="font-size: 17.5px;">react.js</a> <a href="/tags/render/" style="font-size: 10px;">render</a> <a href="/tags/rvalue/" style="font-size: 10px;">rvalue</a> <a href="/tags/setsockopt/" style="font-size: 11.25px;">setsockopt</a> <a href="/tags/setstate/" style="font-size: 13.75px;">setstate</a> <a href="/tags/shared-ptr/" style="font-size: 10px;">shared ptr</a> <a href="/tags/simple-component/" style="font-size: 10px;">simple component</a> <a href="/tags/slab-allocator/" style="font-size: 16.25px;">slab allocator</a> <a href="/tags/slice/" style="font-size: 10px;">slice</a> <a href="/tags/socket/" style="font-size: 15px;">socket</a> <a href="/tags/source-code/" style="font-size: 12.5px;">source code</a> <a href="/tags/source-code-analysis/" style="font-size: 11.25px;">source code analysis</a> <a href="/tags/special-character/" style="font-size: 10px;">special character</a> <a href="/tags/state-machine/" style="font-size: 12.5px;">state machine</a> <a href="/tags/string/" style="font-size: 10px;">string</a> <a href="/tags/substring/" style="font-size: 10px;">substring</a> <a href="/tags/this/" style="font-size: 11.25px;">this</a> <a href="/tags/transaction/" style="font-size: 11.25px;">transaction</a> <a href="/tags/undefined/" style="font-size: 10px;">undefined</a> <a href="/tags/unique-ptr/" style="font-size: 10px;">unique ptr</a> <a href="/tags/virtual-dom/" style="font-size: 11.25px;">virtual dom</a> <a href="/tags/源码/" style="font-size: 13.75px;">源码</a> <a href="/tags/源码分析/" style="font-size: 13.75px;">源码分析</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

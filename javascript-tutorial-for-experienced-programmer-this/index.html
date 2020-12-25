@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="JavaScriptjsthisarrow method=>">
+  
+  
+  
+  
+  <meta name="description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+<meta name="keywords" content="JavaScript,js,this,arrow method,=&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript Tutorial for Programmers - This">
+<meta property="og:url" content="https://holmeshe.me/javascript-tutorial-for-experienced-programmer-this/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript Tutorial for Programmers - This">
+<meta name="twitter:description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-javascript-tutorial-for-experienced-programmer-this" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      JavaScript Tutorial for Programmers - This
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/javascript-tutorial-for-experienced-programmer-this/" class="article-date">
+	  <time datetime="2017-08-16T20:30:00.000Z" itemprop="datePublished">August 17, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on <strong>differences</strong> so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.</p>
+</blockquote>
+<p>In this post, I will discuss <em>this</em>, the legendary JavaScript pitfall countless programmers trod upon.</p>
+<a id="more"></a>
+<h1 id="What-is-this"><a href="#What-is-this" class="headerlink" title="What is this"></a>What is <code>this</code></h1><p>Example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> hero = &#123;</span><br><span class="line">  name   :<span class="string">"Hulk"</span>,</span><br><span class="line">  motto  :<span class="string">"Rahhhhh!!"</span>,</span><br><span class="line"></span><br><span class="line">  speak:<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.name + <span class="string">":"</span> + <span class="keyword">this</span>.motto);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hero.speak();</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hulk:Rahhhhh!!</span><br></pre></td></tr></table></figure>
+<h1 id="this‘-runtime-value"><a href="#this‘-runtime-value" class="headerlink" title="this‘ runtime value"></a><code>this</code>‘ runtime value</h1><p>What showed above is a classic OOP example, in which we use <code>this</code> to refer to the object that calls the function. Yet JavaScript is not strictly object-oriented and the behavior of <code>this</code> is different from all the rest. To be more specific, <code>this</code> is assigned with the reference of the <em>execution context</em> by the runtime. What does that mean, we look at another example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"Iron man"</span>, motto = <span class="string">"Right in the feels!"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">speak</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(<span class="keyword">this</span>.name + <span class="string">":"</span> + <span class="keyword">this</span>.motto);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> hero = &#123;</span><br><span class="line">  name   :<span class="string">"Hulk"</span>,</span><br><span class="line">  motto  :<span class="string">"Rahhhhh!!"</span>,</span><br><span class="line">  speak:speak     <span class="comment">//here we assign the function to the member method</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hero.speak();</span><br><span class="line">speak(); <span class="comment">// implicitly reads the two variables in the global context(window) </span></span><br><span class="line"><span class="built_in">window</span>.speak(); <span class="comment">// we call speak from windows to verify</span></span><br></pre></td></tr></table></figure>
+<p>Results:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Hulk:Rahhhhh!!</span><br><span class="line">Iron man:Right in the feels!</span><br><span class="line">Iron man:Right in the feels!</span><br></pre></td></tr></table></figure></p>
+<p>In the code above, the first <code>speak()</code> is called in the context of <code>hero</code>, and the value of <code>this</code> is set accordingly. Albeit not obvious, we can know that the caller of second <code>speak()</code> is in fact <code>window</code>, by comparing the output of the second function call and that of the third. In both cases, the members of <code>window</code> (global variable <code>name = &quot;Iron man&quot;</code>) can be dereferenced using <code>this.***</code>, inside the implementation of <code>speak()</code>.</p>
+<p>The confusion shown above can not be counted as a real issue (rather, it is more like a puzzle game) since no one will program in this way. Next, we look at some problems that are relevant in practice.</p>
+<h1 id="Problem-1-callback"><a href="#Problem-1-callback" class="headerlink" title="Problem 1 - callback"></a>Problem 1 - callback</h1><p>The most common way to incur the “context mess up” (I made this one up as I really do not want to use the term “context switch”) is through a callback assigned to a variable, in most cases, a function parameter. For example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"Iron man"</span>, motto = <span class="string">"Right in the feels!"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">thinkBeforeSpeak</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">  callback();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> hero = &#123;</span><br><span class="line">    name   :<span class="string">"Hulk"</span>,</span><br><span class="line">    motto  :<span class="string">"Rahhhhh!!"</span>,</span><br><span class="line">    speak  :<span class="function"><span class="keyword">function</span> <span class="title">speak</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.name + <span class="string">":"</span> + <span class="keyword">this</span>.motto);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; thinkBeforeSpeak(hero.speak); &#125;, <span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Iron man:Right in the feels!</span><br></pre></td></tr></table></figure>
+<p>In the example, the function in use is assigned to other variables and the context of the function is changed to window …… and again, Iron man feels not well.</p>
+<h2 id="Solution-1-bind"><a href="#Solution-1-bind" class="headerlink" title="Solution 1, bind()"></a>Solution 1, <code>bind()</code></h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"Iron man"</span>, motto = <span class="string">"Right in the feels!"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">thinkBeforeSpeak</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">  callback();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> hero = &#123;</span><br><span class="line">    name   :<span class="string">"Hulk"</span>,</span><br><span class="line">    motto  :<span class="string">"Rahhhhh!!"</span>,</span><br><span class="line">    speak  :<span class="function"><span class="keyword">function</span> <span class="title">speak</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.name + <span class="string">":"</span> + <span class="keyword">this</span>.motto);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; thinkBeforeSpeak(hero.speak.bind(hero)); &#125;, <span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hulk:Rahhhhh!!</span><br></pre></td></tr></table></figure>
+<p>As you may have noticed, the magic is the following line:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hero.speak.bind(hero);</span><br></pre></td></tr></table></figure>
+<p>which fixate the <code>this</code> value to the designated object, the Hulk.</p>
+<h2 id="Solution-2-apply"><a href="#Solution-2-apply" class="headerlink" title="Solution 2, apply()"></a>Solution 2, <code>apply()</code></h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"Iron man"</span>, motto = <span class="string">"Right in the feels!"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">thinkBeforeSpeak</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">  callback.apply(hero, []);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> hero = &#123;</span><br><span class="line">  name   :<span class="string">"Hulk"</span>,</span><br><span class="line">  motto  :<span class="string">"Rahhhhh!!"</span>,</span><br><span class="line">  speak  :<span class="function"><span class="keyword">function</span> <span class="title">speak</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.name + <span class="string">":"</span> + <span class="keyword">this</span>.motto);</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; thinkBeforeSpeak(hero.speak); &#125;, <span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hulk:Rahhhhh!!</span><br></pre></td></tr></table></figure>
+<p><code>apply()</code> works similar to <code>bind()</code> while it takes an extra array argument that represents the arguments required for the real, workhorse function.</p>
+<p>I will not further discuss another similar method, <code>call()</code> that takes variable arguments instead of an array.</p>
+<h1 id="Problem-2-inner-function"><a href="#Problem-2-inner-function" class="headerlink" title="Problem 2 - inner function"></a>Problem 2 - inner function</h1><p>Another commonly encountered pitfall is using <code>this</code> inside an inner function (function defined within another function, yes, you can do that in JavaScript), in which case <code>this</code> IS NOT the object that the outer method belongs to.</p>
+<p>Example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"Iron man"</span>, motto = <span class="string">"Right in the feels!"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> hero = &#123;</span><br><span class="line">  name   :<span class="string">"Hulk"</span>,</span><br><span class="line">  motto  :<span class="string">"Rahhhhh!!"</span>,</span><br><span class="line">  speak  :<span class="function"><span class="keyword">function</span> <span class="title">speak</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">innervoice</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      alert(<span class="keyword">this</span>.name + <span class="string">":"</span> + <span class="keyword">this</span>.motto);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    innervoice();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hero.speak();</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Iron man:Right in the feels!</span><br></pre></td></tr></table></figure>
+<p>So do I.</p>
+<p>The <code>this</code> becomes <code>window</code> again. Like whenever the JavaScript runtime is not sure, it set this to <code>window</code>.</p>
+<h2 id="Solution-gt"><a href="#Solution-gt" class="headerlink" title="Solution, =&gt;"></a>Solution, =&gt;</h2><p>We can use <code>=&gt;</code> (ES6) to define a inner function, in which the this value is fixated automatically.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"Iron man"</span>, motto = <span class="string">"Right in the feels!"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> hero = &#123;</span><br><span class="line">  name   :<span class="string">"Hulk"</span>,</span><br><span class="line">  motto  :<span class="string">"Rahhhhh!!"</span>,</span><br><span class="line">  speak  :<span class="function"><span class="keyword">function</span> <span class="title">speak</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> fn = <span class="function"><span class="params">()</span> =&gt;</span> &#123; alert(<span class="keyword">this</span>.name + <span class="string">":"</span> + <span class="keyword">this</span>.motto); &#125;</span><br><span class="line"></span><br><span class="line">    fn();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hero.speak();</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hulk:Rahhhhh!!</span><br></pre></td></tr></table></figure>
+<p>This time, runtime got it right.</p>
+<p>BTW, =&gt; is called an arrow method and <code>()=&gt;{...;}</code> means an arrow method with no argument.</p>
+<p>What? The problem can be solved using <code>that</code> as well?! NaN.</p>
+<h1 id="Problem-3-constructor"><a href="#Problem-3-constructor" class="headerlink" title="Problem 3 - constructor"></a>Problem 3 - constructor</h1><p>In practice, (a misused) constructor is the last common place you can encounter the unpredictable <code>this</code>. However, it requires further understanding how JavaScript handles class &amp; object, so I will cover this problem and the solutions in later posts of this series.</p>
+<p>Today we have learned some techniques to save Iron man. And I hope the next time when you encounter an <code>undefined</code> caused by the messed up this, you can smash the problem like the Hulk.</p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/">=></a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/arrow-method/">arrow method</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/js/">js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/this/">this</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-object-dictionary/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JavaScript Tutorial for Programmers - Object (Dictionary)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-string-and-array/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JavaScript Tutorial for Programmers - String and Array</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-this"><span class="nav-number">1.</span> <span class="nav-text">What is this</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#this‘-runtime-value"><span class="nav-number">2.</span> <span class="nav-text">this‘ runtime value</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem-1-callback"><span class="nav-number">3.</span> <span class="nav-text">Problem 1 - callback</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution-1-bind"><span class="nav-number">3.1.</span> <span class="nav-text">Solution 1, bind()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution-2-apply"><span class="nav-number">3.2.</span> <span class="nav-text">Solution 2, apply()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem-2-inner-function"><span class="nav-number">4.</span> <span class="nav-text">Problem 2 - inner function</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution-gt"><span class="nav-number">4.1.</span> <span class="nav-text">Solution, =&gt;</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem-3-constructor"><span class="nav-number">5.</span> <span class="nav-text">Problem 3 - constructor</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

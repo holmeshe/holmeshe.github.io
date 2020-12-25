@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="reactreact.jssource coderendersimple component">
+  
+  
+  
+  
+  <meta name="description" content="UI updating, in its essential, is data change. React offers a straightforward and intuitive approach to front-end program with all the moving parts converged in the form of states. Code review is also">
+<meta name="keywords" content="react,react.js,source code,render,simple component">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding The React Source Code - Initial Rendering (Simple Component) I">
+<meta property="og:url" content="https://holmeshe.me/understanding-react-js-source-code-initial-rendering-I/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="UI updating, in its essential, is data change. React offers a straightforward and intuitive approach to front-end program with all the moving parts converged in the form of states. Code review is also">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://holmeshe.me/gallery/scr-react-I-1.png">
+<meta property="og:image" content="http://holmeshe.me/gallery/scr-react-I-2.png">
+<meta property="og:image" content="http://holmeshe.me/gallery/scr-react-I-3.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding The React Source Code - Initial Rendering (Simple Component) I">
+<meta name="twitter:description" content="UI updating, in its essential, is data change. React offers a straightforward and intuitive approach to front-end program with all the moving parts converged in the form of states. Code review is also">
+<meta name="twitter:image" content="http://holmeshe.me/gallery/scr-react-I-1.png">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-understanding-react-js-source-code-initial-rendering-I" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Understanding The React Source Code - Initial Rendering (Simple Component) I
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/understanding-react-js-source-code-initial-rendering-I/" class="article-date">
+	  <time datetime="2017-12-29T11:00:00.000Z" itemprop="datePublished">December 30, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>UI updating, in its essential, is data change. React offers a straightforward and intuitive approach to front-end program with all the moving parts converged in the form of states. Code review is also made easier to me as I like to start with data structures for a rough expectation of the functionalities and processing logic. From time to time, I was curious about how React works internally, hence this article. </p>
+<blockquote>
+<p>It never hurts to have a deeper understanding down the stack, as it gives me more freedom when I need a new feature, more confidence when I want to contribute and more comfort when I upgrade.</p>
+</blockquote>
+<a id="more"></a>
+<p>This article will start walking through one of the critical paths of React by rendering a simple component, i.e., a <code>&lt;h1&gt;</code>. Other topics (e.g., Composite components rendering, state driven UI updating and components life cycle) will be discussed in the following articles in a similar, actionable manner.</p>
+<p><strong><em>Files used in this article:</em></strong><br><em>isomorphic/React.js</em>: entry point of <code>ReactElement.createElement()</code></p>
+<p><em>isomorphic/classic/element/ReactElement.js</em>: workhorse of <code>ReactElement.createElement()</code></p>
+<p><em>renderers/dom/ReactDOM.js</em>: entry point of <code>ReactDOM.render()</code></p>
+<p><em>renderers/dom/client/ReactMount.js</em>: workhorse of <code>ReactDom.render()</code></p>
+<p><em>renderers/shared/stack/reconciler/instantiateReactComponent.js</em>: create different types of <code>ReactComponents</code> based on element type</p>
+<p><em>renderers/shared/stack/reconciler/ReactCompositeComponent.js</em>: <code>ReactComponents</code> wrapper of root element</p>
+<p><strong><em>Tags used in the call stack:</em></strong><br><code>-</code> function call<br><code>=</code> alias<br><code>~</code> indirect function call</p>
+<p>As the locations of source code files can not be obviously derived from <code>import</code> statement in the <a href="http://thomasboyt.github.io/2014/10/03/react-build.html" target="_blank" rel="noopener">flat module tree</a>, I will use @ to help locating them in the code snippet listings.</p>
+<p>Last words, this series is based on <a href="https://github.com/facebook/react/tree/v15.6.2" target="_blank" rel="noopener">React 15.6.2</a>.</p>
+<h1 id="From-JSX-to-React-createElement"><a href="#From-JSX-to-React-createElement" class="headerlink" title="From JSX to React.createElement()"></a>From JSX to <code>React.createElement()</code></h1><blockquote>
+<p>I was not consciously aware of using <code>React.createElement()</code>, as the existence of it is masked by JSX from a developer’s point of view.</p>
+</blockquote>
+<p>In compiling time, components defined in JSX is translated by Babel to <code>React.createElement()</code> called with appropriate parameters. For instance, the default App.js shipped with <a href="https://github.com/facebookincubator/create-react-app#getting-started" target="_blank" rel="noopener">create-react-app</a>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> logo <span class="keyword">from</span> <span class="string">'./logo.svg'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'./App.css'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div className=<span class="string">"App"</span>&gt;</span><br><span class="line">        &lt;header className=<span class="string">"App-header"</span>&gt;</span><br><span class="line">          &lt;img src=&#123;logo&#125; className=<span class="string">"App-logo"</span> alt=<span class="string">"logo"</span> /&gt;</span><br><span class="line">          &lt;h1 className=<span class="string">"App-title"</span>&gt;Welcome to React&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>header&gt;</span><br><span class="line">        &lt;p className=<span class="string">"App-intro"</span>&gt;</span><br><span class="line">          To <span class="keyword">get</span> started, edit &lt;code&gt;src/App.js&lt;/code&gt; and save to reload.</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default App;</span><br></pre></td></tr></table></figure>
+<p>is compiled to:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> logo <span class="keyword">from</span> <span class="string">'./logo.svg'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'./App.css'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> React.createElement(</span><br><span class="line">      <span class="string">'div'</span>,</span><br><span class="line">      &#123; <span class="attr">className</span>: <span class="string">'App'</span> &#125;,</span><br><span class="line">      React.createElement(</span><br><span class="line">        <span class="string">'header'</span>,</span><br><span class="line">        &#123; <span class="attr">className</span>: <span class="string">'App-header'</span> &#125;,</span><br><span class="line">        React.createElement(<span class="string">'img'</span>, &#123; <span class="attr">src</span>: logo, <span class="attr">className</span>: <span class="string">'App-logo'</span>, <span class="attr">alt</span>: <span class="string">'logo'</span> &#125;),</span><br><span class="line">        React.createElement(</span><br><span class="line">          <span class="string">'h1'</span>,</span><br><span class="line">          &#123; <span class="attr">className</span>: <span class="string">'App-title'</span> &#125;,</span><br><span class="line">          <span class="string">'Welcome to React'</span></span><br><span class="line">        )</span><br><span class="line">      ),</span><br><span class="line">      React.createElement(</span><br><span class="line">        <span class="string">'p'</span>,</span><br><span class="line">        &#123; <span class="attr">className</span>: <span class="string">'App-intro'</span> &#125;,</span><br><span class="line">        <span class="string">'To get started, edit '</span>,</span><br><span class="line">        React.createElement(</span><br><span class="line">          <span class="string">'code'</span>,</span><br><span class="line">          <span class="literal">null</span>,</span><br><span class="line">          <span class="string">'src/App.js'</span></span><br><span class="line">        ),</span><br><span class="line">        <span class="string">' and save to reload.'</span></span><br><span class="line">      )</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> App;</span><br></pre></td></tr></table></figure>
+<p>which is the real code executed by a browser. The code above shows a definition of a composite component App, in which JSX, a syntax of interweaving HTML tag in JavaScript code (e.g., <code>&lt;div className=”App”&gt;&lt;/div&gt;</code>), is translated to <code>React.createElement()</code> calls.</p>
+<p>On the application level, this component will be rendered:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;App /&gt;,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">'root'</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>normally by a JS entry module named “index.js”.</p>
+<p>This nested components tree is a bit too complicated to be an ideal start point, so we forget it now and instead look at something easier - that renders a simple HTML element.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;h1 style=&#123;&#123;<span class="string">"color"</span>:<span class="string">"blue"</span>&#125;&#125;&gt;hello world&lt;<span class="regexp">/h1&gt;,</span></span><br><span class="line"><span class="regexp">  document.getElementById('root')</span></span><br><span class="line"><span class="regexp">);</span></span><br><span class="line"><span class="regexp">...</span></span><br></pre></td></tr></table></figure>
+<p>the babeled version of the above code is:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">ReactDOM.render(React.createElement(</span><br><span class="line">  <span class="string">'h1'</span>,</span><br><span class="line">  &#123; <span class="attr">style</span>: &#123; <span class="string">"color"</span>: <span class="string">"blue"</span> &#125; &#125;,</span><br><span class="line">  <span class="string">'hello world'</span></span><br><span class="line">), <span class="built_in">document</span>.getElementById(<span class="string">'root'</span>));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h1 id="React-createElement-create-a-ReactElement"><a href="#React-createElement-create-a-ReactElement" class="headerlink" title="React.createElement() - create a ReactElement"></a><code>React.createElement()</code> - create a <code>ReactElement</code></h1><p>The first step does not do much really. It simply constructs an ReactElement instance populated with whatever passed down to the call stack. The outcome data structure is:</p>
+<p><img src="http://holmeshe.me/gallery/scr-react-I-1.png" alt></p>
+<p>The call stack is:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">React.createElement</span><br><span class="line">|=ReactElement.createElement(type, config, children)</span><br><span class="line">  |-ReactElement(type,..., props)</span><br></pre></td></tr></table></figure>
+<p><code>React.createElement(type, config, children)</code> is merely an alias of <code>ReactElement.createElement()</code>;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">var</span> createElement = ReactElement.createElement;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">var</span> React = &#123;</span><br><span class="line">...</span><br><span class="line">  createElement: createElement,</span><br><span class="line">...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = React;</span><br><span class="line"></span><br><span class="line">React@isomorphic/React.js</span><br></pre></td></tr></table></figure>
+<p><code>ReactElement.createElement(type, config, children)</code> 1) copies the elements in config to <code>props</code>, 2) copies the <code>children</code> to <code>props.children</code> and 3) copies the <code>type.defaultProps</code> to <code>props</code>;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  <span class="comment">// 1)</span></span><br><span class="line">  <span class="keyword">if</span> (config != <span class="literal">null</span>) &#123;</span><br><span class="line">  ...extracting not interesting properties <span class="keyword">from</span> config...</span><br><span class="line">    <span class="comment">// Remaining properties are added to a new props object</span></span><br><span class="line">    <span class="keyword">for</span> (propName <span class="keyword">in</span> config) &#123;</span><br><span class="line">      <span class="keyword">if</span> (</span><br><span class="line">        hasOwnProperty.call(config, propName) &amp;&amp;</span><br><span class="line">        !RESERVED_PROPS.hasOwnProperty(propName)</span><br><span class="line">      ) &#123;</span><br><span class="line">        props[propName] = config[propName];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 2)</span></span><br><span class="line">  <span class="comment">// Children can be more than one argument, and those are transferred onto</span></span><br><span class="line">  <span class="comment">// the newly allocated props object.</span></span><br><span class="line">  <span class="keyword">var</span> childrenLength = <span class="built_in">arguments</span>.length - <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">if</span> (childrenLength === <span class="number">1</span>) &#123;</span><br><span class="line">    props.children = children; <span class="comment">// scr: one child is stored as object</span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childrenLength &gt; <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> childArray = <span class="built_in">Array</span>(childrenLength);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; childrenLength; i++) &#123;</span><br><span class="line">      childArray[i] = <span class="built_in">arguments</span>[i + <span class="number">2</span>]; <span class="comment">// scr: multiple children are stored as array</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    props.children = childArray;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 3)</span></span><br><span class="line">  <span class="comment">// Resolve default props</span></span><br><span class="line">  <span class="keyword">if</span> (type &amp;&amp; type.defaultProps) &#123;</span><br><span class="line">    <span class="keyword">var</span> defaultProps = type.defaultProps;</span><br><span class="line">    <span class="keyword">for</span> (propName <span class="keyword">in</span> defaultProps) &#123;</span><br><span class="line">      <span class="keyword">if</span> (props[propName] === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        props[propName] = defaultProps[propName];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> ReactElement(</span><br><span class="line">    type,</span><br><span class="line">    key,</span><br><span class="line">    ref,</span><br><span class="line">    self,</span><br><span class="line">    source,</span><br><span class="line">    ReactCurrentOwner.current,</span><br><span class="line">    props,</span><br><span class="line">  );</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">ReactElement.createElement@isomorphic/classic/element/ReactElement.js</span><br></pre></td></tr></table></figure>
+<p>Then <code>ReactElement(type ,... ,props)</code> copies the <code>type</code> and <code>props</code> as they are to <code>ReactElement</code> and returns the instance.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">var</span> ReactElement = <span class="function"><span class="keyword">function</span>(<span class="params">type, key, ref, self, source, owner, props</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// This tag allow us to uniquely identify this as a React Element</span></span><br><span class="line">    $$<span class="keyword">typeof</span>: REACT_ELEMENT_TYPE,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Built-in properties that belong on the element</span></span><br><span class="line">    type: <span class="comment">// scr:------------------&gt; 'h1'</span></span><br><span class="line">    key:  <span class="comment">// scr:------------------&gt; not of interest for now</span></span><br><span class="line">    ref:  <span class="comment">// scr:------------------&gt; not of interest for now</span></span><br><span class="line">    props: &#123;</span><br><span class="line">        children:       <span class="comment">// scr:------------------&gt; 'hello world'</span></span><br><span class="line">        ...other props: <span class="comment">// scr:------------------&gt; style: &#123; "color": "blue" &#125;</span></span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Record the component responsible for creating this element.</span></span><br><span class="line">    _owner: owner, <span class="comment">// scr: --------------&gt; null</span></span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">ReactElement@isomorphic/classic/element/ReactElement.js</span><br></pre></td></tr></table></figure>
+<p>The fields populated in the newly constructed <code>ReactElement</code> will be used directly by <code>ReactMount.instantiateReactComponent()</code>, which will be explained in detail very soon. Note that the next step will also create a <code>ReactElement</code> object with <code>ReactElement.createElement()</code>, so I will call the <code>ReactElement</code> object of this phase <code>ReactElement[1]</code>.</p>
+<h1 id="ReactDom-render-and-render-it"><a href="#ReactDom-render-and-render-it" class="headerlink" title="ReactDom.render() - and render it"></a><code>ReactDom.render()</code> - and render it</h1><h2 id="renderSubtreeIntoContainer-attach-TopLevelWrapper-to-the-ReactElement-1"><a href="#renderSubtreeIntoContainer-attach-TopLevelWrapper-to-the-ReactElement-1" class="headerlink" title="_renderSubtreeIntoContainer() - attach TopLevelWrapper to the ReactElement[1]"></a><code>_renderSubtreeIntoContainer()</code> - attach <code>TopLevelWrapper</code> to the <code>ReactElement[1]</code></h2><p>The purpose of the next step is to wrap the <code>ReactElement[1]</code> with another <code>ReactElement</code> (we call the instance a <code>[2]</code>) and set the <code>ReactElement.type</code> with <code>TopLevelWrapper</code>. The name <code>TopLevelWrapper</code> explains what it does - wrap the top level element of the component tree passed through render():</p>
+<p><img src="http://holmeshe.me/gallery/scr-react-I-2.png" alt></p>
+<p>An important definition here is that of <code>TopLevelWrapper</code>, I type three stars here *** for you to CTL-f, as you might need to come back to this definition later. </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">var</span> TopLevelWrapper = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.rootID = topLevelRootCounter++;</span><br><span class="line">&#125;;</span><br><span class="line">TopLevelWrapper.prototype.isReactComponent = &#123;&#125;;</span><br><span class="line">TopLevelWrapper.prototype.render = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.props.child;</span><br><span class="line">&#125;;</span><br><span class="line">TopLevelWrapper.isReactTopLevelWrapper = <span class="literal">true</span>;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">TopLevelWrapper@renderers/dom/client/ReactMount.js</span><br></pre></td></tr></table></figure>
+<p>Please note that the entity assigned to <code>ReactElement.type</code> is a type (<code>TopLevelWrapper</code>) which will be instantiated in the following rendering steps. (Then <code>ReactElement[1]</code> will be extracted from <code>this.props.child</code> through <code>render()</code>.)</p>
+<p>The call stack to construct the designated object is as following:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render</span><br><span class="line">|=ReactMount.render(nextElement, container, callback)</span><br><span class="line">|=ReactMount._renderSubtreeIntoContainer(</span><br><span class="line">  parentComponent, <span class="comment">// scr:-----------------&gt; null</span></span><br><span class="line">  nextElement,     <span class="comment">// scr:-----------------&gt; ReactElement[1]</span></span><br><span class="line">  container,       <span class="comment">// scr:-----------------&gt; document.getElementById('root')</span></span><br><span class="line">  callback<span class="string">'        // scr:-----------------&gt; undefined</span></span><br><span class="line"><span class="string">)</span></span><br></pre></td></tr></table></figure>
+<p>For initial rendering, <code>ReactMount._renderSubtreeIntoContainer()</code> is simpler than it seems to be, in fact, most branches (for UI updating) in this function are skipped. The only line that is effective before the logic processes to next step is</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">    <span class="keyword">var</span> nextWrappedElement = React.createElement(TopLevelWrapper, &#123;</span><br><span class="line">      child: nextElement,</span><br><span class="line">    &#125;);</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">_renderSubtreeIntoContainer@renderers/dom/client/ReactMount.js</span><br></pre></td></tr></table></figure>
+<p>Now that it should be easy to see how the target object of this step is constructed with React.createElement, the function we just examined in the last section.</p>
+<h2 id="instantiateReactComponent-create-a-ReactCompositeComponent-using-ReactElement-2"><a href="#instantiateReactComponent-create-a-ReactCompositeComponent-using-ReactElement-2" class="headerlink" title="instantiateReactComponent() - create a ReactCompositeComponent using ReactElement[2]"></a><code>instantiateReactComponent()</code> - create a <code>ReactCompositeComponent</code> using <code>ReactElement[2]</code></h2><p>The purpose of this is step is to create a primitive <code>ReactCompositeComponent</code> for the top level component:</p>
+<p><img src="http://holmeshe.me/gallery/scr-react-I-3.png" alt></p>
+<p>The call stack of this step is:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render</span><br><span class="line">|=ReactMount.render(nextElement, container, callback)</span><br><span class="line">|=ReactMount._renderSubtreeIntoContainer()</span><br><span class="line">  |-ReactMount._renderNewRootComponent(</span><br><span class="line">      nextWrappedElement, <span class="comment">// scr:------------------&gt; ReactElement[2]</span></span><br><span class="line">      container,          <span class="comment">// scr:------------------&gt; document.getElementById('root')</span></span><br><span class="line">      shouldReuseMarkup,  <span class="comment">// scr: null from ReactDom.render()</span></span><br><span class="line">      nextContext,        <span class="comment">// scr: emptyObject from ReactDom.render()</span></span><br><span class="line">    )</span><br><span class="line">    |-instantiateReactComponent(</span><br><span class="line">        node,             <span class="comment">// scr:------------------&gt; ReactElement[2]</span></span><br><span class="line">        shouldHaveDebugID <span class="comment">/* false */</span></span><br><span class="line">      )</span><br><span class="line">      |-ReactCompositeComponentWrapper(</span><br><span class="line">          element         <span class="comment">// scr:------------------&gt; ReactElement[2]</span></span><br><span class="line">        );</span><br><span class="line">      |=ReactCompositeComponent.construct(element)</span><br></pre></td></tr></table></figure>
+<p><code>instantiateReactComponent</code> is the only long function that is worth discussing here. In our context, it checks the <code>ReactElement[2].type</code> (i.e., TopLevelWrapper) and creates a <code>ReactCompositeComponent</code> accordingly.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">instantiateReactComponent</span>(<span class="params">node, shouldHaveDebugID</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> instance;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> node === <span class="string">'object'</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> element = node;</span><br><span class="line">    <span class="keyword">var</span> type = element.type;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Special case string values</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> element.type === <span class="string">'string'</span>) &#123;</span><br><span class="line">...</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isInternalComponentType(element.type)) &#123;</span><br><span class="line">...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      instance = <span class="keyword">new</span> ReactCompositeComponentWrapper(element);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> node === <span class="string">'string'</span> || <span class="keyword">typeof</span> node === <span class="string">'number'</span>) &#123;</span><br><span class="line">...</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">  <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">instantiateReactComponent@renderers/shared/stack/reconciler/instantiateReactComponent.js</span><br></pre></td></tr></table></figure>
+<p>It is worth noting that <code>new ReactCompositeComponentWrapper()</code> is a direct call of <code>ReactCompositeComponent</code> constructor:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">// To avoid a cyclic dependency, we create the final class in this module</span></span><br><span class="line"><span class="keyword">var</span> ReactCompositeComponentWrapper = <span class="function"><span class="keyword">function</span>(<span class="params">element</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.construct(element);</span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="built_in">Object</span>.assign(</span><br><span class="line">  ReactCompositeComponentWrapper.prototype,</span><br><span class="line">  ReactCompositeComponent,</span><br><span class="line">  &#123;</span><br><span class="line">    _instantiateReactComponent: instantiateReactComponent,</span><br><span class="line">  &#125;,</span><br><span class="line">);</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">ReactCompositeComponentWrapper@renderers/shared/stack/reconciler/instantiateReactComponent.js</span><br></pre></td></tr></table></figure>
+<p>Then the real constructor get called:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">  construct: <span class="function"><span class="keyword">function</span>(<span class="params">element</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>._currentElement = element; <span class="comment">// scr:------------&gt; ReactElement[2]</span></span><br><span class="line">    <span class="keyword">this</span>._rootNodeID = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>._compositeType = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._instance = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._hostParent = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._hostContainerInfo = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// See ReactUpdateQueue</span></span><br><span class="line">    <span class="keyword">this</span>._updateBatchNumber = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._pendingElement = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._pendingStateQueue = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._pendingReplaceState = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">this</span>._pendingForceUpdate = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>._renderedNodeType = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._renderedComponent = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._context = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>._mountOrder = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>._topLevelWrapper = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// See ReactUpdates and ReactUpdateQueue.</span></span><br><span class="line">    <span class="keyword">this</span>._pendingCallbacks = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ComponentWillUnmount shall only be called once</span></span><br><span class="line">    <span class="keyword">this</span>._calledComponentWillUnmount = <span class="literal">false</span>;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">ReactCompositeComponent@renderers/shared/stack/reconciler/ReactCompositeComponent.js</span><br></pre></td></tr></table></figure>
+<p>We name the object created in this step <code>ReactCompositeComponent[T]</code> (T for top).</p>
+<p>After the <code>ReactCompositeComponent</code> object is constructed, the next step is to call <code>batchedMountComponentIntoNode</code>, initialize <code>ReactCompositeComponent[T]</code> and mount it, which will be discussed in detail in the next article.</p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://hackernoon.com/understanding-the-react-source-code-initial-rendering-simple-component-i-80263fe46cf1'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/render/">render</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/simple-component/">simple component</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/source-code/">source code</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/understanding-react-js-source-code-initial-rendering-II/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The React Source Code - Initial Rendering (Simple Component) II
+        
+      </div>
+    </a>
+  
+  
+    <a href="/cpp-pointers/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Smart Pointer, shared_ptr, Automatic pointer, and unique_ptr</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#From-JSX-to-React-createElement"><span class="nav-number">1.</span> <span class="nav-text">From JSX to React.createElement()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-createElement-create-a-ReactElement"><span class="nav-number">2.</span> <span class="nav-text">React.createElement() - create a ReactElement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReactDom-render-and-render-it"><span class="nav-number">3.</span> <span class="nav-text">ReactDom.render() - and render it</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#renderSubtreeIntoContainer-attach-TopLevelWrapper-to-the-ReactElement-1"><span class="nav-number">3.1.</span> <span class="nav-text">_renderSubtreeIntoContainer() - attach TopLevelWrapper to the ReactElement[1]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#instantiateReactComponent-create-a-ReactCompositeComponent-using-ReactElement-2"><span class="nav-number">3.2.</span> <span class="nav-text">instantiateReactComponent() - create a ReactCompositeComponent using ReactElement[2]</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

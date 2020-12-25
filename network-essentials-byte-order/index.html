@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="networkbyte orderhost byte ordernetwork byte orderbig endianlittle endianendianness">
+  
+  
+  
+  
+  <meta name="description" content="When I was reading the source code of a network system, htons() and ntohs() are the very first two functions that confused me. To understand them, I decided to refresh the fading knowledge learned fr">
+<meta name="keywords" content="network,byte order,host byte order,network byte order,big endian,little endian,endianness">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Don&#39;t Worry if You Overslept this class - Byte Order">
+<meta property="og:url" content="https://holmeshe.me/network-essentials-byte-order/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="When I was reading the source code of a network system, htons() and ntohs() are the very first two functions that confused me. To understand them, I decided to refresh the fading knowledge learned fr">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://holmeshe.me/gallery/big.png">
+<meta property="og:image" content="http://holmeshe.me/gallery/little.png">
+<meta property="og:image" content="http://holmeshe.me/gallery/endianness.png">
+<meta property="og:image" content="http://holmeshe.me/gallery/byteorderconscious.png">
+<meta property="og:image" content="http://holmeshe.me/gallery/byteorderrationale.png">
+<meta property="og:image" content="http://holmeshe.me/gallery/byteordercoordicate.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Don&#39;t Worry if You Overslept this class - Byte Order">
+<meta name="twitter:description" content="When I was reading the source code of a network system, htons() and ntohs() are the very first two functions that confused me. To understand them, I decided to refresh the fading knowledge learned fr">
+<meta name="twitter:image" content="http://holmeshe.me/gallery/big.png">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-network-essentials-byte-order" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Don&#39;t Worry if You Overslept this class - Byte Order
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/network-essentials-byte-order/" class="article-date">
+	  <time datetime="2017-08-18T18:00:00.000Z" itemprop="datePublished">August 19, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Network-Essentials/">Network Essentials</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>When I was reading the source code of a network system, <code>htons()</code> and <code>ntohs()</code> are the very first two functions that confused me. To understand them, I decided to refresh the fading knowledge learned from college in order to squeeze out the last bit of conceptual doubt in byte order.</p>
+</blockquote>
+<a id="more"></a>
+<p>We are lucky as computer science practitioners since we already understand the smallest unit in cyber space, that is, <em>bit</em>. Thus, we only need to advance towards one direction, up.</p>
+<p>A bit is simply a 0 or an 1. Physically it is sometimes represented as a tiny magnetic region on a metal plate.</p>
+<p>Moving up, we have byte that is 8 bits. We generally use <em>byte</em> to measure the sizes of data, like we use meter to measure sizes of objects. So instead of saying “something is 32 bits”, we normally say “it is 4 bytes”.</p>
+<p>Moving upward, we have <em>word</em> that is 4 <em>bytes</em> (or 32 bits)in 32 bit architecture. Note that I use 32 bit architecture throughout this text to keep it concise, and the concept can be easily ported to 64 bit architectures.</p>
+<h1 id="Network-and-host-byte-order"><a href="#Network-and-host-byte-order" class="headerlink" title="Network and host byte order"></a>Network and host byte order</h1><p><em>Byte order</em> (also known as, <em>endianness</em>) controls how a <em>word</em> is stored in memory, and how it is transmitted over the network. In <em>big-endian</em>, the most significant <em>byte</em> is set at the lowest address; whilst in little India, some dishes are really hot…no…in <em>little-endian</em>, the most significant <em>byte</em> is set at the highest address.</p>
+<p><img src="http://holmeshe.me/gallery/big.png" alt="One direction"><br><img src="http://holmeshe.me/gallery/little.png" alt="Or another"></p>
+<p>Laying <em>bytes</em> on physical media (that is, memory &amp; network) is like laying floors, in both cases it is OK to lay a wooden tile, or a 4-<em>bytes</em> word in both directions. However, a system designer has to make a decision so as to keep the style consistent. Defined by RFC 1700, network protocols designers chose <em>big-endian</em>. However, some designers of host systems disagree. In X86, it is <em>little-endian</em>; In ARM, it could be either. That means the actual data of the same value varies in different physical media. For instance, the value A1B2C3D4 (2712847316 in decimal) can have two forms, as given below:</p>
+<p><img src="http://holmeshe.me/gallery/endianness.png" alt="endianness"></p>
+<p>In the above figure, each box — for example, the box containing A1 — represents a byte. Please note that the “endianness shuffling” is based on the unit of <em>byte</em>, not <em>bit</em>.</p>
+<p>Machines can process the two formats almost equally well, but humans complaint that the numbers in <em>little-endian</em> are reversed. Why? Isn’t it more logical to set the less significant <em>byte</em> to lower address, and more to higher?</p>
+<p>The reason is: when we write digital on papers (that is, well, another physical media), we use <em>big endian</em> unconsciously. Taking the above number (A1B2C3D4) as the example, our sub-conscious draws the low and high addresses from left to right even though they are not there:</p>
+<p><img src="http://holmeshe.me/gallery/byteorderconscious.png" alt="We use big endian unconsciously"></p>
+<p>But if we mandate our subconscious to draw them from right to left, maybe we can reconcile the conflicts between the rationale and intuition.</p>
+<p><img src="http://holmeshe.me/gallery/byteorderrationale.png" alt="It is NATURALLY little endian now!"></p>
+<p>In my opinion, it is perfectly acceptable because we use all kinds of coordinate systems when locating UI components on a screen (e.g., app, game development), for instance:</p>
+<p><img src="http://holmeshe.me/gallery/byteordercoordicate.png" alt></p>
+<p>What do you think?</p>
+<p>Next we look at how the theories are used, and why they matter, in practice.</p>
+<h1 id="htons-ntohs"><a href="#htons-ntohs" class="headerlink" title="htons() ntohs()"></a><code>htons()</code> <code>ntohs()</code></h1><p>These two functions fill the format gap between the network and hosts. Technically, when hosts communicate over network, they are used to convert the packet’s <em>byte order</em>. If a host and network <em>byte order</em> are the same (that means they both uses <em>big-endian</em>), the two functions simply do nothing. When a host byte order is different from network (that means the host uses <em>little-endian</em>), <code>htons()</code> converts the data from <em>little-endian</em> to <em>big-endian</em>, and <code>ntohs()</code> converts from <em>big-endian</em> back to <em>little-endian</em>.</p>
+<p>There are another pair of functions of this kind, <code>htonl()</code> and <code>ntohl()</code> that operate on larger numbers than <code>htons()</code> and <code>ntohs()</code>. They are based on the same principle so I will not further discuss them.</p>
+<h1 id="Fact-check"><a href="#Fact-check" class="headerlink" title="Fact-check"></a>Fact-check</h1><p>I always need concrete code to be sure.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BITS_PER_BYTE 8</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> anint = <span class="number">0xa1b2c3d4</span>;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> *truth = &amp;anint;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"value in decimal: %u\n"</span>, anint);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"0x"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="keyword">sizeof</span>(anint); i++) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%2X"</span>, truth[i]);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> anint_net = htons(anint);</span><br><span class="line">  truth = &amp;anint_net;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"value in decimal after hton: %u\n"</span>, anint_net);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"0x"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="keyword">sizeof</span>(anint_net); i++) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%02X"</span>, truth[i]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The result on my machine:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">value in decimal: 2712847316</span><br><span class="line">0xD4C3B2A1</span><br><span class="line">value in decimal after hton: 54467</span><br><span class="line">0xC3D40000</span><br></pre></td></tr></table></figure></p>
+<p>As given in the example, <code>htons()</code> changes the original value of anint using <em>big-endian</em> to prepare for network transmission and the original value will be recovered in the receiving host by <code>ntohs()</code>. Though the real network operations are not demonstrated in the example, I think you can get the idea.</p>
+<h1 id="How-to-determine"><a href="#How-to-determine" class="headerlink" title="How to determine"></a>How to determine</h1><p>We can reuse some code from the above example to impelment a function that can show a machine’s <em>byte order</em>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isLittle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> anint = <span class="number">0xa1b2c3d4</span>;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> *truth = &amp;anint;</span><br><span class="line">  <span class="keyword">return</span> truth[<span class="number">0</span>] == <span class="number">0xd4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In fact, there is a much simpler way, reading directly the CPU information. If <a href="https://askubuntu.com/questions/902907/check-system-is-little-endian-or-big-endian" target="_blank" rel="noopener">asking Ubuntu</a>, you’ll know the code free methothe code-free method:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cpu | grep &quot;Byte Order&quot;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://hackernoon.com/no-worries-if-you-oversleep-this-class-byte-order-d16eb5481c7d'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Network-Essentials/">Network Essentials</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/big-endian/">big endian</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/byte-order/">byte order</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/endianness/">endianness</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/host-byte-order/">host byte order</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/little-endian/">little endian</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/network/">network</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/network-byte-order/">network byte order</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-prototype-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JavaScript Tutorial for Programmers - Prototype(1)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-object-dictionary/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JavaScript Tutorial for Programmers - Object (Dictionary)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Network-and-host-byte-order"><span class="nav-number">1.</span> <span class="nav-text">Network and host byte order</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#htons-ntohs"><span class="nav-number">2.</span> <span class="nav-text">htons() ntohs()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Fact-check"><span class="nav-number">3.</span> <span class="nav-text">Fact-check</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-to-determine"><span class="nav-number">4.</span> <span class="nav-text">How to determine</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

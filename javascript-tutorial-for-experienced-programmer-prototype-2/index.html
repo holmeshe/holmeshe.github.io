@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="JavaScriptprototypeinheritance">
+  
+  
+  
+  
+  <meta name="description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+<meta name="keywords" content="JavaScript,prototype,inheritance">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript Tutorial for Programmers - Prototype(2)">
+<meta property="og:url" content="https://holmeshe.me/javascript-tutorial-for-experienced-programmer-prototype-2/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript Tutorial for Programmers - Prototype(2)">
+<meta name="twitter:description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-javascript-tutorial-for-experienced-programmer-prototype-2" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      JavaScript Tutorial for Programmers - Prototype(2)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/javascript-tutorial-for-experienced-programmer-prototype-2/" class="article-date">
+	  <time datetime="2017-08-25T10:00:00.000Z" itemprop="datePublished">August 25, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on <strong>differences</strong> so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="Prototype-chain-based-inheritance"><a href="#Prototype-chain-based-inheritance" class="headerlink" title="Prototype chain based inheritance"></a><em>Prototype chain</em> based inheritance</h1><p>Class inheritance can be implemented using a technique called <em>prototype chain</em>. So an object can be traced back to its ancestor(s) using a <code>prototype</code> instance that is embedded (i.e., <code>__proto__</code>) in it, like a gene. For the end purpose of inheritance, i.e., code reusing, <em>prototype chain</em> also enables the accessing of members that only exist in ancestors, hence whenever such a member (method or property) is accessed, the runtime will check upwards the <em>prototype chain</em> that contains members information of the whole inheritance (sub-)tree.</p>
+<h1 id="Simple-but-not-easy"><a href="#Simple-but-not-easy" class="headerlink" title="Simple, but not easy"></a>Simple, but not easy</h1><p>Phew, it’s hard to explain coding concept without code. So next I am going to implement this <em>prototype chain</em> step by step. Moreover, I make it a trial and error process in hope that the read can simulate a real developing experience, and which I hope can be remembered (by you) easier.</p>
+<p>Example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ASuperClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.aproperty = <span class="string">'a'</span>;</span><br><span class="line">  <span class="keyword">this</span>.amethod = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="keyword">return</span> <span class="string">'b'</span>;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ASubClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ASubClass.prototype = ASuperClass.prototype; <span class="comment">//let's make the chain</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> subobj = <span class="keyword">new</span> ASubClass();</span><br><span class="line"></span><br><span class="line">alert(subobj <span class="keyword">instanceof</span> ASuperClass);</span><br><span class="line">alert(subobj.aproperty);</span><br><span class="line">alert(subobj.amethod());</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">true</span></span><br><span class="line"><span class="literal">undefined</span></span><br></pre></td></tr></table></figure>
+<p><span style="color:red">Uncaught TypeError: subobj.amethod is not a function</span></p>
+<p>Though the type can be recognized by the runtime, the properties can not be accessed as expected. So I think we need to call the super class constructor to initialize the missing properties. Let’s give it a go.</p>
+<p>Example:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">var</span> ASuperClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.aproperty = <span class="string">'a'</span>;</span><br><span class="line">    <span class="keyword">this</span>.amethod = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="keyword">return</span> <span class="string">'b'</span>;&#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> ASubClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">++  ASuperClass();</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  ASubClass.prototype = ASuperClass.prototype;</span><br><span class="line">++SubClass.prototype.constructor = ASubClass;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> subobj = <span class="keyword">new</span> ASubClass();</span><br><span class="line">  alert(subobj <span class="keyword">instanceof</span> ASuperClass);</span><br><span class="line">  alert(subobj.aproperty);</span><br><span class="line">  alert(subobj.amethod());</span><br></pre></td></tr></table></figure></p>
+<p>Unfortunately, the result is the same. Hmmm, this time is the corrupted <code>this</code> in the superclass constructor. If this is not your first reaction, please ⬅ to my <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-this/">previous post</a> that is dedicated to this topic.</p>
+<p>In order to fix <code>this</code>, we can either add:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> tmpf = ASuperClass.bind(<span class="keyword">this</span>);</span><br><span class="line">tmpf();</span><br></pre></td></tr></table></figure>
+<p>or:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ASuperClass.apply(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<p>, as per discussed in the <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-this/">post</a>. I will use the second method because, well, it’s one line less:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">var</span> ASuperClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.aproperty = <span class="string">'a'</span>;</span><br><span class="line">    <span class="keyword">this</span>.amethod = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="keyword">return</span> <span class="string">'b'</span>;&#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> ASubClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">++  ASuperClass.apply(<span class="keyword">this</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  ASubClass.prototype = ASuperClass.prototype;</span><br><span class="line">  ASubClass.prototype.constructor = ASubClass;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> subobj = <span class="keyword">new</span> ASubClass();</span><br><span class="line">  alert(subobj <span class="keyword">instanceof</span> ASuperClass);</span><br><span class="line">  alert(subobj.aproperty);</span><br><span class="line">  alert(subobj.amethod());</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">true</span><br><span class="line">a</span><br><span class="line">b</span><br></pre></td></tr></table></figure>
+<p>Finally we nailed it! Are we? No:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">var</span> ASuperClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.aproperty = <span class="string">'a'</span>;</span><br><span class="line">    <span class="keyword">this</span>.amethod = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="keyword">return</span> <span class="string">'b'</span>;&#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> ASubClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    ASuperClass.apply(<span class="keyword">this</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  ASubClass.prototype = ASuperClass.prototype;</span><br><span class="line">  ASubClass.prototype.constructor = ASubClass;</span><br><span class="line">  </span><br><span class="line">++ASubClass.prototype.another_property = <span class="string">'c'</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> subobj = <span class="keyword">new</span> ASubClass();</span><br><span class="line">++<span class="keyword">var</span> superobj = <span class="keyword">new</span> ASuperClass();</span><br><span class="line">++alert(subobj.another_property);</span><br><span class="line">++alert(superobj.another_property);</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c</span><br><span class="line">c</span><br></pre></td></tr></table></figure>
+<p>In fact, we just made something else but inheritance, which does not exist in real world. I tentatively call it <em>coupling</em>. Though we made a wrong decision from the very first step, still the other effort we made can be largely reused. I’ve heard versions of stories about one guy, who failed a kickstart project, one day realized the pain eventually paid off in some other way. This is just like that. So let’s keep up.</p>
+<h1 id="Prototype-DEcoupling"><a href="#Prototype-DEcoupling" class="headerlink" title="Prototype DEcoupling"></a>Prototype DEcoupling</h1><p>In common (and correct) practice, <em>prototype chain</em> is established using <strong>two</strong> entities, an <strong>intermediate class</strong> (which is also an object, first class) and an <strong>intermediate object</strong> (,normal) in order to decouple the “thing” we made just now, and the designated object relation is given below:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Subclass.prototype</span><br><span class="line">           |---intermediate object</span><br><span class="line">                |---.__proto__ </span><br><span class="line">                      |---IntermediateClass.prototype === Superclass.prototype</span><br></pre></td></tr></table></figure>
+<p>in which, the <strong>intermediate object</strong> is an instance of the <strong>intermediate class</strong>.</p>
+<p>Let’s get back to the snippet I showed in the beginning of my <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-prototype-1/">last post</a>: </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inherits</span>(<span class="params">ChildClass, ParentClass</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">IntermediateClass</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">  IntermediateClass.prototype = ParentClass.prototype;</span><br><span class="line">  ChildClass.prototype = <span class="keyword">new</span> IntermediateClass;</span><br><span class="line">  ChildClass.prototype.constructor = ChildClass;</span><br><span class="line">  <span class="keyword">return</span> ChildClass;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>I hope the above text has made the above function clear now. Then let’s verify the function in code:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">var</span> ASuperClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.aproperty = <span class="string">'a'</span>;</span><br><span class="line">    <span class="keyword">this</span>.amethod = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="keyword">return</span> <span class="string">'b'</span>;&#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> ASubClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    ASuperClass.apply(<span class="keyword">this</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">--ASubClass.prototype = ASuperClass.prototype;</span><br><span class="line">++inherits(ASubClass, ASuperClass);</span><br><span class="line">  </span><br><span class="line">  ASubClass.prototype.another_property = <span class="string">'c'</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> subobj = <span class="keyword">new</span> ASubClass();</span><br><span class="line">  <span class="keyword">var</span> superobj = <span class="keyword">new</span> ASuperClass();</span><br><span class="line">  </span><br><span class="line">  alert(subobj <span class="keyword">instanceof</span> ASuperClass);</span><br><span class="line">  alert(subobj <span class="keyword">instanceof</span> ASubClass);</span><br><span class="line">  alert(subobj.aproperty);</span><br><span class="line">  alert(subobj.amethod());</span><br><span class="line">  alert(subobj.another_property);</span><br><span class="line">  </span><br><span class="line">  alert(superobj <span class="keyword">instanceof</span> ASuperClass);</span><br><span class="line">  alert(superobj <span class="keyword">instanceof</span> ASubClass);</span><br><span class="line">  alert(superobj.aproperty);</span><br><span class="line">  alert(superobj.amethod());</span><br><span class="line">  alert(superobj.another_property);</span><br></pre></td></tr></table></figure>
+<p>A better version of the <code>inherits()</code> can be implemented using <code>Object.create()</code> that can simplify the creation of the intermediate entities.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">inherits</span>(<span class="params">ChildClass, ParentClass</span>) </span>&#123;</span><br><span class="line">--  <span class="function"><span class="keyword">function</span> <span class="title">IntermediateClass</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">--  IntermediateClass.prototype = ParentClass.prototype;</span><br><span class="line">--  ChildClass.prototype = <span class="keyword">new</span> IntermediateClass;</span><br><span class="line">++  ChildClass.prototype = <span class="built_in">Object</span>.create(ParentClass.prototype);</span><br><span class="line">    ChildClass.prototype.constructor = ChildClass;</span><br><span class="line">    <span class="keyword">return</span> ChildClass;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+<p>To be honest, I am feeling a bit exciting when checking the result:)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">true</span></span><br><span class="line"><span class="literal">true</span></span><br><span class="line">a</span><br><span class="line">b</span><br><span class="line">c</span><br><span class="line"><span class="comment">// this line is artificial</span></span><br><span class="line"><span class="literal">true</span></span><br><span class="line"><span class="literal">false</span></span><br><span class="line">a</span><br><span class="line">b</span><br><span class="line"><span class="literal">undefined</span></span><br></pre></td></tr></table></figure>
+<p>Allllll good!</p>
+<p>Wait, there is one last piece, what is a</p>
+<h1 id="prototype-constructor"><a href="#prototype-constructor" class="headerlink" title="prototype.constructor"></a>prototype.constructor</h1><p>You may have noticed, I stealthily added the constructor related code from <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-prototype-2/#Simple-but-not-easy">here</a> and omit the explanation. I did it on purpose in order to make the logic flow smooth. Now let’s scrutinize it:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class &lt;----------------|</span><br><span class="line">  |------.prototype.constructor</span><br><span class="line">              |------......(I have drawn this)</span><br></pre></td></tr></table></figure>
+<p>prototype.constructor is a special method referring to the class itself. Normally the link is made by the runtime,</p>
+<p>Example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ASuperClass = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.aproperty = <span class="string">'a'</span>;</span><br><span class="line">  <span class="keyword">this</span>.amethod = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="keyword">return</span> <span class="string">'b'</span>;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">alert(ASuperClass.prototype.constructor === ASuperClass);</span><br></pre></td></tr></table></figure>
+<p>Result:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">true</span><br></pre></td></tr></table></figure></p>
+<p>However, the original <code>ChildClass.prototype.constructor</code> is broken when we chained up the <code>prototype</code>s in</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inherits</span>(<span class="params">ChildClass, ParentClass</span>)</span></span><br></pre></td></tr></table></figure>
+<p>So we need to assign it back to <code>ChildClass</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ChildClass.prototype.constructor = ChildClass;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/inheritance/">inheritance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/prototype/">prototype</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-async/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JavaScript Tutorial for Programmers - Async
+        
+      </div>
+    </a>
+  
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-prototype-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JavaScript Tutorial for Programmers - Prototype(1)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Prototype-chain-based-inheritance"><span class="nav-number">1.</span> <span class="nav-text">Prototype chain based inheritance</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Simple-but-not-easy"><span class="nav-number">2.</span> <span class="nav-text">Simple, but not easy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prototype-DEcoupling"><span class="nav-number">3.</span> <span class="nav-text">Prototype DEcoupling</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prototype-constructor"><span class="nav-number">4.</span> <span class="nav-text">prototype.constructor</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

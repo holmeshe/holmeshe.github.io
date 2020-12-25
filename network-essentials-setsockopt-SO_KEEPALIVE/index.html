@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="networksocketsetsockoptSOL_SOCKETSO_KEEPALIVEheartbeat">
+  
+  
+  
+  
+  <meta name="description" content="There are two end purposes for sending heartbeats through a persistent connection. For a back-end application, heartbeats are generally used to detect an absent client, so as to drop a connection and">
+<meta name="keywords" content="network,socket,setsockopt,SOL_SOCKET,SO_KEEPALIVE,heartbeat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="setsockopt, SO_KEEPALIVE and Heartbeats">
+<meta property="og:url" content="https://holmeshe.me/network-essentials-setsockopt-SO_KEEPALIVE/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="There are two end purposes for sending heartbeats through a persistent connection. For a back-end application, heartbeats are generally used to detect an absent client, so as to drop a connection and">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="setsockopt, SO_KEEPALIVE and Heartbeats">
+<meta name="twitter:description" content="There are two end purposes for sending heartbeats through a persistent connection. For a back-end application, heartbeats are generally used to detect an absent client, so as to drop a connection and">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-network-essentials-setsockopt-SO_KEEPALIVE" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      setsockopt, SO_KEEPALIVE and Heartbeats
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/network-essentials-setsockopt-SO_KEEPALIVE/" class="article-date">
+	  <time datetime="2018-05-27T08:45:00.000Z" itemprop="datePublished">May 27, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Network-Essentials/">Network Essentials</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>There are two end purposes for sending heartbeats through a persistent connection. For a back-end application, heartbeats are generally used to detect an absent client, so as to drop a connection and release the associated resources; for a client, on the contrary, it is to prevent connection resources stored within intermediate nodes being released (such as a <em>NAT</em> router), <code>SO</code> as to <code>KEEP</code> the connection <code>ALIVE</code>.</p>
+<p>This article will examine how to configure the four socket options, <code>SO_KEEPALIVE</code>, <code>TCP_KEEPIDLE</code>, <code>TCP_KEEPINTVL</code> and <code>TCP_KEEPCNT</code> with <code>setsockopt()</code> to send heartbeats; and discuss the practice of keep-alive heartbeats in general.</p>
+<p><strong>Experiment setting</strong>:<br><em>OS: Unbutu 16.04</em><br><em>gcc: 5.4.0</em></p>
+<a id="more"></a>
+<h1 id="To-keep-the-connection-alive"><a href="#To-keep-the-connection-alive" class="headerlink" title="To keep the connection alive"></a>To keep the connection alive</h1><p>One cause of silent connection drop is <em>NAT</em> entry timeout. A <em>NAT</em> entry consisting of the 4-tuple (source address, source port, destination address and destination port) is recorded by a <strong>network</strong> router internally for <strong>address translation</strong>. Due to limited memory available to the hardware, the router has to remove the entry belonging to an inactive session after a timeout. As a result, the connection is effectively closed even though neither ends have explicitly issued a <code>FIN</code> nor <code>RST</code>.</p>
+<p>Reconnecting is expensive. An end user has to wait for at least 3xRTT spent by handshakes; and additional logic is required to smoothly restore the UX with the previously interrupted state after the user is back on-line.</p>
+<blockquote>
+<p>In order to avoid the unnecessary handshakes and the RTTs imposed, HTTP adopts KEEP-ALIVE so that the short-lived HTTP sessions can reuse the same established, persistent TCP connection, which is another story.</p>
+</blockquote>
+<p>Next, I will use two programs to illustrate how it works exactly. We look at the code of a server first,</p>
+<script src="https://gist.github.com/holmeshe/4eb2313d6c67872de5d628864bec0e99.js"></script>
+
+<p>For simplicity, I do not apply IO multiplexing so the server can accept connect from 1 client one time.</p>
+<p>the code of client,</p>
+<script src="https://gist.github.com/holmeshe/a8186dd3020840dc4337f7b139da4550.js"></script>
+
+<p>After setting the socket options mentioned before, the client initiates the TCP handshakes by <code>connect()</code>, and yield the CPU by <code>sleep()</code>.</p>
+<blockquote>
+<p>If you are not familiar with network programming (<code>socket</code>), please read <a href="http://www.cs.rpi.edu/~moorthy/Courses/os98/Pgms/socket.html" target="_blank" rel="noopener">this</a> first.</p>
+</blockquote>
+<p>Next, let’s see the network interaction in action.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo tcpdump -i wlp3s0 dst net 192.168.1.71 or src net 192.168.1.71 and not dst port 22 and not src port 22</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// ========================&gt; start handshakes</span><br><span class="line">12:21:42.437163 IP 192.168.1.66.43066 &gt; 192.168.1.71.6666: Flags [S], seq 3002564942, win 29200, options [mss 1460,sackOK,TS val 7961984 ecr 0,nop,wscale 7], length 0</span><br><span class="line">12:21:42.439960 IP 192.168.1.71.6666 &gt; 192.168.1.66.43066: Flags [S.], seq 3450454053, ack 3002564943, win 28960, options [mss 1460,sackOK,TS val 2221927 ecr 7961984,nop,wscale 7], length 0</span><br><span class="line">12:21:42.440088 IP 192.168.1.66.43066 &gt; 192.168.1.71.6666: Flags [.], ack 1, win 229, options [nop,nop,TS val 7961985 ecr 2221927], length 0</span><br><span class="line">// ========================&gt; end handshakes</span><br><span class="line">12:21:52.452057 IP 192.168.1.66.43066 &gt; 192.168.1.71.6666: Flags [.], ack 1, win 229, options [nop,nop,TS val 7964488 ecr 2221927], length 0</span><br><span class="line">12:21:52.454443 IP 192.168.1.71.6666 &gt; 192.168.1.66.43066: Flags [.], ack 1, win 227, options [nop,nop,TS val 2224431 ecr 7961985], length 0</span><br><span class="line">12:22:02.468056 IP 192.168.1.66.43066 &gt; 192.168.1.71.6666: Flags [.], ack 1, win 229, options [nop,nop,TS val 7966992 ecr 2224431], length 0</span><br><span class="line">12:22:02.470458 IP 192.168.1.71.6666 &gt; 192.168.1.66.43066: Flags [.], ack 1, win 227, options [nop,nop,TS val 2226935 ecr 7961985], length 0</span><br><span class="line">12:22:12.484119 IP 192.168.1.66.43066 &gt; 192.168.1.71.6666: Flags [.], ack 1, win 229, options [nop,nop,TS val 7969496 ecr 2226935], length 0</span><br><span class="line">12:22:12.489786 IP 192.168.1.71.6666 &gt; 192.168.1.66.43066: Flags [.], ack 1, win 227, options [nop,nop,TS val 2229440 ecr 7961985], length 0</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Here I removed the irrelevant output of <code>ARP</code>s. If you are not familiar with <code>tcpdump</code>, please read <a href="https://danielmiessler.com/study/tcpdump/" target="_blank" rel="noopener">this</a> first.</p>
+</blockquote>
+<p>With the feet gotten wet, now it’s a good time to explain the heartbeat mechanism,</p>
+<p>1) <code>SO_KEEPALIVE</code> enables (or disables) heartbeat;<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> flags =<span class="number">1</span>;</span><br><span class="line"><span class="keyword">if</span> (setsockopt(sfd, SOL_SOCKET, SO_KEEPALIVE, (<span class="keyword">void</span> *)&amp;flags, <span class="keyword">sizeof</span>(flags))) &#123; perror(<span class="string">"ERROR: setsocketopt(), SO_KEEPALIVE"</span>); <span class="built_in">exit</span>(<span class="number">0</span>); &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>and</p>
+<p>2) the side with heartbeat enabled (in this example, client) sends empty packets (&#x1f441; <code>length 0</code>); and<br>3) after received the packets, the other side (server) reply with <code>ACK</code> (&#x1f441; <code>Flags [.]</code>); and<br>4) <code>TCP_KEEPIDLE</code> defines the heartbeat frequency (&#x1f441; timestamps).<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">flags = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">if</span> (setsockopt(sfd, SOL_TCP, TCP_KEEPIDLE, (<span class="keyword">void</span> *)&amp;flags, <span class="keyword">sizeof</span>(flags))) &#123; perror(<span class="string">"ERROR: setsocketopt(), SO_KEEPIDLE"</span>); <span class="built_in">exit</span>(<span class="number">0</span>); &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>Note that throughout the process, the <code>read()</code> is blocked in the server side, which means the heartbeat packets are transparent to the recipient (server).</p>
+<h1 id="To-detect-an-absent-peer"><a href="#To-detect-an-absent-peer" class="headerlink" title="To detect an absent peer"></a>To detect an absent peer</h1><p>Besides <em>NAT</em> entry expiration, a connection can be dropped silently in one way or another (e.g., a loosen cable). It is crucial for a server application to identify such exception in time, so it can release the associated resources, invoke clean-up routines and/or notify other peer clients. This is why sending heartbeats from server-side makes more sense.</p>
+<p>Since our feet is already wet.<br>5) <code>TCP_KEEPINTVL</code> defines the heartbeat frequency when there is no answer from the other side; and<br>6) <code>TCP_KEEPCNT</code> dictates how many unanswered heartbeat will indicate a dropped connection;</p>
+<p>Next we modify the server and client code to test this feature</p>
+<p>in server, we added all the mentioned socket options,</p>
+<script src="https://gist.github.com/holmeshe/7157ca6174964e1114a7d670e581416a.js"></script>
+
+<p>and client is reduced to</p>
+<script src="https://gist.github.com/holmeshe/c5a19a16f2accd0a4548c15eda3c13ba.js"></script>
+
+<p>and the <code>tcpdump</code> output (that is executed on server machine, because we are going to unplug the connection from client)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// ========================&gt; handshakes are omitted here</span><br><span class="line">20:04:12.535386 IP 192.168.1.66.49232 &gt; 192.168.1.71.6666: Flags [.], ack 1, win 229, options [nop,nop,TS val 12312604 ecr 9154395], length 0</span><br><span class="line">20:04:22.538591 IP 192.168.1.71.6666 &gt; 192.168.1.66.49232: Flags [.], ack 1, win 227, options [nop,nop,TS val 9161936 ecr 12312604], length 0</span><br><span class="line">20:04:22.570817 IP 192.168.1.66.49232 &gt; 192.168.1.71.6666: Flags [.], ack 1, win 229, options [nop,nop,TS val 12315113 ecr 9154395], length 0</span><br><span class="line">// ========================&gt; we unplug the network connection here</span><br><span class="line">20:04:32.586590 IP 192.168.1.71.6666 &gt; 192.168.1.66.49232: Flags [.], ack 1, win 227, options [nop,nop,TS val 9164448 ecr 12315113], length 0</span><br><span class="line">20:04:37.594590 IP 192.168.1.71.6666 &gt; 192.168.1.66.49232: Flags [.], ack 1, win 227, options [nop,nop,TS val 9165700 ecr 12315113], length 0</span><br><span class="line">20:04:42.602590 IP 192.168.1.71.6666 &gt; 192.168.1.66.49232: Flags [.], ack 1, win 227, options [nop,nop,TS val 9166952 ecr 12315113], length 0</span><br><span class="line">20:04:47.610591 IP 192.168.1.71.6666 &gt; 192.168.1.66.49232: Flags [.], ack 1, win 227, options [nop,nop,TS val 9168204 ecr 12315113], length 0</span><br><span class="line">20:04:52.618596 IP 192.168.1.71.6666 &gt; 192.168.1.66.49232: Flags [.], ack 1, win 227, options [nop,nop,TS val 9169456 ecr 12315113], length 0</span><br></pre></td></tr></table></figure>
+<p>Because we set 5 as the threshold number of unacknowledged packets, and each is 5 seconds apart, (&#x1f441; timestamps)</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">flags = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">if</span> (setsockopt(sfd, SOL_TCP, TCP_KEEPCNT, (<span class="keyword">void</span> *)&amp;flags, <span class="keyword">sizeof</span>(flags))) &#123; perror(<span class="string">"ERROR: setsocketopt(), SO_KEEPCNT"</span>); <span class="built_in">exit</span>(<span class="number">0</span>); &#125;;</span><br><span class="line"></span><br><span class="line">flags = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">if</span> (setsockopt(sfd, SOL_TCP, TCP_KEEPINTVL, (<span class="keyword">void</span> *)&amp;flags, <span class="keyword">sizeof</span>(flags))) &#123; perror(<span class="string">"ERROR: setsocketopt(), SO_KEEPINTVL"</span>); <span class="built_in">exit</span>(<span class="number">0</span>); &#125;;</span><br></pre></td></tr></table></figure>
+<p>after 5 heartbeats that are unanswered from the client, the </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">n = read(rfd, buffer, BUF_SIZE);</span><br></pre></td></tr></table></figure>
+<p>is unblocked with an <code>n</code> indicating a closed connection. So that the process of breaking a connection, unlike heartbeat itself, notifies the monitor (server in this case) which in turn can trigger the mentioned actions to finalize a broken connection.</p>
+<h1 id="Consideration"><a href="#Consideration" class="headerlink" title="Consideration"></a>Consideration</h1><h2 id="When-heartbeat-should-not-be-used"><a href="#When-heartbeat-should-not-be-used" class="headerlink" title="When heartbeat should not be used"></a>When heartbeat should not be used</h2><p>In mobile network, periodic data transfer will unnecessarily keep the radio active. When this happens in background, the application drains the battery fast and surprises users. So I would go for the extra miles preparing to reconnecting in such case.</p>
+<h2 id="When-heartbeat-could-not-be-used"><a href="#When-heartbeat-could-not-be-used" class="headerlink" title="When heartbeat could not be used"></a>When heartbeat could not be used</h2><p>For a back-end with heavy traffic, the packets generated by business logic alone can be indicators of connectivity. In such case, I would make the server drop a connection after a client has not been sending packets for a long period of time.</p>
+<p>Alternatively, if I need to further reduce false-positive, I could activate the heartbeat mechanism (through <code>setsockopt()</code>) only for a prolonged silence of a client. It is worth noting that when modifying socket option midway, <code>setsockopt()</code> should work on the file descriptor returned by the <code>accept()</code>, i.e., <code>rdf</code> which represents a established connection. (and other settings will be “inherited” from <code>sdf</code>)</p>
+<h2 id="System-wide-setting"><a href="#System-wide-setting" class="headerlink" title="System wide setting"></a>System wide setting</h2><p>Some of the discussed socket options can also be set using <code>procfs</code> and <code>sysctl</code>.</p>
+<p><code>TCP_KEEPIDLE</code> -&gt; <code>/net/ipv4/tcp_keepalive_time</code><br><code>TCP_KEEPCNT</code> -&gt; <code>/net/ipv4/tcp_keepalive_probes</code><br><code>TCP_KEEPINTVL</code> -&gt; <code>/net/ipv4/tcp_keepalive_intvl</code></p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><p><a href="https://hpbn.co/" target="_blank" rel="noopener">https://hpbn.co/</a><br><a href="https://www.tldp.org/HOWTO/html_single/TCP-Keepalive-HOWTO/" target="_blank" rel="noopener">https://www.tldp.org/HOWTO/html_single/TCP-Keepalive-HOWTO/</a><br><a href="https://gist.github.com/physacco/5792698" target="_blank" rel="noopener">https://gist.github.com/physacco/5792698</a><br><a href="https://notes.shichao.io/unp/ch7/#so_keepalive-socket-option" target="_blank" rel="noopener">https://notes.shichao.io/unp/ch7/#so_keepalive-socket-option</a></p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://medium.com/backend/setsockopt-so-keepalive-and-heartbeats-ebbd00f9281f'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Network-Essentials/">Network Essentials</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SOL-SOCKET/">SOL_SOCKET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SO-KEEPALIVE/">SO_KEEPALIVE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/heartbeat/">heartbeat</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/network/">network</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/setsockopt/">setsockopt</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/network-essentials-setsockopt-TCP_NODELAY/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          setsockopt, TCP_NODELAY and Packet Aggregation I
+        
+      </div>
+    </a>
+  
+  
+    <a href="/understanding-react-js-source-code-virtual-dom-diff-IX/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Understanding The React Source Code - UI Updating (DOM Tree) IX</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#To-keep-the-connection-alive"><span class="nav-number">1.</span> <span class="nav-text">To keep the connection alive</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To-detect-an-absent-peer"><span class="nav-number">2.</span> <span class="nav-text">To detect an absent peer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Consideration"><span class="nav-number">3.</span> <span class="nav-text">Consideration</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#When-heartbeat-should-not-be-used"><span class="nav-number">3.1.</span> <span class="nav-text">When heartbeat should not be used</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-heartbeat-could-not-be-used"><span class="nav-number">3.2.</span> <span class="nav-text">When heartbeat could not be used</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#System-wide-setting"><span class="nav-number">3.3.</span> <span class="nav-text">System wide setting</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

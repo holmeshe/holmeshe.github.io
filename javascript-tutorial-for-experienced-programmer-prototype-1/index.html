@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="JavaScriptjsprototype">
+  
+  
+  
+  
+  <meta name="description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+<meta name="keywords" content="JavaScript,js,prototype">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript Tutorial for Programmers - Prototype(1)">
+<meta property="og:url" content="https://holmeshe.me/javascript-tutorial-for-experienced-programmer-prototype-1/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript Tutorial for Programmers - Prototype(1)">
+<meta name="twitter:description" content="I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp;amp; ajax), “a very particular programming language” in my first impression. Recently I got a">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-javascript-tutorial-for-experienced-programmer-prototype-1" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      JavaScript Tutorial for Programmers - Prototype(1)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/javascript-tutorial-for-experienced-programmer-prototype-1/" class="article-date">
+	  <time datetime="2017-08-21T09:30:00.000Z" itemprop="datePublished">August 21, 2017</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>I still remember the days of debugging CORS problem when I put together some projects using JavaScript (&amp; ajax), “a very particular programming language” in my first impression. Recently I got a great opportunity. The new role uses JS, the browser-side script that is now winning in all sides, as the major language. So I tooke it as a good chance to learn JS more systematically, and this series will be part of the outcome of my study. As the name implies, I will not cover primary level such as “if, else” (condition), “for” (or any kinds of loops), or basic OOP concepts. Instead, I will focus only on <strong>differences</strong> so you can learn this versatile language like reviewing a pull request, and use it the next day in your next awesome project.</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="prototype-a-semi-OOP-semantic"><a href="#prototype-a-semi-OOP-semantic" class="headerlink" title="prototype, a semi-OOP semantic"></a><code>prototype</code>, a semi-OOP semantic</h1><p>A <code>prototype</code> is a singleton that is created for each <em>class</em> (by JS runtime), so that instances of the <em>class</em> can be constructed based on the in memory template. I call <code>prototype</code> semi-OOP because it is not normal. For instance, this is how a <code>prototype</code> based inheritance is programmed:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inherits</span>(<span class="params">ChildClass, ParentClass</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">IntermediateClass</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  IntermediateClass.prototype = ParentClass.prototype;</span><br><span class="line">  ChildClass.prototype = <span class="keyword">new</span> IntermediateClass;</span><br><span class="line">  ChildClass.prototype.constructor = ChildClass;</span><br><span class="line">  <span class="keyword">return</span> ChildClass;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>I will cover <code>prototype</code> based inheritance in the <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-prototype-2/">next post</a>. For now, we just grasp the idea of how things are different here.</p>
+<h2 id="Practical-implication"><a href="#Practical-implication" class="headerlink" title="Practical implication"></a>Practical implication</h2><p>As per discussed in the <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-object-dictionary/">last post</a>, ES6 has already defined a more standard OOP paradigm in JavaScript. And ES6 code can be <a href="https://babeljs.io/" target="_blank" rel="noopener">“transpiled”</a> (compile into another language or syntax) into ES5 so the two standards are equally compatible with various browsers in practice. Does that mean <code>prototype</code> is not useful anymore? My answer is No, because it still largely exists in a large amount of existing code. For concrete numbers, if <code>grep -R prototype *|wc -l</code>, at the point of time when I am writing, in <a href="https://github.com/angular/angular" target="_blank" rel="noopener">Angular</a>, the output shows there are 286 lines; in <a href="https://github.com/facebook/react" target="_blank" rel="noopener">React</a>, there are 405; and <a href="https://github.com/vuejs/vue" target="_blank" rel="noopener">Vue</a>, 756). As for me, I need to know <code>prototype</code> to understand these 1447 lines of backbones. Last but not least, the frameworks are ordered alphabetically 😅.</p>
+<h1 id="Playaround-with-prototype"><a href="#Playaround-with-prototype" class="headerlink" title="Playaround with prototype"></a>Playaround with <code>prototype</code></h1><p>In the following example, we first define a <em>constructor</em> (If you do not know what is a <em>constructor</em> in JS context, please ⬅ to my <a href="http://holmeshe.me/javascript-tutorial-for-experienced-programmer-object-dictionary/">last post</a>). Then we use it to create an object and examine the <em>prototype</em>(s).</p>
+<p>Example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> MyClass = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> MyClass;</span><br><span class="line">alert(obj.__proto__ == MyClass.prototype); <span class="comment">//=true</span></span><br><span class="line">alert(obj.prototype == MyClass.prototype); <span class="comment">//=&gt;false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// if the object's prototype does not equal to the class' prototype, what is it then</span></span><br><span class="line">alert(obj.prototype); <span class="comment">//=&gt;undefined</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// you can change the definition of a class on the run</span></span><br><span class="line">MyClass.prototype.a_member = <span class="string">"abc"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// and the object's structure is changed as well</span></span><br><span class="line">alert(obj.a_member); <span class="comment">//=&gt;abc</span></span><br><span class="line">alert(obj.__proto__.a_member); <span class="comment">//=&gt;abc</span></span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">true</span></span><br><span class="line"><span class="literal">false</span></span><br><span class="line"><span class="literal">undefined</span></span><br><span class="line">abc</span><br><span class="line">abc</span><br></pre></td></tr></table></figure>
+<p>An initial observation:</p>
+<ol>
+<li><code>prototype</code> only exists in a <em>class</em> (a.k.a., a constructor). If you need to access <code>prototype</code> from a <code>class instance</code> (a.k.a., an object), <code>__proto__</code> is the way to go.</li>
+<li><code>prototype</code> and <code>__proto__</code> are just two sides of one coin. In technical words, they refer to the same instance, i.e., <a href="#prototype-a-semi-OOP">the singleton mentioned in the beginning of this text</a>.</li>
+<li>the <em>prototype</em> of a <em>class</em> can be changed at runtime, and all the <em>instances</em> of this <em>class</em> are affected accordingly.</li>
+</ol>
+<p>Moreover, a modification of <code>__proto__</code> of an instance can change the <code>prototype</code> (definition) of a <em>class</em>, and all the sibling <em>instance</em>s are affected in a cascade manner. </p>
+<p>Example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> MyClass = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> MyClass;</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> MyClass;</span><br><span class="line"></span><br><span class="line">obj1.__proto__.a_member = <span class="string">'abc'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// an instance can change the definition of the class</span></span><br><span class="line">alert(MyClass.prototype.a_member); <span class="comment">//Ooooops...</span></span><br><span class="line"><span class="comment">// so all other instances are affected</span></span><br><span class="line">alert(obj2.a_member);</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">abc</span><br><span class="line">abc</span><br></pre></td></tr></table></figure>
+<p>This operation is dangerous. It will cause side-effect and confusion in a project with reasonable complexity as the definition of a class can not be easily traceable. Hence I highly recommend considering <code>__proto__</code> <em>final</em> (in Java) or <em>constant</em> (in C++) and should be never touched.</p>
+<p>If you really want to modify the behavior of an object, say, add a property, at least modify the object itself rather than <code>__proto__</code>.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> MyClass = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> MyClass;</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> MyClass;</span><br><span class="line"></span><br><span class="line">obj1.a_member = <span class="string">'abc'</span>; <span class="comment">// change the object behavior at run time</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// no effect</span></span><br><span class="line">alert(MyClass.prototype.a_member);</span><br><span class="line"></span><br><span class="line"><span class="comment">// no effect</span></span><br><span class="line">alert(obj2.a_member);</span><br></pre></td></tr></table></figure>
+<p>Result:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">abc</span><br><span class="line">abc</span><br></pre></td></tr></table></figure></p>
+<p>On the other hand, adding a property to a class effectively creates a static member (in other language term).</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> MyClass = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> MyClass;</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> MyClass;</span><br><span class="line"></span><br><span class="line">MyClass.a_member = <span class="string">'abc'</span>; <span class="comment">// change the class behavior</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// no effect</span></span><br><span class="line">alert(MyClass.prototype.a_member);</span><br><span class="line"></span><br><span class="line"><span class="comment">// no effect</span></span><br><span class="line">alert(obj1.a_member);</span><br><span class="line">alert(obj2.a_member);</span><br><span class="line"></span><br><span class="line"><span class="comment">// the member has been effectively added</span></span><br><span class="line">alert(MyClass.a_member);</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">undefined</span><br><span class="line">undefined</span><br><span class="line">undefined</span><br><span class="line">abc</span><br></pre></td></tr></table></figure>
+<p><strong>I would recommend this usage</strong>.</p>
+<p>So the bright side of this feature is flexibility, empowered by that</p>
+<h1 id="Everything-is-object"><a href="#Everything-is-object" class="headerlink" title="Everything is object"></a>Everything is <em>object</em></h1><p>Everything in JavaScript is <em>object</em>. That includes, <em>function</em>s, <em>constructor</em>s (<em>class</em>)es, <em>instance</em>s, <code>prototype</code>s and <code>__proto__</code>s, etc. Let’s prove it in code.</p>
+<p>Example:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> MyClass = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.a = <span class="string">"a"</span>;</span><br><span class="line">  <span class="keyword">this</span>.b = <span class="string">"b"</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> MyClass;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arry = [];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(<span class="string">"something"</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">alert(MyClass <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(MyClass.prototype <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(MyClass.__proto__ <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(obj <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(obj.__proto__ <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(obj <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(arry <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(f1 <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(f1.prototype <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(f1.__proto__ <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br></pre></td></tr></table></figure></p>
+<p>Result:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">true(chorus)</span><br></pre></td></tr></table></figure></p>
+<p>Furthermore, <em>Object</em> is subdivided into two categories, <em>first class objects</em> and all other <em>normal objects</em>. <em>Normal object</em>s are just variables, which can be created, modified, assigned to other variables, and passed as arguments (or return value), all in runtime. Whilst <em>first class object</em> is the “platinum version” of <em>object</em> that unlocks extra privileges. Besides the operations listed above, <em>first class object</em> can be invoked (as a normal function); and it can be invoked to create normal <em>object</em>s (as a constructor). I think those extra privileges can explain from another perspective why <em>first class object</em> is attached one extra member property <code>prototype</code> alongside <code>__proto__</code>.</p>
+<p>More examples:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> MyClass = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.a = <span class="string">"a"</span>;</span><br><span class="line">  <span class="keyword">this</span>.b = <span class="string">"b"</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> MyClass;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(<span class="string">"something"</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MyClass is a first class object so...</span></span><br><span class="line">alert(MyClass.prototype); <span class="comment">// it has prototype and</span></span><br><span class="line">alert(MyClass.__proto__); <span class="comment">// __proto__</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// obj is an object so...</span></span><br><span class="line">alert(obj.prototype); <span class="comment">// it does not have prototype but</span></span><br><span class="line">alert(obj.__proto__); <span class="comment">// it has __proto__</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// f1 is a first class object so...</span></span><br><span class="line">alert(f1.prototype); <span class="comment">// it has prototype and</span></span><br><span class="line">alert(f1.__proto__); <span class="comment">// __proto__</span></span><br></pre></td></tr></table></figure></p>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[object Object]</span><br><span class="line">function () &#123;&#125;</span><br><span class="line">undefined</span><br><span class="line">[object Object]</span><br><span class="line">[object Object]</span><br><span class="line">function () &#123;&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Except-for…"><a href="#Except-for…" class="headerlink" title="Except for…"></a>Except for…</h1><h2 id="Exception-1-primitive-types"><a href="#Exception-1-primitive-types" class="headerlink" title="Exception 1, primitive types"></a>Exception 1, primitive types</h2><p>Did I just said everything is object?</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"whatever"</span>;</span><br><span class="line">alert(str <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(str.__proto__ <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">false</span><br><span class="line">true</span><br></pre></td></tr></table></figure>
+<p>Even though a string literal is not an object, it contains <code>__proto__</code> that is an object?! So either string literal is an object, which is obviously not, or what I said in the last section is just bullshit.</p>
+<p>It is not. What happens here is that a mechanism called <strong>automatic wrapping</strong> kicks in, which wraps the no-object (primitive) variables to its object counterpart , in this case, a String(), as required. <strong>Automatic wrapping</strong> can enable calling methods directly from primitives as well:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"whatever"</span>;</span><br><span class="line">alert(str.indexOf(<span class="string">"tever"</span>));</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3</span><br></pre></td></tr></table></figure>
+<p>Same phenomenon happens: the runtime wrap the literal to <code>String()</code> automatically and calls the <code>indexOf()</code> method. And the rule applies to other primitive types (int, float) as well.</p>
+<h2 id="Exception-2"><a href="#Exception-2" class="headerlink" title="Exception 2, ???"></a>Exception 2, ???</h2><p>All sounds perfect until I tried this</p>
+<p>Example:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line"> a:<span class="string">"abc"</span>,</span><br><span class="line"> b:<span class="string">"bcd"</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">alert(obj <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br><span class="line">alert(obj.__proto__);</span><br><span class="line">alert(obj.__proto__ <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</span><br></pre></td></tr></table></figure>
+<p>Result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">true</span><br><span class="line">[object Object]</span><br><span class="line">false</span><br></pre></td></tr></table></figure>
+<p>Apparently <code>var obj</code> and <code>obj.__proto__</code> are <em>objects</em> according to the first two outputs. However, when I want to confirm if <code>obj.__proto__</code> is really an object, runtime gives me a <code>false</code>. I hope I am not the first bloger who writes about things he is not sure himself, but if you have an answer, please let me know in the comments. It does not matter if you don’t, as <code>__proto__</code> is no-standard usage anyway.</p>
+<p>In the next post, I will discuss one of the hardest parts of JavaScript, inheritance based on <em>prototype chain</em>.</p>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/JavaScript-Tutorial-for-Programmers/">JavaScript Tutorial for Programmers</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/js/">js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/prototype/">prototype</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/javascript-tutorial-for-experienced-programmer-prototype-2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JavaScript Tutorial for Programmers - Prototype(2)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/network-essentials-byte-order/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Don&#39;t Worry if You Overslept this class - Byte Order</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#prototype-a-semi-OOP-semantic"><span class="nav-number">1.</span> <span class="nav-text">prototype, a semi-OOP semantic</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Practical-implication"><span class="nav-number">1.1.</span> <span class="nav-text">Practical implication</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Playaround-with-prototype"><span class="nav-number">2.</span> <span class="nav-text">Playaround with prototype</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Everything-is-object"><span class="nav-number">3.</span> <span class="nav-text">Everything is object</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Except-for…"><span class="nav-number">4.</span> <span class="nav-text">Except for…</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Exception-1-primitive-types"><span class="nav-number">4.1.</span> <span class="nav-text">Exception 1, primitive types</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exception-2"><span class="nav-number">4.2.</span> <span class="nav-text">Exception 2, ???</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

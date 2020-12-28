@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://holmeshe.me/gallery/diamond.svg">
 <meta property="og:image" content="https://holmeshe.me/gallery/mem-thread.png">
 <meta property="og:image" content="https://holmeshe.me/gallery/threads-comm.png">
-<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta property="og:updated_time" content="2020-12-28T04:25:55.462Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Understanding The Memcached Source Code - Event Driven I">
 <meta name="twitter:description" content="In classic multithreading, large amounts of slow and blocking operations, mostly, I/O, can easily drain out available thread resources, which severely constrains the maximum number of requests a serve">
@@ -152,7 +152,7 @@
         <p><a href="/understanding-memcached-source-code-I/" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/spade.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">slab allocator (I, </text></a> <a href="/understanding-memcached-source-code-II/"><text style="color:black;font-weight:bold;">II, </text></a> <a href="/understanding-memcached-source-code-III/"><text style="color:black;font-weight:bold;">III)</text></a> is the core module of the cache system, which largely determines how efficient the bottleneck resource, memory, can be utilized. The other 3 parts, namely,</p>
 <p><a href="/understanding-memcached-source-code-IV/" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/heart.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">LRU algorithm (I</text></a> <a href="/understanding-memcached-source-code-V/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-VI/"><text style="color:black;font-weight:bold;">, III)</text></a> for entry expiration; and an</p>
 <p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/club.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">event driven model (I - this article</text></a> <a href="/understanding-memcached-source-code-VIII/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-IX/"><text style="color:black;font-weight:bold;">, III)</text></a> based on libevent; and the</p>
-<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/diamond.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">consistent harsh (not complete)</text></a> for data distribution,</p>
+<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/diamond.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">consistent hashing (not complete)</text></a> for data distribution,</p>
 <p>are built around it.</p>
 <p>In classic <em>multithreading</em>, large amounts of slow and blocking operations, mostly, I/O, can easily drain out available thread resources, which severely constrains the maximum number of requests a server can handle per unit time. More specific, threads are scheduled out and put into sleep in the middle of procedures that contain blocking I/O, despite piling up requests packets queuing within the network stack. In such situation, server side will show low throughput, low CPU saturation and high latency. </p>
 <a id="more"></a>

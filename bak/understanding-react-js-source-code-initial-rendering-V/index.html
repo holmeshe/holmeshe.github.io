@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Holmes He</title>
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="JavaScriptreactreact.jsprogrammingcode">
+  
+  
+  
+  
+  <meta name="description" content="Last time we completed the upper half of the class component rendering logic which is similar to albeit different from simple component rendering in the following respects: 1) it instantiates one addi">
+<meta name="keywords" content="JavaScript,react,react.js,programming,code">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding The React Source Code - Initial Rendering (Class Component) V">
+<meta property="og:url" content="https://holmeshe.me/bak/understanding-react-js-source-code-initial-rendering-V/index.html">
+<meta property="og:site_name" content="Holmes He">
+<meta property="og:description" content="Last time we completed the upper half of the class component rendering logic which is similar to albeit different from simple component rendering in the following respects: 1) it instantiates one addi">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*LAhX4p34wuseVi1QIk9dJw.png">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/800/1*hMrLon7ozG8wkTLiw4M6Dw.png">
+<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding The React Source Code - Initial Rendering (Class Component) V">
+<meta name="twitter:description" content="Last time we completed the upper half of the class component rendering logic which is similar to albeit different from simple component rendering in the following respects: 1) it instantiates one addi">
+<meta name="twitter:image" content="https://cdn-images-1.medium.com/max/800/1*LAhX4p34wuseVi1QIk9dJw.png">
+  
+  <link rel="icon" href="/gallery/air-balloon.svg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/fashion.css">
+  <link rel="stylesheet" href="/css/glyphs.css">
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   
+>
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" rel="home" >
+                <img style="margin-bottom: 10px;"  width="124px" height="124px" alt="Code Talks" src=" /gallery/air-balloon.svg">
+              </a>
+            
+          </h1>
+          
+          <div class="site-description">
+            \{C}0de<t>a1k(s) =>
+            <text id="message">
+              
+            </text>
+            ( ͡° ͜ʖ ͡°)
+            <a class='ext-link' href="/atom.xml">
+              <i class="fas fa-rss fa-lg"></i>
+            </a>
+          </div>
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Series</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-bak/understanding-react-js-source-code-initial-rendering-V" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Understanding The React Source Code - Initial Rendering (Class Component) V
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/bak/understanding-react-js-source-code-initial-rendering-V/" class="article-date">
+	  <time datetime="2018-01-12T11:00:00.000Z" itemprop="datePublished">January 13, 2018</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+ 
+      
+    </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Last time we completed the upper half of the class component rendering logic which is similar to albeit different from simple component rendering in the following respects: 1) it instantiates one additional <code>ReactCompositeComponent</code> to represent the class component (<code>App</code>); and 2) it calls <code>App.render()</code> that triggers cascading <code>React.createElement()</code>s to establish a <code>ReactElement</code> tree.</p>
+<p>This time we are going to explore more branches in lower half by examining how the <code>ReactElements</code> in the tree is transformed to their respective <code>ReactDOMComponents</code>, and eventually, to real DOM objects.</p>
+<a id="more"></a>
+<p><strong><em>Files used in this article</em></strong>:</p>
+<p><em>renderers/dom/shared/ReactDOMComponent.js</em>: offers the one of the methods that this post focuses on, <code>_createInitialChildren</code></p>
+<p><em>renderers/dom/client/utils/setTextContent.js</em>: DOM operation, setting text</p>
+<p><em>renderers/dom/client/utils/DOMLazyTree.js</em>: DOM operation, appending child</p>
+<p><em>renderers/shared/stack/reconciler/ReactMultiChild.js</em>: the intermediate method to <code>traverseAllChildren</code> as well as the other method in focus, <code>mountChildren()</code></p>
+<p><em>shared/utils/traverseAllChildren.js</em>: method that iterates direct sub <code>ReactElements</code> and instantiates their respective <code>ReactDOMComponents</code></p>
+<p><strong><em>Notations used in the call stack</em></strong>:<br>↻ loop<br>? condition</p>
+<blockquote>
+<p>I use {} to reference the previous post that is relevant to the methods (or logic process) being discussed.</p>
+</blockquote>
+<p>The process discussed in this post occurs majorly within <code>ReactDOMComponent[6].mountComponent()</code>. The major task of this method, that derives a DOM object from <code>ReactDOMComponent[6]</code>, is covered in {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-III/">post three</a>}. This task is numbered as 0) for later reference.</p>
+<p>In this post, we are going to address one of the methods that we overlooked on purpose last time, <code>_createInitialChildren</code> which is used for handling the newly introduced <code>ReactElement</code> tree as the class component’s children. It was used in a niche case, a text child, in {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-III/">post three</a> *7} and only a side branch was triggered. This side branch, as well as the entire method will be discussed in detail in this post.</p>
+<blockquote>
+<p><code>_createInitialChildren</code> is our protagonist today; please search *7 in <a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-III/">post three</a> if you want to check its role in the simple component rendering. The other overlooked method <code>_updateDOMProperties</code> in {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-III/">post three</a> *6} will be discussed in later articles.</p>
+</blockquote>
+<p>To be more specific, this method 1) transforms <code>ReactElement</code>s to their corresponding <code>ReactDOMComonent</code>s; 2) (recursively) calls <code>ReactDOMComponent[*].mountComponent()</code> to create the DOM objects; and 3) appends them to the root DOM node that is created in 0).</p>
+<p>So firstly let’s recap step 0) in the context of class component.</p>
+<h1 id="ReactDOMComponent-6-mountComponent-before-createInitialChildren-—create-the-DOM-element-6"><a href="#ReactDOMComponent-6-mountComponent-before-createInitialChildren-—create-the-DOM-element-6" class="headerlink" title="ReactDOMComponent[6].mountComponent() (before _createInitialChildren)—create the DOM element[6]"></a><code>ReactDOMComponent[6].mountComponent()</code> (before <code>_createInitialChildren</code>)—create the DOM element[6]</h1><blockquote>
+<p>time-saving hint: this paragraph is here to keep the post self-contained, the detail of the <code>ReactDOMComponent</code> creation process has been covered in {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-III/">post three</a>}</p>
+</blockquote>
+<p>Designated data structure:</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*LAhX4p34wuseVi1QIk9dJw.png" alt></p>
+<p>Call stack in action:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">|~mountComponentIntoNode()                                    |</span><br><span class="line">  |-ReactReconciler.mountComponent()                          |</span><br><span class="line">    |-ReactCompositeComponent[T].mountComponent()             |</span><br><span class="line">      |-ReactCompositeComponent[T].performInitialMount()  upper half</span><br><span class="line">        |-ReactReconciler.mountComponent()                    |</span><br><span class="line">          |-ReactCompositeComponent[ins].mountComponent()     |</span><br><span class="line">            |-<span class="keyword">this</span>.performInitialMount()                      |</span><br><span class="line">              |-<span class="keyword">this</span>._renderValidatedComponent()              |</span><br><span class="line">              |-instantiateReactComponent()                  _|_ </span><br><span class="line">                (we are here)                                 |</span><br><span class="line">              |-ReactDOMComponent[<span class="number">6</span>].mountComponent(          |</span><br><span class="line">                  transaction, <span class="comment">// scr: -----&gt; not of interest |</span></span><br><span class="line">                  hostParent,  <span class="comment">// scr: -----&gt; null            |</span></span><br><span class="line">                  hostContainerInfo,<span class="comment">// scr:---------------------&gt; ReactDOMContainerInfo[ins]                                lower half</span></span><br><span class="line">                  context      <span class="comment">// scr: -----&gt; not of interest |</span></span><br><span class="line">                )                                             |</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>This step creates a DOM object with <code>ReactDOMComponent[6]</code>, and set up its attributes.</p>
+<p>To recap: it 1) initializes properties of <code>ReactDOMComponent[6]</code>; 2) creates a <code>div</code> DOM element using <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement" target="_blank" rel="noopener">document.createElement()</a>; 3) creates a double link between <code>ReactDOMComponent[6]</code> and the DOM object; 4) &amp; 5) set the properties and attributes of the newly created DOM object; and 6) embeds the DOM object in <code>DOMLazyTree[1]</code>.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line">mountComponent: <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  transaction,</span></span></span><br><span class="line"><span class="function"><span class="params">  hostParent,</span></span></span><br><span class="line"><span class="function"><span class="params">  hostContainerInfo,</span></span></span><br><span class="line"><span class="function"><span class="params">  context</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 1)</span></span><br><span class="line">  <span class="keyword">this</span>._rootNodeID = globalIdCounter++;</span><br><span class="line">  <span class="keyword">this</span>._domID = hostContainerInfo._idCounter++;</span><br><span class="line">  <span class="keyword">this</span>._hostParent = hostParent;</span><br><span class="line">  <span class="keyword">this</span>._hostContainerInfo = hostContainerInfo; <span class="comment">// scr: ------------&gt; ReactDOMContainerInfo[ins]</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> props = <span class="keyword">this</span>._currentElement.props;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (<span class="keyword">this</span>._tag) &#123; <span class="comment">// scr: ---&gt; no condition is met here</span></span><br><span class="line">...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: -----&gt; sanity check</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// We create tags in the namespace of their parent container, except HTML</span></span><br><span class="line"><span class="comment">// tags get no namespace.</span></span><br><span class="line">  <span class="keyword">var</span> namespaceURI;</span><br><span class="line">  <span class="keyword">var</span> parentTag;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (hostParent != <span class="literal">null</span>) &#123; <span class="comment">// scr: -----&gt; it is null</span></span><br><span class="line">...</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (hostContainerInfo._tag) &#123;</span><br><span class="line">    namespaceURI = hostContainerInfo._namespaceURI; <span class="comment">// scr: -------&gt; "http://www.w3.org/1999/xhtml"</span></span><br><span class="line">    parentTag = hostContainerInfo._tag;        <span class="comment">// scr: ------&gt; "div"</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (namespaceURI == <span class="literal">null</span> || </span><br><span class="line">      namespaceURI === DOMNamespaces.svg &amp;&amp; </span><br><span class="line">      parentTag === <span class="string">'foreignobject'</span></span><br><span class="line">  ) &#123; <span class="comment">// scr: -----&gt; no</span></span><br><span class="line">...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (namespaceURI === DOMNamespaces.html) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>._tag === <span class="string">'svg'</span>) &#123;               <span class="comment">// scr: -----&gt; no</span></span><br><span class="line">...</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>._tag === <span class="string">'math'</span>) &#123;       <span class="comment">// scr: -----&gt; no</span></span><br><span class="line">...</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">this</span>._namespaceURI = namespaceURI;  <span class="comment">// scr: ---------------------&gt; "http://www.w3.org/1999/xhtml"</span></span><br><span class="line"></span><br><span class="line">... <span class="comment">// scr: ------&gt; DEV code</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> mountImage;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (transaction.useCreateElement) &#123; <span class="comment">// scr: ---------------------&gt; transaction related logic, we assume it is true</span></span><br><span class="line">    <span class="keyword">var</span> ownerDocument = hostContainerInfo._ownerDocument;</span><br><span class="line">    <span class="keyword">var</span> el;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (namespaceURI === DOMNamespaces.html) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>._tag === <span class="string">'script'</span>) &#123;         <span class="comment">// scr: -----&gt; no</span></span><br><span class="line">...</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (props.is) &#123;                <span class="comment">// scr: -----&gt; no</span></span><br><span class="line">...</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Separate else branch instead of using `props.is || undefined` above becuase of a Firefox bug.</span></span><br><span class="line">        <span class="comment">// See discussion in https://github.com/facebook/react/pull/6896</span></span><br><span class="line">        <span class="comment">// and discussion in https://bugzilla.mozilla.org/show_bug.cgi?id=1276240</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 2)</span></span><br><span class="line">        <span class="comment">// scr: ---------&gt; HTML DOM API</span></span><br><span class="line">        el = ownerDocument.createElement(<span class="keyword">this</span>._currentElement.type);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// scr: ------&gt; no</span></span><br><span class="line">...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 3)</span></span><br><span class="line">    ReactDOMComponentTree.precacheNode(<span class="keyword">this</span>, el); <span class="comment">// scr: --------&gt; doubly link (._hostNode &amp; .internalInstanceKey)</span></span><br><span class="line">    <span class="keyword">this</span>._flags |= Flags.hasCachedChildNodes; <span class="comment">// scr: ------------&gt;</span></span><br><span class="line">bit wise its flags</span><br><span class="line"></span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 4)</span></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>._hostParent) &#123; <span class="comment">// scr: ------&gt; it is the root element</span></span><br><span class="line">      DOMPropertyOperations.setAttributeForRoot(el); <span class="comment">// scr: -----&gt; data-reactroot</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 5)</span></span><br><span class="line">    <span class="keyword">this</span>._updateDOMProperties( <span class="comment">//*6</span></span><br><span class="line">      <span class="literal">null</span>,</span><br><span class="line">      props,</span><br><span class="line">      transaction</span><br><span class="line">    ); <span class="comment">// scr: --------------------------&gt; style:&#123; “color”: “blue” &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// scr: --------------------------------------------------------&gt; 6)</span></span><br><span class="line">    <span class="keyword">var</span> lazyTree = DOMLazyTree(el); <span class="comment">// scr: ------&gt; DOMLazyTree[ins]</span></span><br><span class="line">    <span class="keyword">this</span>._createInitialChildren(transaction, props, context, lazyTree);</span><br><span class="line">...</span><br><span class="line">  &#125; <span class="comment">// if (transaction.useCreateElement)</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> mountImage;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOMComponent@renderers/dom/shared/ReactDOMComponent.js</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>ReactDOMComponent[6]</code> gets its DOM node, its children are next in the line</p>
+</blockquote>
+<h1 id="ReactDOMComponent-6-createInitialChildren-—create-DOM-elements-2-5"><a href="#ReactDOMComponent-6-createInitialChildren-—create-DOM-elements-2-5" class="headerlink" title="ReactDOMComponent[6]._createInitialChildren() —create DOM elements[2-5]"></a><code>ReactDOMComponent[6]._createInitialChildren()</code> —create DOM elements[2-5]</h1><p>Designated data structure:</p>
+<p><img src="https://cdn-images-1.medium.com/max/800/1*hMrLon7ozG8wkTLiw4M6Dw.png" alt></p>
+<p>As mentioned before, this method was used to create the string child node (<code>‘hello world’</code>) in {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-III/">post three</a>}. We will reuse this side branch in this post when rendering similar nodes (i.e., [3] and [5]), and we name the branch {1}.</p>
+<p>In the case of class component, route {2} is hit when this method is accessed the first time. To be specific, this branch handles the <code>ReactElement</code> tree. As mentioned, it 1) transforms <code>ReactElement</code>s to <code>ReactDOMComponents</code> (a), generates DOM nodes with <code>ReactDOMComponents</code> (b), and 2) insert DOM nodes to the root node generated with <code>ReactDOMComponent[6]</code> in last step.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">_createInitialChildren: <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  transaction, <span class="regexp">//</span> scr: not of interest</span></span></span><br><span class="line"><span class="function"><span class="params">  props,       <span class="regexp">//</span> scr: -------------------&gt; ReactElement[<span class="number">6</span>].props</span></span></span><br><span class="line"><span class="function"><span class="params">  context,     <span class="regexp">//</span> scr: not of interest</span></span></span><br><span class="line"><span class="function"><span class="params">  lazyTree     <span class="regexp">//</span> scr: -------------------&gt; DOMLazyTree[ins]</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// Intentional use of != to avoid catching zero/false.</span></span><br><span class="line">  <span class="comment">// scr: it is named as 'dangerous', let's avoid touching it</span></span><br><span class="line">  <span class="keyword">var</span> innerHTML = props.dangerouslySetInnerHTML;</span><br><span class="line">  <span class="keyword">if</span> (innerHTML != <span class="literal">null</span>) &#123; <span class="comment">// scr: so no innerHTML</span></span><br><span class="line">...</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> contentToUse = CONTENT_TYPES[<span class="keyword">typeof</span> props.children] ? props.children : <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> childrenToUse = contentToUse != <span class="literal">null</span> ? <span class="literal">null</span> : props.children;</span><br><span class="line">    <span class="comment">// scr: some comments</span></span><br><span class="line">    <span class="keyword">if</span> (contentToUse != <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="comment">// scr: some comments</span></span><br><span class="line">      <span class="keyword">if</span> (contentToUse !== <span class="string">''</span>) &#123; <span class="comment">// scr: ----------------&gt; route &#123;1&#125;</span></span><br><span class="line">...<span class="comment">// scr: DEV code</span></span><br><span class="line">        DOMLazyTree.queueText(lazyTree, contentToUse);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childrenToUse != <span class="literal">null</span>) &#123; <span class="comment">// scr: ---------&gt; route &#123;2&#125;</span></span><br><span class="line">      <span class="keyword">var</span> mountImages = <span class="keyword">this</span>.mountChildren(childrenToUse, transaction, context);  <span class="comment">// scr: --------------------------------&gt; 1)</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; mountImages.length; i++) &#123; <span class="attr">scr</span>: ------&gt; <span class="number">2</span>)</span><br><span class="line">        DOMLazyTree.queueChild(lazyTree, mountImages[i]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">ReactDOMComponent@renderers/dom/shared/ReactDOMComponent.js</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>The call hierarchy and iteration is a bit complex from now on, so this time I’ll first establish an overview of the big picture before diving into any detail.</p>
+</blockquote>
+<p>The static call stack:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">...                                            (outer recursion)</span><br><span class="line">ReactDOMComponent[<span class="number">6</span>].mountComponent()    &lt;-------------------------|</span><br><span class="line">    (we are here)                                                  |</span><br><span class="line">  |-<span class="keyword">this</span>._createInitialChildren()                                  |</span><br><span class="line">  ?&#123;<span class="number">1</span>&#125;                                                             |</span><br><span class="line">    |-DOMLazyTree.queueText()                                      |</span><br><span class="line">  ?&#123;<span class="number">2</span>&#125;                                                             |</span><br><span class="line">    |-<span class="keyword">this</span>.mountChildren()        <span class="comment">// scr: ---------------&gt; 1)(a)   |</span></span><br><span class="line">      |-<span class="keyword">this</span>._reconcilerInstantiateChildren()                      |</span><br><span class="line">        |-ReactChildReconciler.instantiateChildren()               |</span><br><span class="line">          |-traverseAllChildren()                                  |</span><br><span class="line">            |-traverseAllChildrenImpl()  &lt;------|inner             |</span><br><span class="line">              |↻traverseAllChildrenImpl() ------|recursion         |</span><br><span class="line">                |-instantiateChild()                               |</span><br><span class="line">                  |-instantiateReactComponent()                    |</span><br><span class="line">      |↻ReactDOMComponent.mountComponent()      <span class="comment">// scr: -&gt; 1)(b)---|</span></span><br><span class="line">    |↻DOMLazyTree.queueChild()    <span class="comment">// scr: ---------------&gt; 2)</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>First we examine the bottom of the (complex) stack that operates on the DOM level (by understanding the end purpose, we can be a bit relieved in facing the complex call graph).</p>
+<h2 id="DOMLazyTree-queueText-and-DOMLazyTree-queueChild"><a href="#DOMLazyTree-queueText-and-DOMLazyTree-queueChild" class="headerlink" title="DOMLazyTree.queueText() and DOMLazyTree.queueChild()"></a><code>DOMLazyTree.queueText()</code> and <code>DOMLazyTree.queueChild()</code></h2><p><code>DOMLazyTree.queueText()</code> has only one effective line in this walk-through:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">queueText</span>(<span class="params">tree, text</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (enableLazy) &#123; <span class="comment">// scr: NO, I mean, false</span></span><br><span class="line">...</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    setTextContent(tree.node, text);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">queueText@renderers/dom/client/utils/DOMLazyTree.js</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> setTextContent = <span class="function"><span class="keyword">function</span> (<span class="params">node, text</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (text) &#123;</span><br><span class="line">    <span class="keyword">var</span> firstChild = node.firstChild;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (firstChild &amp;&amp; firstChild === node.lastChild &amp;&amp; firstChild.nodeType === <span class="number">3</span>) &#123; <span class="comment">// scr: false</span></span><br><span class="line">...</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  node.textContent = text; <span class="comment">// scr: the only effective line</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">setTextContent@renderers/dom/client/utils/setTextContent.js</span><br></pre></td></tr></table></figure>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent" target="_blank" rel="noopener">Node.textContent</a> is a DOM standard property that represents, well, text content of a node. Apparently, it is the end purpose of route {1}.</p>
+<p><code>DOMLazyTree.queueChild()</code> has one line as well:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">queueChild</span>(<span class="params">parentTree, childTree</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (enableLazy) &#123; <span class="comment">// scr: again, false</span></span><br><span class="line">...</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    parentTree.node.appendChild(childTree.node);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">queueChild@renderers/dom/client/utils/DOMLazyTree.js</span><br></pre></td></tr></table></figure>
+<p>Here <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild" target="_blank" rel="noopener">Node.appendChild()</a> is yet another DOM standard API that inserts a node to another as child. Apparently, it is the last stop of route {2}.</p>
+<p>Now we can replace these two methods with their respective essence line.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">...                                          (outer recursion)</span><br><span class="line">ReactDOMComponent[<span class="number">6</span>].mountComponent()    &lt;-------------------------|</span><br><span class="line">  |-<span class="keyword">this</span>._createInitialChildren()                                  |</span><br><span class="line">  ?&#123;<span class="number">1</span>&#125;                                                             |</span><br><span class="line">    |-node.textContent = text;                                     |</span><br><span class="line">  ?&#123;<span class="number">2</span>&#125;                                                             |</span><br><span class="line">    |-<span class="keyword">this</span>.mountChildren()        <span class="comment">// scr: ---------------&gt; 1)(a)   |</span></span><br><span class="line">      |-<span class="keyword">this</span>._reconcilerInstantiateChildren()                      |</span><br><span class="line">        |-ReactChildReconciler.instantiateChildren()               |</span><br><span class="line">          |-traverseAllChildren()                                  |</span><br><span class="line">            |-traverseAllChildrenImpl()  &lt;------|inner             |</span><br><span class="line">              |↻traverseAllChildrenImpl() ------|recursion         |</span><br><span class="line">                |-instantiateChild()                               |</span><br><span class="line">                  |-instantiateReactComponent()                    |</span><br><span class="line">      |↻ReactDOMComponent.mountComponent() <span class="comment">// scr: ------&gt; 1)(b)---|</span></span><br><span class="line">    |↻node.appendChild()                   <span class="comment">// scr: ------&gt; 2)</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h2 id="Extrapolate-the-big-picture"><a href="#Extrapolate-the-big-picture" class="headerlink" title="Extrapolate the big picture"></a>Extrapolate the big picture</h2><p>To do so, we start from methods that we already know.</p>
+<p>First, <code>instantiateReactComponent()</code> which instantiates a <code>ReactDOMComponent</code> from <code>ReactElement</code> (we do not have any “composite” <code>ReactElement</code> in the tree now so all the components being created are <code>ReactDOMComponent</code>s), which is also the end of the deeply nested call hierarchy {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-II/">post two</a>}</p>
+<p>Second, <code>ReactDOMComponent.mountComponent()</code> which initializes the <code>ReactDOMComponents</code> created in the previous step and create the corresponding DOM nodes based on them. {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-III/">post three</a>} &amp; {beginning}</p>
+<p>Considering the above two operations an {OG} (operation group), it is now easier to explain how the rest of the <code>ReactElement</code> tree is processed.</p>
+<p>Here is a high-level explanation:</p>
+<ol>
+<li><p>when outer recursion of <code>ReactDOMComponent.mountComponent()</code> is called for non-leaf node, branch {2} will be taken to trigger {OG} for each of the component’s children;</p>
+</li>
+<li><p>when outer recursion of <code>ReactDOMComponent.mountComponent()</code> is called for leaf node that contains text, branch {1} will be in action, which set <code>node.textContent</code>;</p>
+</li>
+<li><p>when outer recursion of <code>ReactDOMComponent.mountComponent()</code> is called for leaf node that does not contain text, <code>_createInitialChildren()</code> will not be called at all.</p>
+</li>
+</ol>
+<p>Please note that in this process <code>ReactDOMComponent.mountComponent()</code> is used repeatedly to create DOM node for the respective <code>ReactDOMComponent</code> instance, so you might need to check its implementation in the beginning of this text if it is not in your (brain) cache.</p>
+<p>It’s time to draw the call stack in action:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">ReactDOMComponent[<span class="number">6</span>].mountComponent()</span><br><span class="line">  |-<span class="keyword">this</span>._createInitialChildren()</span><br><span class="line">    |-<span class="keyword">this</span>.mountChildren() </span><br><span class="line">...           |↻instantiateReactComponent()[<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line">      |-ReactDOMComponent[<span class="number">5</span>].mountComponent()</span><br><span class="line">        |-<span class="keyword">this</span>._createInitialChildren()</span><br><span class="line">          |-node.textContent = text; <span class="comment">// scr: [5] done</span></span><br><span class="line">      |-ReactDOMComponent[<span class="number">4</span>].mountComponent()</span><br><span class="line">        |-<span class="keyword">this</span>._createInitialChildren()</span><br><span class="line">          |-<span class="keyword">this</span>.mountChildren() </span><br><span class="line">...                 |↻instantiateReactComponent()[<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line">          |-ReactDOMComponent[<span class="number">2</span>].mountComponent() <span class="comment">// scr: [2] done</span></span><br><span class="line">          |-ReactDOMComponent[<span class="number">3</span>].mountComponent()</span><br><span class="line">            |-<span class="keyword">this</span>._createInitialChildren()</span><br><span class="line">              |-node.textContent = text; <span class="comment">// scr: [3] done</span></span><br><span class="line">        |↻node[<span class="number">4</span>].appendChild()[<span class="number">2</span>,<span class="number">3</span>] <span class="comment">// scr: [4] done</span></span><br><span class="line"></span><br><span class="line">    |↻node[<span class="number">6</span>].appendChild()[<span class="number">4</span>,<span class="number">5</span>] <span class="comment">// scr: [6] done</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>In this call stack I omit the deep nested call hierarchy that is used to instantiate the <code>ReactDOMComponent</code> from <code>ReactElement</code> as we are going to examine it next.</p>
+<h2 id="The-deep-nested-loop-of-instantiateReactComponent"><a href="#The-deep-nested-loop-of-instantiateReactComponent" class="headerlink" title="The deep nested loop of instantiateReactComponent()"></a>The deep nested loop of <code>instantiateReactComponent()</code></h2><p>In particular, we need to pay attention to the arguments to keep track the input &amp; output across the fairly deep and complex chain that enlists recursion and callback.</p>
+<p>Starting from inside <code>ReactDOMComponent._createInitialChildren()</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">var</span> mountImages = <span class="keyword">this</span>.mountChildren(</span><br><span class="line">  childrenToUse, <span class="comment">// scr:----------&gt; ReactElement[6].props.children</span></span><br><span class="line">  transaction,   <span class="comment">// scr: not of interest</span></span><br><span class="line">  context        <span class="comment">// scr: not of interest</span></span><br><span class="line">);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>Next we look at the implementation of <code>ReactDOMComponent.mountChildren()</code>. As mentioned before, it 1) instantiates all the children of <code>ReactDOMComponents</code>; and 2) initializes those <code>ReactDOMComponent</code> by calling <code>ReactDOMComponent.mountComponent()</code>.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">mountChildren: <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  nestedChildren, <span class="regexp">//</span> scr:----------&gt; ReactElement[<span class="number">6</span>].props.children</span></span></span><br><span class="line"><span class="function"><span class="params">  transaction,    <span class="regexp">//</span> scr: not of interest</span></span></span><br><span class="line"><span class="function"><span class="params">  context         <span class="regexp">//</span> scr: not of interest</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// scr: ------------------------------------------------------&gt; 1)</span></span><br><span class="line">  <span class="keyword">var</span> children = <span class="keyword">this</span>._reconcilerInstantiateChildren(nestedChildren, transaction, context);</span><br><span class="line">  <span class="keyword">this</span>._renderedChildren = children;</span><br><span class="line">  <span class="keyword">var</span> mountImages = [];</span><br><span class="line">  <span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> name <span class="keyword">in</span> children) &#123;</span><br><span class="line">    <span class="keyword">if</span> (children.hasOwnProperty(name)) &#123;</span><br><span class="line">      <span class="keyword">var</span> child = children[name];</span><br><span class="line">      <span class="keyword">var</span> selfDebugID = <span class="number">0</span>;</span><br><span class="line">...<span class="comment">// scr: DEV code</span></span><br><span class="line">                                                   (outer recursion)      </span><br><span class="line">      <span class="comment">// scr: --------------------------------------------------&gt; 2)</span></span><br><span class="line">      <span class="keyword">var</span> mountImage = ReactReconciler.mountComponent(child, transaction, <span class="keyword">this</span>, <span class="keyword">this</span>._hostContainerInfo, context, selfDebugID);</span><br><span class="line">      </span><br><span class="line">      child._mountIndex = index++;</span><br><span class="line">      mountImages.push(mountImage);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">...<span class="comment">// scr: DEV code</span></span><br><span class="line">  <span class="keyword">return</span> mountImages;</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">ReactDOMComponent@renderers/dom/shared/ReactDOMComponent.js</span><br></pre></td></tr></table></figure>
+<p>2) was referred to as “outer recursion” before and is yet another <code>ReactReconciler.mountComponent()</code> {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-II/">post two</a>}, so we focus on 1)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">_reconcilerInstantiateChildren: <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  nestedChildren, <span class="regexp">//</span> scr:----------&gt; ReactElement[<span class="number">6</span>].props.children</span></span></span><br><span class="line"><span class="function"><span class="params">  transaction,    <span class="regexp">//</span> scr: not of interest</span></span></span><br><span class="line"><span class="function"><span class="params">  context         <span class="regexp">//</span> scr: not of interest</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">...<span class="comment">// scr: DEV code</span></span><br><span class="line">  <span class="keyword">return</span> ReactChildReconciler.instantiateChildren(nestedChildren, transaction, context);</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">ReactMultiChild@renderers/shared/stack/reconciler/ReactMultiChild.js</span><br></pre></td></tr></table></figure>
+<p>which is a direct call of</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">instantiateChildren: <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  nestedChildNodes, <span class="regexp">//</span> scr: --------&gt; ReactElement[<span class="number">6</span>].props.children</span></span></span><br><span class="line"><span class="function"><span class="params">  transaction,      <span class="regexp">//</span> scr: not of interest</span></span></span><br><span class="line"><span class="function"><span class="params">  context,          <span class="regexp">//</span> scr: not of interest</span></span></span><br><span class="line"><span class="function"><span class="params">  selfDebugID</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) // 0 <span class="title">in</span> <span class="title">production</span> <span class="title">and</span> <span class="title">for</span> <span class="title">roots</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (nestedChildNodes == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> childInstances = &#123;&#125;;</span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">...<span class="comment">// scr: DEV code</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    traverseAllChildren(nestedChildNodes, instantiateChild, childInstances);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> childInstances;</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">instantiateChildren@renderers/shared/stack/reconciler/ReactChildReconciler.js</span><br></pre></td></tr></table></figure>
+<p>which is, again, a direct call to <code>traverseAllChildren()</code>. Note that <code>instantiateChild</code> is the callback method which is invoked for each child.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">instantiateChild</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  childInstances, <span class="regexp">//</span> scr: ---&gt; the output parameter childInstances is passed all the way down here</span></span></span><br><span class="line"><span class="function"><span class="params">  child,      <span class="regexp">//</span> scr: --&gt; a ReactElement</span></span></span><br><span class="line"><span class="function"><span class="params">  name,       <span class="regexp">//</span> scr: --&gt; unique name for indexing in childInstances</span></span></span><br><span class="line"><span class="function"><span class="params">  selfDebugID <span class="regexp">//</span> scr: --&gt; undefined</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">... <span class="comment">// scr: DEV code</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (child != <span class="literal">null</span> &amp;&amp; keyUnique) &#123;</span><br><span class="line">    childInstances[name] = instantiateReactComponent(child, <span class="literal">true</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">instantiateChild@renderers/shared/stack/reconciler/ReactChildReconciler.js</span><br></pre></td></tr></table></figure>
+<p>It in turn calls <code>instantiateReactComponent()</code> {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-I/">post one</a>} directly.</p>
+<p>We move on to <code>traverseAllChildren()</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">traverseAllChildren</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  children, <span class="regexp">//</span> scr: ---------&gt; ReactElement[<span class="number">6</span>].props.children</span></span></span><br><span class="line"><span class="function"><span class="params">  callback, <span class="regexp">//</span> scr: ---------&gt; instantiateChild</span></span></span><br><span class="line"><span class="function"><span class="params">  traverseContext <span class="regexp">//</span> scr: ---&gt; output parameter, initialized as &#123;&#125;</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (children == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> traverseAllChildrenImpl(children, <span class="string">''</span>, callback, traverseContext);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">traverseAllChildren@shared/utils/traverseAllChildren.js</span><br></pre></td></tr></table></figure>
+<p>yet another direct call to <code>traverseAllChildrenImpl()</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">traverseAllChildrenImpl</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  children,  <span class="regexp">//</span> scr: ---------&gt; ReactElement[<span class="number">6</span>].props.children</span></span></span><br><span class="line"><span class="function"><span class="params">  nameSoFar, <span class="regexp">//</span> scr: ---------&gt; <span class="string">''</span></span></span></span><br><span class="line"><span class="function"><span class="params">  callback,  <span class="regexp">//</span> scr: ---------&gt; instantiateChild</span></span></span><br><span class="line"><span class="function"><span class="params">  traverseContext <span class="regexp">//</span> scr: ---&gt; output parameter, initialized as &#123;&#125;</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> type = <span class="keyword">typeof</span> children;</span><br><span class="line">  <span class="keyword">if</span> (type === <span class="string">'undefined'</span> || type === <span class="string">'boolean'</span>) &#123;</span><br><span class="line">    <span class="comment">// All of the above are perceived as null.</span></span><br><span class="line">    children = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">// scr: -------------------------------------------------------&gt; &#123;a&#125;</span></span><br><span class="line">  <span class="keyword">if</span> (children === <span class="literal">null</span> || type === <span class="string">'string'</span> || type === <span class="string">'number'</span> || type === <span class="string">'object'</span> &amp;&amp; children.$$<span class="keyword">typeof</span> === REACT_ELEMENT_TYPE) &#123;</span><br><span class="line">    callback(traverseContext, children,</span><br><span class="line">    <span class="comment">// If it's the only child, treat the name as if it was wrapped in an array</span></span><br><span class="line">    <span class="comment">// so that it's consistent if the number of children grows.</span></span><br><span class="line">    nameSoFar === <span class="string">''</span> ? SEPARATOR + getComponentKey(children, <span class="number">0</span>) : nameSoFar);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> child;</span><br><span class="line">  <span class="keyword">var</span> nextName;</span><br><span class="line">  <span class="keyword">var</span> subtreeCount = <span class="number">0</span>; <span class="comment">// Count of children found in the current subtree.</span></span><br><span class="line">  <span class="keyword">var</span> nextNamePrefix = nameSoFar === <span class="string">''</span> ? SEPARATOR : nameSoFar + SUBSEPARATOR;</span><br><span class="line"><span class="comment">// scr: -------------------------------------------------------&gt; &#123;b&#125;</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(children)) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; children.length; i++) &#123;</span><br><span class="line">      child = children[i];</span><br><span class="line">      nextName = nextNamePrefix + getComponentKey(child, i);</span><br><span class="line">      subtreeCount += traverseAllChildrenImpl(child, nextName, callback, traverseContext);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">... <span class="comment">// scr: this branch will not be called here</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> subtreeCount;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">traverseAllChildrenImpl@shared/utils/traverseAllChildren.js</span><br></pre></td></tr></table></figure>
+<p>After those directly one-line calls of another method, <code>traverseAllChildrenImpl()</code> is the true workhouse. this method was also referred to as “inner recursion” soon before.</p>
+<p>The logic of <code>traverseAllChildrenImpl()</code> is quite straight forward: when it is called the first time (and the type of <code>children</code> parameter is <code>array</code>), it calls itself for every <code>ReactElement</code> within the array; when it is called successively (<code>children</code> is <code>ReactElement</code>), it invokes the aforementioned callback that internally relies on <code>instantiateReactComponent()</code> {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-I/">post one</a>} to transform a <code>ReactElement</code> to an empty and uninitialized <code>ReactDOMComonent</code>.</p>
+<blockquote>
+<p>Note that “inner recursion” works on DIRECT children only while the “outer recursion” traverse the ENTIRE <code>ReactElement</code> tree.</p>
+</blockquote>
+<p>After all the <code>ReactElements</code> are transformed to <code>ReactDOMComonent</code>s, the output is returned all the way back to <code>ReactDOMComponent.mountChildren()</code> and complete the circle.</p>
+<blockquote>
+<p>To better understand the full circle, you might need to refer to different pieces of the puzzle back and forth, for example, the beginning of this text where <code>ReactDOMComponent.mountComponent()</code> is discussed; the two DOM operations (<a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild" target="_blank" rel="noopener">Node.appendChild</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent" target="_blank" rel="noopener">Node.textContent</a>) that define the stack bottom; the discussion of the big picture; as well as this section.</p>
+</blockquote>
+<p>At last, after all the DOM nodes are generated, the logic returns back to <code>ReactReconciler.mountComponent()</code> and the new node tree is inserted to the designated <code>div</code> container. {<a href="http://holmeshe.me/understanding-react-js-source-code-initial-rendering-III/">post three</a>}</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">|~mountComponentIntoNode()                                    |</span><br><span class="line">  |-ReactReconciler.mountComponent()                          |</span><br><span class="line">    |-ReactCompositeComponent[T].mountComponent()             |</span><br><span class="line">      |-ReactCompositeComponent[T].performInitialMount()  upper half</span><br><span class="line">        |-ReactReconciler.mountComponent()                    |</span><br><span class="line">          |-ReactCompositeComponent[ins].mountComponent()     |</span><br><span class="line">            |-<span class="keyword">this</span>.performInitialMount()                      |</span><br><span class="line">              |-<span class="keyword">this</span>._renderValidatedComponent()              |</span><br><span class="line">              |-instantiateReactComponent()                  _|_ </span><br><span class="line">              |-ReactDOMComponent[<span class="number">6</span>].mountComponent(          |</span><br><span class="line">                  transaction, <span class="comment">// scr: -----&gt; not of interest |</span></span><br><span class="line">                  hostParent,  <span class="comment">// scr: -----&gt; null            |</span></span><br><span class="line">                  hostContainerInfo,<span class="comment">// scr:---------------------&gt; ReactDOMContainerInfo[ins]                                    | </span></span><br><span class="line">                  context      <span class="comment">// scr: -----&gt; not of interest |</span></span><br><span class="line">                )                                             |</span><br><span class="line">                                                              |</span><br><span class="line">... <span class="comment">// the content of this section                        lower half</span></span><br><span class="line">        |-_mountImageIntoNode()                  (HTML DOM specific)</span><br><span class="line">            markup,    <span class="comment">// scr: --&gt; DOMLazyTree[ins]           |</span></span><br><span class="line">            container, <span class="comment">// scr: --&gt; document.getElementById(‘root’)</span></span><br><span class="line">            wrapperInstance, <span class="comment">// scr:----&gt; same                |</span></span><br><span class="line">            shouldReuseMarkup, <span class="comment">// scr:--&gt; same                |</span></span><br><span class="line">            transaction, <span class="comment">// scr: -------&gt; same                |</span></span><br><span class="line">          )                                                  _|_</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <p>
+    <div>
+        
+          That's it. Did I make a serious mistake? or miss out on anything important? Or you simply like the read. Link me on <a class="ext-link" href='https://hackernoon.com/understanding-the-react-source-code-v-812d69a79fb9'>
+            <i class="fa fa-medium" aria-hidden="true"></i>
+          </a>  -- I'd be chuffed to hear your feedback.
+        
+    </div>
+    
+    <p>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Understanding-The-React-Source-Code/">Understanding The React Source Code</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/code/">code</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-js/">react.js</a></li></ul>
+
+      
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/bak/understanding-react-js-source-code-initial-rendering-VI/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding The React Source Code - UI Updating (Transaction) VI
+        
+      </div>
+    </a>
+  
+  
+    <a href="/bak/understanding-react-js-source-code-initial-rendering-IV/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Understanding The React Source Code - Initial Rendering (Class Component) IV</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ReactDOMComponent-6-mountComponent-before-createInitialChildren-—create-the-DOM-element-6"><span class="nav-number">1.</span> <span class="nav-text">ReactDOMComponent[6].mountComponent() (before _createInitialChildren)—create the DOM element[6]</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReactDOMComponent-6-createInitialChildren-—create-DOM-elements-2-5"><span class="nav-number">2.</span> <span class="nav-text">ReactDOMComponent[6]._createInitialChildren() —create DOM elements[2-5]</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DOMLazyTree-queueText-and-DOMLazyTree-queueChild"><span class="nav-number">2.1.</span> <span class="nav-text">DOMLazyTree.queueText() and DOMLazyTree.queueChild()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extrapolate-the-big-picture"><span class="nav-number">2.2.</span> <span class="nav-text">Extrapolate the big picture</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-deep-nested-loop-of-instantiateReactComponent"><span class="nav-number">2.3.</span> <span class="nav-text">The deep nested loop of instantiateReactComponent()</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 Holmes He 
+        
+              <a class='ext-link' href="https://creativecommons.org/licenses/by-nd/4.0/">
+                <img style="padding-bottom:4px" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nd.svg"/>
+              </a>
+              <a class='ext-link' href="mailto:holmeshe@hotmail.com">
+                <i style="color:#9ea6a6;" class="fas fa-envelope"></i>
+              </a>
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>, icons by <a href="https://www.flaticon.com/authors/prettycons" title="prettycons">prettycons</a>, <a href="https://www.freepik.com/" title="Freepik">Freepik</a> and <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> on <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div>
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-104935393-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5381847417546942",
+    enable_page_level_ads: true
+  });
+</script>
+<!-- End Google Analytics -->
+<!--<script type="text/javascript"> var infolinks_pid = 3169448; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script> -->
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+  <script type="text/javascript" src="/js/cust.js" async=""></script>
+</body>
+</html>

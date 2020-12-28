@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://holmeshe.me/gallery/club.svg">
 <meta property="og:image" content="https://holmeshe.me/gallery/diamond.svg">
 <meta property="og:image" content="https://holmeshe.me/gallery/memcached-state-machine.png">
-<meta property="og:updated_time" content="2020-12-22T10:48:38.121Z">
+<meta property="og:updated_time" content="2020-12-28T04:26:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Understanding The Memcached Source Code-Event Driven III">
 <meta name="twitter:description" content="We continue examining the other two operations, i.e., create and delete, in the event driven context. As usual, we start with a command sent to a Memcached server. In fact, most of the logic involved">
@@ -151,7 +151,7 @@
         <p><a href="/understanding-memcached-source-code-I/" class="fancybox"><img align="left" style="padding-right:10px;" src="/gallery/spade.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">slab allocator (I, </text></a> <a href="/understanding-memcached-source-code-II/"><text style="color:black;font-weight:bold;">II, </text></a> <a href="/understanding-memcached-source-code-III/"><text style="color:black;font-weight:bold;">III)</text></a> is the core module of the cache system, which largely determines how efficient the bottleneck resource, memory, can be utilized. The other 3 parts, namely,</p>
 <p><a href="/understanding-memcached-source-code-IV/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/heart.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">LRU algorithm (I</text></a> <a href="/understanding-memcached-source-code-V/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="/understanding-memcached-source-code-VI/"><text style="color:black;font-weight:bold;">, III)</text></a> for entry expiration; and an</p>
 <p><a href="/understanding-memcached-source-code-VII/" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/club.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">event driven model (I</text></a> <a href="/understanding-memcached-source-code-VIII/"><text style="color:black;font-weight:bold;">, II</text></a> <a href="#"><text style="color:black;font-weight:bold;">, III - this article)</text></a> based on libevent; and the</p>
-<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/diamond.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">consistent harsh (not complete)</text></a> for data distribution,</p>
+<p><a href="#" class="fancybox"><img align="left" style="padding-right:10px;" src="../gallery/diamond.svg" width="30" height="30"> <text style="color:black;font-weight:bold;">consistent hashing (not complete)</text></a> for data distribution,</p>
 <p>are built around it.</p>
 <p>We continue examining the other two operations, i.e., create and delete, in the <strong>event driven</strong> context. Now it’s a good chance to revisit the <a href="/understanding-memcached-source-code-VIII/#Core-data-structure-conn">core data structure</a> and look at the</p>
 <h1 id="Properties-in-discussion"><a href="#Properties-in-discussion" class="headerlink" title="Properties in discussion"></a>Properties in discussion</h1><a id="more"></a>
@@ -236,6 +236,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/cn/understanding-memcached-source-code-V/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          理解 Memcached 源码 - LRU II
+        
+      </div>
+    </a>
   
   
     <a href="/cn/understanding-memcached-source-code-IV/" id="article-nav-older" class="article-nav-link-wrap">
